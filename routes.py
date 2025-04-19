@@ -78,7 +78,8 @@ def phase2():
     return render_template('phase2.html',
                          selections=session['player_package'], 
                          cost=session['package_cost'],
-                         max_budget=MAX_BUDGET)
+                         max_budget=MAX_BUDGET,
+                         policies=POLICIES)
 
 @main.route('/phase3')
 def phase3():
