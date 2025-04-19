@@ -86,10 +86,23 @@ def phase3():
     """
     Final implementation phase after voting
     """
-    # Check if user has completed phase2
+    # Check if user has player_package (meaning they at least did phase 1)
+    if 'player_package' not in session:
+        flash('Please complete the policy selections first', 'error')
+        return redirect(url_for('main.phase1'))
+    
+    # If final_package is not in session, use the player's package as a fallback
+    # This can happen if Socket.IO events didn't properly update the session
     if 'final_package' not in session:
-        flash('Please complete the voting phase first', 'error')
-        return redirect(url_for('main.phase2'))
+        session['final_package'] = session['player_package'].copy()
+        # Calculate the cost of the player's package
+        total_cost = 0
+        for policy_name, option_level in session['player_package'].items():
+            for policy in POLICIES:
+                if policy['name'] == policy_name:
+                    total_cost += policy['options'][option_level - 1]['cost']
+                    break
+        session['final_cost'] = total_cost
     
     return render_template('phase3.html',
                          final_package=session['final_package'],
