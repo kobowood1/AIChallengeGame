@@ -1,46 +1,26 @@
 """
-Game logic for the AI challenge game
+Game logic for the policy-making deliberation game
 """
 import random
 
 class AIChallenge:
     """
-    Represents an AI challenge game session
+    Represents a policy deliberation game session
     """
     
     CHALLENGES = [
         {
-            "prompt": "Write a function that counts occurrences of each character in a string",
-            "test_cases": [
-                {"input": "hello", "expected": {"h": 1, "e": 1, "l": 2, "o": 1}},
-                {"input": "banana", "expected": {"b": 1, "a": 3, "n": 2}}
+            "prompt": "Develop a comprehensive refugee education policy for the Republic of Bean",
+            "description": "As policy advisors for the Republic of Bean, you must develop an education policy that addresses the influx of refugees. Your policy should balance budget constraints while ensuring both refugee and citizen students receive quality education.",
+            "time_limit": 1800,  # 30 minutes for discussion
+            "policy_domains": [
+                "Language Support", 
+                "Teacher Training", 
+                "School Integration", 
+                "Psychosocial Support", 
+                "Curriculum Adaptation"
             ],
-            "time_limit": 120,  # seconds
-            "difficulty": "easy"
-        },
-        {
-            "prompt": "Write a function that finds the largest palindrome in a string",
-            "test_cases": [
-                {"input": "babad", "expected": "bab"},
-                {"input": "cbbd", "expected": "bb"}
-            ],
-            "time_limit": 180,
-            "difficulty": "medium"
-        },
-        {
-            "prompt": "Implement a function to find the shortest path in a grid with obstacles",
-            "test_cases": [
-                {
-                    "input": {
-                        "grid": [[0, 0, 0], [1, 1, 0], [0, 0, 0]], 
-                        "start": [0, 0], 
-                        "end": [2, 2]
-                    }, 
-                    "expected": 4
-                }
-            ],
-            "time_limit": 240,
-            "difficulty": "hard"
+            "difficulty": "policy"
         }
     ]
     
@@ -99,7 +79,7 @@ class AIChallenge:
             
             # Reset player statuses
             for player_id in self.players:
-                self.players[player_id]["status"] = "coding"
+                self.players[player_id]["status"] = "deliberating"
                 self.players[player_id]["submission"] = None
                 self.players[player_id]["submission_time"] = None
             
