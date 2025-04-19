@@ -2,7 +2,7 @@ modules = ["python-3.11"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["fontconfig", "ghostscript", "glib", "harfbuzz", "iana-etc", "openssl", "pango", "postgresql"]
+packages = ["cairo", "fontconfig", "ghostscript", "glib", "harfbuzz", "iana-etc", "libffi", "openssl", "pango", "postgresql"]
 
 [deployment]
 deploymentTarget = "autoscale"
