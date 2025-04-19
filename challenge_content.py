@@ -2,8 +2,8 @@
 Content module for the AI CHALLENGE policy simulation game.
 
 This module contains all game content data structures including scenario text,
-policy areas with their options, budget constraints, and game phase information.
-The content is designed for the Republic of Bean refugee education policy simulation.
+policy areas with options, budget constraints, and game phase information.
+The content is for the Republic of Bean refugee education policy simulation.
 """
 
 from dataclasses import dataclass
@@ -42,24 +42,24 @@ class PolicyArea:
 
 # The backstory and context for the Republic of Bean policy simulation
 SCENARIO_TEXT = """
-The Republic of Bean, a small coastal nation, has experienced an unexpected influx of 
-50,000 refugees from neighboring Coffea due to civil unrest. As education policy 
-advisors to the Bean Ministry of Education, you must develop an inclusive education 
+The Republic of Bean, a small coastal nation, has experienced an unexpected influx
+of 50,000 refugees from neighboring Coffea due to civil unrest. As education policy
+advisors to the Bean Ministry of Education, you must develop an inclusive education
 strategy with limited resources.
 
-Bean is known for its stable but modest economy, with education already accounting 
-for 18% of the national budget. The refugees include approximately 12,000 school-age 
-children who need immediate educational support. Most speak a different primary 
+Bean is known for its stable but modest economy, with education already accounting
+for 18% of the national budget. The refugees include approximately 12,000 school-age
+children who need immediate educational support. Most speak a different primary
 language and have experienced significant trauma and disruption to their education.
 
-Your task is to design a comprehensive refugee education policy package that balances 
-the needs of the newcomers with those of Bean's citizens. Your decisions will affect 
-social cohesion, economic development, and diplomatic relations with neighboring 
-countries. The total cost of your policy package cannot exceed 14 budget units, and 
+Your task is to design a comprehensive refugee education policy package that balances
+the needs of the newcomers with those of Bean's citizens. Your decisions will affect
+social cohesion, economic development, and diplomatic relations with neighboring
+countries. The total cost of your policy package cannot exceed 14 budget units, and
 you must select options of different levels to create a nuanced approach.
 
-As you deliberate, consider both immediate humanitarian needs and long-term 
-integration goals. Your recommendations will shape the future of both the refugee 
+As you deliberate, consider both immediate humanitarian needs and long-term
+integration goals. Your recommendations will shape the future of both the refugee
 children and the Republic of Bean for generations to come.
 """
 
@@ -70,7 +70,7 @@ MAX_BUDGET = 14
 POLICY_AREAS = [
     PolicyArea(
         name="Access to Education",
-        description="Determines how refugee students will be incorporated into Bean's education system.",
+        description="Defines the integration model for refugee students in Bean's schools.",
         options=[
             PolicyOption(
                 label="Option 1",
@@ -91,7 +91,7 @@ POLICY_AREAS = [
     ),
     PolicyArea(
         name="Language Instruction",
-        description="Addresses how to handle language barriers in the education of refugee students.",
+        description="Outlines strategies for addressing language barriers in refugee education.",
         options=[
             PolicyOption(
                 label="Option 1",
@@ -112,7 +112,7 @@ POLICY_AREAS = [
     ),
     PolicyArea(
         name="Teacher Training",
-        description="Focuses on preparing educators to effectively teach and support refugee students.",
+        description="Prepares educators to effectively teach and support refugee students.",
         options=[
             PolicyOption(
                 label="Option 1",
@@ -133,7 +133,7 @@ POLICY_AREAS = [
     ),
     PolicyArea(
         name="Curriculum Adaptation",
-        description="Determines how educational content will be modified to meet refugee students' needs.",
+        description="Adjusts educational content to meet refugee students' needs.",
         options=[
             PolicyOption(
                 label="Option 1",
@@ -154,7 +154,7 @@ POLICY_AREAS = [
     ),
     PolicyArea(
         name="Psychosocial Support",
-        description="Addresses the mental health and social-emotional needs of refugee students.",
+        description="Supports mental health and social-emotional needs of refugee students.",
         options=[
             PolicyOption(
                 label="Option 1",
@@ -175,7 +175,7 @@ POLICY_AREAS = [
     ),
     PolicyArea(
         name="Financial Support",
-        description="Determines what material resources will be provided to refugee students and families.",
+        description="Provides material resources to refugee students and families.",
         options=[
             PolicyOption(
                 label="Option 1",
@@ -196,7 +196,7 @@ POLICY_AREAS = [
     ),
     PolicyArea(
         name="Certification / Accreditation of Previous Education",
-        description="Addresses how to recognize refugee students' prior learning and qualifications.",
+        description="Recognizes refugee students' prior learning and qualifications.",
         options=[
             PolicyOption(
                 label="Option 1",
