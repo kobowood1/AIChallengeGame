@@ -405,6 +405,7 @@
             <p class="text-center text-gray-400 mb-6">Share your insights on refugee education policy-making and the deliberative process</p>
             
             <form id="reflection-form" class="space-y-6" action="{{ url_for('main.submit_reflection') }}" method="POST">
+                <input type="hidden" name="format" value="pdf">
                 <!-- Participant Information -->
                 <div class="bg-gray-700 p-6 rounded-lg shadow-lg">
                     <h2 class="text-xl font-bold mb-4">Participant Information</h2>

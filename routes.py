@@ -126,63 +126,88 @@ def submit_reflection():
     # Extract form data
     form_data = request.form
     
+    # Check if we should return PDF or Markdown based on form_data
+    output_format = form_data.get('format', 'markdown')
+    
     # Build the markdown report
     md_report = generate_markdown_report(form_data)
     
-    # Convert markdown to HTML with extended features
-    html_content = markdown.markdown(md_report, extensions=['tables', 'fenced_code', 'nl2br'])
+    # If markdown format is requested or if there's an issue with PDF conversion
+    if output_format != 'pdf':
+        # Return as markdown
+        response = Response(
+            md_report,
+            mimetype='text/markdown',
+            headers={'Content-Disposition': 'attachment;filename=policy_reflection_report.md'}
+        )
+        return response
     
-    # Style the HTML for PDF generation
-    styled_html = f"""
-    <html>
-    <head>
-        <style>
-            body {{ 
-                font-family: Arial, sans-serif; 
-                line-height: 1.6;
-                margin: 2cm;
-            }}
-            h1 {{ color: #2c3e50; font-size: 24px; margin-bottom: 20px; }}
-            h2 {{ color: #3498db; font-size: 20px; margin-top: 30px; margin-bottom: 15px; }}
-            h3 {{ color: #2980b9; font-size: 16px; margin-top: 25px; }}
-            p {{ margin-bottom: 15px; }}
-            ul {{ margin-bottom: 15px; }}
-            li {{ margin-bottom: 5px; }}
-            .policy-option {{ 
-                padding: 5px 10px;
-                background-color: #f8f9fa;
-                border-left: 3px solid #3498db;
-                margin-bottom: 5px;
-            }}
-            .changed {{
-                border-left: 3px solid #e74c3c;
-            }}
-            .budget-info {{
-                padding: 8px;
-                background-color: #eef2f7;
-                border-radius: 5px;
-                display: inline-block;
-                margin-bottom: 15px;
-            }}
-        </style>
-    </head>
-    <body>
-        {html_content}
-    </body>
-    </html>
-    """
-    
-    # Create PDF using WeasyPrint
-    pdf_file = HTML(string=styled_html).write_pdf()
-    
-    # Create downloadable response with PDF
-    response = Response(
-        pdf_file,
-        mimetype='application/pdf',
-        headers={'Content-Disposition': 'attachment;filename=policy_reflection_report.pdf'}
-    )
-    
-    return response
+    try:
+        # Convert markdown to HTML with extended features
+        html_content = markdown.markdown(md_report, extensions=['tables', 'fenced_code', 'nl2br'])
+        
+        # Style the HTML for PDF generation
+        styled_html = f"""
+        <html>
+        <head>
+            <style>
+                body {{ 
+                    font-family: Arial, sans-serif; 
+                    line-height: 1.6;
+                    margin: 2cm;
+                }}
+                h1 {{ color: #2c3e50; font-size: 24px; margin-bottom: 20px; }}
+                h2 {{ color: #3498db; font-size: 20px; margin-top: 30px; margin-bottom: 15px; }}
+                h3 {{ color: #2980b9; font-size: 16px; margin-top: 25px; }}
+                p {{ margin-bottom: 15px; }}
+                ul {{ margin-bottom: 15px; }}
+                li {{ margin-bottom: 5px; }}
+                .policy-option {{ 
+                    padding: 5px 10px;
+                    background-color: #f8f9fa;
+                    border-left: 3px solid #3498db;
+                    margin-bottom: 5px;
+                }}
+                .changed {{
+                    border-left: 3px solid #e74c3c;
+                }}
+                .budget-info {{
+                    padding: 8px;
+                    background-color: #eef2f7;
+                    border-radius: 5px;
+                    display: inline-block;
+                    margin-bottom: 15px;
+                }}
+            </style>
+        </head>
+        <body>
+            {html_content}
+        </body>
+        </html>
+        """
+        
+        # Create PDF using WeasyPrint
+        pdf_file = HTML(string=styled_html).write_pdf()
+        
+        # Create downloadable response with PDF
+        response = Response(
+            pdf_file,
+            mimetype='application/pdf',
+            headers={'Content-Disposition': 'attachment;filename=policy_reflection_report.pdf'}
+        )
+        
+        return response
+    except Exception as e:
+        # Log the error
+        print(f"PDF generation error: {e}")
+        
+        # If PDF generation fails, return markdown as fallback
+        response = Response(
+            md_report,
+            mimetype='text/markdown',
+            headers={'Content-Disposition': 'attachment;filename=policy_reflection_report.md'}
+        )
+        return response
 
 @main.route('/thank-you')
 def thank_you():
