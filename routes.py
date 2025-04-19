@@ -12,6 +12,11 @@ def index():
     """Route for the home page"""
     return render_template('index.html')
 
+@main.route('/scenario')
+def scenario():
+    """Route for the Republic of Bean scenario context"""
+    return render_template('scenario.html')
+
 @main.route('/game')
 def game():
     """Route for the game page"""

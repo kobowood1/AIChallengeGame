@@ -1,0 +1,31 @@
+The game unfolds over three main stages and is designed for teams of five. It is both collaborative and personal, analytical and emotional, and requires players to critically engage with the underlying social, political, and ethical dimensions of education policy. In the online version of the CHALLENGE game, four of the five players will be AI-generated agents and one will be a real participant. The core structure—three distinct phases—mirrors the physical version of the game but is adapted for digital interaction and AI-facilitated decision-making.
+A. Phase I: Scenario Reading and Individual Decision-Making (20 minutes)
+The game begins with the participant reading the fictional context of the Republic of Bean, which includes the socio-political background, the refugee crisis, and the parliamentary responsibility to reform the education system. This narrative establishes the ethical stakes, political dynamics, and the challenges of limited resources.
+Once the scenario is reviewed, all five players—the real participant and the four AI-generated agents—individually select one option from each of the seven policy areas. These are:
+1.	Access to Education
+2.	Language Instruction
+3.	Teacher Training
+4.	Curriculum Adaptation
+5.	Psychosocial Support
+6.	Financial Support
+7.	Certification/Accreditation of Previous Education
+Each policy option carries a budget cost (1, 2, or 3 units), and no participant may exceed the 14-unit limit. The interface must make this budget highly visible and continuously updated. This stage encourages personal ethical clarity before entering group dialogue. AI agents will make decisions informed by their programmed profiles (age, education, socioeconomic status, and political ideology) while avoiding identity categories like race, gender, ethnicity, and sexual orientation.
+B. Phase II: AI-Led Group Dialogue and Decision-Making (30 minutes)
+This is the collaborative, deliberative phase of the game. Using voice interaction, the real participant engages directly with the four AI agents in a moderated group conversation. Each AI agent will offer justifications for their policy choices based on their ideological perspective, professional background, and life circumstances. The participant is encouraged to explain and defend their own choices in return.
+The objectives in this phase are:
+•	To share justifications for each selected policy option.
+•	To negotiate trade-offs and consider tensions among competing values (e.g., equity vs. efficiency).
+•	To collaboratively vote on a final team policy package.
+Each agent, including the real participant, casts one vote for a policy option in each category. The majority vote determines the final selection. In the case of a tie, the AI moderator will randomly break the deadlock. The final group policy package must still fall within the strict 14-unit budget limit.
+This phase simulates real-world policymaking where compromise, persuasion, and structural limitations converge. Participants will experience what it means to advocate within a politically diverse team under time and fiscal constraints.
+C. Phase III: Reflective Practice and Ethical Debriefing (Participant Only)
+After the final group policy package has been agreed upon, only the real participant will move forward into the reflection phase. This stage is central to the pedagogical purpose of the CHALLENGE game.
+The participant will be prompted to respond to a curated set of reflective questions (included in the "questions.docx" attachment). These questions are designed to:
+•	Surface emotional responses to the simulation (e.g., guilt, compromise, pride, regret).
+•	Reveal assumptions challenged or reinforced during the game.
+•	Explore how power and position shaped one’s role in the group process.
+•	Ask the participant to evaluate whether their choices supported justice, inclusion, and refugee rights—or served other interests.
+•	Push toward imagining what education systems could look like if they were designed from the ground up for displaced communities.
+Responses can be entered in written format or optionally recorded by voice. The system then generates AI-powered, personalized feedback based on both the participant’s decisions and their reflective input.
+This closing stage is meant to foster critical consciousness. It encourages players to move beyond technocratic policy work and instead grapple with the deeper ethical implications of how education is structured, whom it serves, and whom it excludes.
+In short, the AI CHALLENGE game is not just about policy design. It is about rehearsing justice, building coalitions across difference, and holding ourselves accountable to the futures we say we believe in.

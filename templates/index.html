@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 
-{% block title %}AI Challenge Game - Home{% endblock %}
+{% block title %}Republic of Bean - Education Policy Simulation{% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto">
     <div class="text-center mb-10">
-        <h1 class="text-4xl font-bold mb-4 text-blue-400">AI Challenge Game</h1>
-        <p class="text-xl text-gray-300">
-            Compete with friends to solve coding challenges in real-time!
+        <h1 class="text-4xl font-bold mb-4 text-blue-400">Republic of Bean</h1>
+        <p class="text-xl text-gray-300 mb-4">
+            An Interactive Education Policy Simulation for Refugee Integration
         </p>
+        <div class="inline-block bg-blue-900 bg-opacity-30 rounded-lg p-4 border-l-4 border-blue-500">
+            <p class="text-gray-200">
+                As a member of parliament in the Republic of Bean, you must address the education needs of both citizens and refugees.
+                Work with AI-generated citizens to draft policy reforms within budget constraints.
+            </p>
+        </div>
     </div>
 
     <div class="grid md:grid-cols-2 gap-8 mb-10">
@@ -46,45 +52,51 @@
     </div>
 
     <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-10">
-        <h2 class="text-2xl font-bold mb-4 text-blue-400">How to Play</h2>
+        <h2 class="text-2xl font-bold mb-4 text-blue-400">How the Simulation Works</h2>
         <div class="space-y-4 text-gray-300">
             <div class="flex items-start">
                 <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">1</div>
-                <p>Create a game room or join an existing one with a room code</p>
+                <p>Read the Republic of Bean scenario to understand the education reform challenge</p>
             </div>
             <div class="flex items-start">
                 <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">2</div>
-                <p>Wait for all players to join, then start the game</p>
+                <p>Select policy options in each of the seven education areas within your limited budget</p>
             </div>
             <div class="flex items-start">
                 <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">3</div>
-                <p>You'll receive a coding challenge to solve within a time limit</p>
+                <p>Engage in discussion with AI-generated citizens who have diverse perspectives</p>
             </div>
             <div class="flex items-start">
                 <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">4</div>
-                <p>Write your solution in the code editor and submit it</p>
+                <p>Collaborate through a democratic voting process to create a final policy package</p>
             </div>
             <div class="flex items-start">
                 <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">5</div>
-                <p>The faster you solve the challenge correctly, the more points you'll earn!</p>
+                <p>Reflect on the experience and receive a personalized report of your simulation</p>
             </div>
+        </div>
+        
+        <div class="mt-8 text-center">
+            <a href="{{ url_for('main.scenario') }}" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center">
+                <i class="fas fa-book-open mr-2"></i>Begin the Simulation
+            </a>
         </div>
     </div>
 
     <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold mb-4 text-blue-400">Challenge Types</h2>
+        <h2 class="text-2xl font-bold mb-4 text-blue-400">Policy Areas</h2>
         <div class="grid md:grid-cols-3 gap-4">
             <div class="p-4 bg-gray-700 rounded">
-                <h3 class="text-lg font-bold mb-2 text-green-400">Easy</h3>
-                <p class="text-gray-300">Basic algorithms and data structure challenges for beginners</p>
+                <h3 class="text-lg font-bold mb-2 text-green-400">Access & Language</h3>
+                <p class="text-gray-300">How will refugees access education and overcome language barriers?</p>
             </div>
             <div class="p-4 bg-gray-700 rounded">
-                <h3 class="text-lg font-bold mb-2 text-yellow-400">Medium</h3>
-                <p class="text-gray-300">Intermediate challenges requiring more complex problem solving</p>
+                <h3 class="text-lg font-bold mb-2 text-yellow-400">Curriculum & Support</h3>
+                <p class="text-gray-300">What teaching approaches and psychological support will be provided?</p>
             </div>
             <div class="p-4 bg-gray-700 rounded">
-                <h3 class="text-lg font-bold mb-2 text-red-400">Hard</h3>
-                <p class="text-gray-300">Advanced algorithms and optimization problems for experts</p>
+                <h3 class="text-lg font-bold mb-2 text-blue-400">Finance & Accreditation</h3>
+                <p class="text-gray-300">How will education be funded and prior learning recognized?</p>
             </div>
         </div>
     </div>

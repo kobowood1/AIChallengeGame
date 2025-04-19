@@ -8,59 +8,59 @@ MAX_BUDGET = 14
 # Policy data with names and options
 POLICIES = [
     {
-        "name": "Healthcare",
+        "name": "Access to Education",
         "options": [
-            {"level": 1, "description": "Basic Government Insurance", "cost": 1},
-            {"level": 2, "description": "Universal Healthcare", "cost": 2},
-            {"level": 3, "description": "Premium Healthcare For All", "cost": 3}
+            {"level": 1, "description": "Limited Integration: Separate refugee-only schools with basic resources", "cost": 1},
+            {"level": 2, "description": "Partial Integration: Mixed schools with special refugee classes", "cost": 2},
+            {"level": 3, "description": "Full Integration: Complete inclusion in mainstream schools with support", "cost": 3}
         ]
     },
     {
-        "name": "Housing",
+        "name": "Language Instruction",
         "options": [
-            {"level": 1, "description": "Basic Social Housing", "cost": 1},
-            {"level": 2, "description": "Affordable Housing Program", "cost": 2},
-            {"level": 3, "description": "Universal Housing Guarantee", "cost": 3}
+            {"level": 1, "description": "Basic Classes: Minimal language support provided separately", "cost": 1},
+            {"level": 2, "description": "Enhanced Program: Regular language classes with trained teachers", "cost": 2},
+            {"level": 3, "description": "Comprehensive Approach: Immersive bilingual education with cultural components", "cost": 3}
         ]
     },
     {
-        "name": "Education",
+        "name": "Teacher Training",
         "options": [
-            {"level": 1, "description": "Basic Public Schools", "cost": 1},
-            {"level": 2, "description": "Enhanced Education Access", "cost": 2},
-            {"level": 3, "description": "Premier Education For All", "cost": 3}
+            {"level": 1, "description": "Basic Guidelines: Simple materials on refugee education", "cost": 1},
+            {"level": 2, "description": "Training Workshops: Regular professional development sessions", "cost": 2},
+            {"level": 3, "description": "Specialized Certification: Comprehensive diversity and trauma-informed preparation", "cost": 3}
         ]
     },
     {
-        "name": "Environment",
+        "name": "Curriculum Adaptation",
         "options": [
-            {"level": 1, "description": "Basic Environmental Regulations", "cost": 1},
-            {"level": 2, "description": "Green Energy Incentives", "cost": 2},
-            {"level": 3, "description": "Carbon Neutrality Initiative", "cost": 3}
+            {"level": 1, "description": "Minor Adjustments: Some supplementary refugee-relevant materials", "cost": 1},
+            {"level": 2, "description": "Partial Reforms: Modified curriculum with inclusive content", "cost": 2},
+            {"level": 3, "description": "Complete Redesign: Fully inclusive, culturally responsive learning materials", "cost": 3}
         ]
     },
     {
-        "name": "Defense",
+        "name": "Psychosocial Support",
         "options": [
-            {"level": 1, "description": "Basic National Defense", "cost": 1},
-            {"level": 2, "description": "Regional Military Presence", "cost": 2},
-            {"level": 3, "description": "Global Military Dominance", "cost": 3}
+            {"level": 1, "description": "Basic Counseling: Limited mental health resources on request", "cost": 1},
+            {"level": 2, "description": "Support Program: Regular counseling and group therapy options", "cost": 2},
+            {"level": 3, "description": "Comprehensive Care: Trauma-informed schools with on-site specialists", "cost": 3}
         ]
     },
     {
-        "name": "Infrastructure",
+        "name": "Financial Support",
         "options": [
-            {"level": 1, "description": "Basic Infrastructure Maintenance", "cost": 1},
-            {"level": 2, "description": "Major Infrastructure Investment", "cost": 2},
-            {"level": 3, "description": "State-of-the-Art Infrastructure", "cost": 3}
+            {"level": 1, "description": "Basic Supplies: Essential educational materials provided", "cost": 1},
+            {"level": 2, "description": "Scholarship Program: Tuition assistance and stipends for eligible students", "cost": 2},
+            {"level": 3, "description": "Full Support Package: Comprehensive financial aid covering all education costs", "cost": 3}
         ]
     },
     {
-        "name": "Social Security",
+        "name": "Certification & Accreditation",
         "options": [
-            {"level": 1, "description": "Basic Safety Net", "cost": 1},
-            {"level": 2, "description": "Comprehensive Social Security", "cost": 2},
-            {"level": 3, "description": "Universal Basic Income", "cost": 3}
+            {"level": 1, "description": "Limited Recognition: Basic skills assessment without formal equivalency", "cost": 1},
+            {"level": 2, "description": "Partial Recognition: Standardized testing for placement and limited recognition", "cost": 2},
+            {"level": 3, "description": "Comprehensive System: Full recognition of prior learning with bridging programs", "cost": 3}
         ]
     }
 ]

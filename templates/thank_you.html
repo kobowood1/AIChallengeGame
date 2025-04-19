@@ -1,40 +1,78 @@
 {% extends "base.html" %}
 
-{% block title %}Thank You - Republic of Bean{% endblock %}
+{% block title %}Republic of Bean - Simulation Complete{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto text-center py-12">
-    <div class="bg-gray-800 rounded-lg shadow-lg p-8">
-        <div class="mb-6">
-            <i class="fas fa-check-circle text-green-500 text-7xl"></i>
+<div class="max-w-4xl mx-auto">
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold mb-4 text-blue-400">Thank You for Participating</h1>
+        <p class="text-xl text-gray-300">
+            Your participation in the Republic of Bean education policy simulation is complete.
+        </p>
+    </div>
+    
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg mb-8 prose prose-invert max-w-none">
+        <h2 class="text-2xl font-bold mb-4 text-center">Your Contribution Matters</h2>
+        
+        <p>
+            You've just experienced the complexity of education policy-making in a diverse democratic society. Through this simulation, you've engaged with:
+        </p>
+        
+        <ul>
+            <li><strong>Ethical Dilemmas:</strong> Balancing limited resources with the educational needs of both citizens and refugees</li>
+            <li><strong>Ideological Diversity:</strong> Engaging with perspectives that may differ from your own</li>
+            <li><strong>Collaborative Decision-Making:</strong> Working together to find consensus despite differing values and priorities</li>
+            <li><strong>Budget Constraints:</strong> Making difficult trade-offs between competing worthy goals</li>
+        </ul>
+        
+        <p>
+            The challenges you faced mirror those of real policymakers worldwide. By reflecting on this experience, you've gained insight into the complexities of designing education systems that serve all members of society equitably.
+        </p>
+        
+        <div class="bg-blue-900 bg-opacity-30 rounded-lg p-4 my-6 border-l-4 border-blue-500">
+            <p class="m-0">
+                <strong>Your personalized report</strong> has been generated based on your policy selections, the final approved package, and your reflections. You can download this report to review your experience and insights.
+            </p>
         </div>
         
-        <h1 class="text-3xl font-bold mb-4 text-blue-400">Thank You!</h1>
+        <h3 class="text-xl font-bold mt-6">What's Next?</h3>
         
-        <div class="mb-8">
-            <p class="text-xl text-gray-300 mb-4">Your reflection has been successfully submitted and your report has been downloaded.</p>
-            <p class="text-gray-400">Your thoughtful feedback will help improve our understanding of the policy-making process.</p>
-        </div>
-        
-        <div class="bg-gray-700 p-6 rounded-lg mb-8">
-            <h2 class="text-xl font-bold mb-4">What Happens Next?</h2>
-            <p class="text-gray-300 mb-4">Your report contains valuable insights about your experience navigating the policy-making process in the Republic of Bean. It includes:</p>
-            
-            <ul class="text-left list-disc pl-6 mb-4 text-gray-400">
-                <li>Your demographic information</li>
-                <li>Your original policy selections</li>
-                <li>The final package after democratic voting</li>
-                <li>Your reflection responses to all questions</li>
-            </ul>
-            
-            <p class="text-gray-300">This information will be used to better understand how people engage with complex policy decisions and virtual deliberative processes.</p>
-        </div>
-        
-        <div class="flex justify-center">
-            <a href="{{ url_for('main.index') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center">
-                <i class="fas fa-home mr-2"></i>Return Home
+        <p>
+            Consider how the principles explored in this simulation apply to real-world education policy challenges. Where might you get involved in your own community to advocate for more equitable, inclusive educational systems?
+        </p>
+    </div>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-2xl font-bold mb-4">Your Policy Report</h2>
+        <p class="mb-4 text-gray-300">
+            You can download your personalized policy reflection report using the button below:
+        </p>
+        <div class="text-center">
+            <a href="#" id="download-again" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center">
+                <i class="fas fa-download mr-2"></i>Download Report
             </a>
         </div>
     </div>
+    
+    <div class="text-center">
+        <a href="{{ url_for('main.index') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg text-lg transition">
+            Return to Home
+        </a>
+    </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const downloadAgainBtn = document.getElementById('download-again');
+        
+        downloadAgainBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = "{{ url_for('main.submit_reflection') }}?" + new URLSearchParams({
+                download: 'true'
+            });
+        });
+    });
+</script>
 {% endblock %}

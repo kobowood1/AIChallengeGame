@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Republic of Bean - Scenario{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-4 text-center text-blue-400">Republic of Bean: Education Reform Challenge</h1>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-bold mb-4">Background</h2>
+        
+        <div class="prose prose-invert">
+            <p>Welcome to the Republic of Bean, a small democratic nation facing significant challenges after a period of economic and political stability. In recent years, Bean has experienced an influx of refugees from neighboring countries due to regional conflicts, creating unprecedented pressure on public services—particularly the education system.</p>
+            
+            <p>As a member of parliament, you have been tasked with reforming Bean's education system to better address the needs of both citizens and refugees. The parliament has allocated a limited budget for these reforms, and you must work collaboratively with other representatives (AI-generated agents) to determine the most effective and equitable allocation of resources.</p>
+            
+            <p>Your decisions will impact generations of students, both native-born citizens and refugees. How will you balance competing interests, navigate political differences, and create a just and inclusive education system under budget constraints?</p>
+        </div>
+    </div>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-bold mb-4">The Challenge</h2>
+        
+        <div class="prose prose-invert">
+            <p>You will participate in a three-phase process:</p>
+            
+            <ol>
+                <li><strong>Individual Policy Selection:</strong> Select one option from each of seven education policy areas within a 14-unit budget limit.</li>
+                <li><strong>Collaborative Dialogue:</strong> Engage in discussion with four AI-generated citizen representatives who have different perspectives. Justify your choices and listen to their arguments.</li>
+                <li><strong>Democratic Decision:</strong> Through majority voting, create a final education policy package that stays within budget.</li>
+            </ol>
+            
+            <p>After the process concludes, you'll reflect on the experience, examining how power, values, and constraints shaped your decisions and the group's outcome.</p>
+        </div>
+    </div>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-bold mb-4">Policy Areas</h2>
+        
+        <div class="prose prose-invert">
+            <p>You will make decisions on these seven critical education policy areas:</p>
+            
+            <ol>
+                <li><strong>Access to Education:</strong> How will educational institutions accommodate refugee students?</li>
+                <li><strong>Language Instruction:</strong> What approach to language learning will best support integration?</li>
+                <li><strong>Teacher Training:</strong> How will educators be prepared to work with diverse students?</li>
+                <li><strong>Curriculum Adaptation:</strong> How should content be modified to be inclusive and relevant?</li>
+                <li><strong>Psychosocial Support:</strong> What mental health resources should be provided?</li>
+                <li><strong>Financial Support:</strong> What economic assistance will help refugee students succeed?</li>
+                <li><strong>Certification/Accreditation:</strong> How will prior education be recognized and validated?</li>
+            </ol>
+            
+            <p>For each area, you'll choose from three options representing different approaches and resource investments.</p>
+        </div>
+    </div>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-bold mb-4">Budget Constraints</h2>
+        
+        <div class="prose prose-invert">
+            <p>The parliamentary budget committee has allocated 14 resource units for education reform. Each policy option costs between 1-3 units, reflecting the relative investment required:</p>
+            
+            <ul>
+                <li><strong>Level 1 (1 unit):</strong> Basic implementation with minimal resources</li>
+                <li><strong>Level 2 (2 units):</strong> Moderate implementation with average resources</li>
+                <li><strong>Level 3 (3 units):</strong> Comprehensive implementation with significant resources</li>
+            </ul>
+            
+            <p>You must carefully balance idealism with pragmatism. Your selections must not exceed the 14-unit limit.</p>
+        </div>
+    </div>
+    
+    <div class="text-center mb-8">
+        <a href="{{ url_for('main.phase1') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center">
+            <i class="fas fa-play-circle mr-2"></i>Begin Policy Selection
+        </a>
+    </div>
+</div>
+{% endblock %}
