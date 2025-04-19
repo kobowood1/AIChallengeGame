@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}AI Challenge Game - Home{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-bold mb-4 text-blue-400">AI Challenge Game</h1>
+        <p class="text-xl text-gray-300">
+            Compete with friends to solve coding challenges in real-time!
+        </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 mb-10">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-4 text-blue-400">Create a Game</h2>
+            <p class="mb-4 text-gray-300">
+                Start a new challenge and invite your friends to join
+            </p>
+            <div class="mb-4">
+                <label for="create-username" class="block text-gray-300 mb-2">Your Username</label>
+                <input type="text" id="create-username" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" placeholder="Enter your username">
+            </div>
+            <button id="create-game-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition">
+                Create Game Room
+            </button>
+        </div>
+
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-4 text-blue-400">Join a Game</h2>
+            <p class="mb-4 text-gray-300">
+                Enter a room code to join an existing challenge
+            </p>
+            <div class="mb-4">
+                <label for="join-username" class="block text-gray-300 mb-2">Your Username</label>
+                <input type="text" id="join-username" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" placeholder="Enter your username">
+            </div>
+            <div class="mb-4">
+                <label for="room-id" class="block text-gray-300 mb-2">Room Code</label>
+                <input type="text" id="room-id" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" placeholder="Enter room code">
+            </div>
+            <button id="join-game-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded transition">
+                Join Game Room
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-10">
+        <h2 class="text-2xl font-bold mb-4 text-blue-400">How to Play</h2>
+        <div class="space-y-4 text-gray-300">
+            <div class="flex items-start">
+                <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">1</div>
+                <p>Create a game room or join an existing one with a room code</p>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">2</div>
+                <p>Wait for all players to join, then start the game</p>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">3</div>
+                <p>You'll receive a coding challenge to solve within a time limit</p>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">4</div>
+                <p>Write your solution in the code editor and submit it</p>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">5</div>
+                <p>The faster you solve the challenge correctly, the more points you'll earn!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-4 text-blue-400">Challenge Types</h2>
+        <div class="grid md:grid-cols-3 gap-4">
+            <div class="p-4 bg-gray-700 rounded">
+                <h3 class="text-lg font-bold mb-2 text-green-400">Easy</h3>
+                <p class="text-gray-300">Basic algorithms and data structure challenges for beginners</p>
+            </div>
+            <div class="p-4 bg-gray-700 rounded">
+                <h3 class="text-lg font-bold mb-2 text-yellow-400">Medium</h3>
+                <p class="text-gray-300">Intermediate challenges requiring more complex problem solving</p>
+            </div>
+            <div class="p-4 bg-gray-700 rounded">
+                <h3 class="text-lg font-bold mb-2 text-red-400">Hard</h3>
+                <p class="text-gray-300">Advanced algorithms and optimization problems for experts</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Game creation success modal -->
+<div id="game-created-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full">
+        <h2 class="text-2xl font-bold mb-4 text-blue-400">Game Created!</h2>
+        <p class="mb-4 text-gray-300">Share this code with your friends to join:</p>
+        <div class="bg-gray-700 p-4 rounded mb-4 flex justify-between items-center">
+            <code id="room-code" class="text-xl font-mono text-white"></code>
+            <button id="copy-room-code" class="text-blue-400 hover:text-blue-300">
+                <i class="fas fa-copy"></i>
+            </button>
+        </div>
+        <div class="flex justify-end">
+            <button id="continue-to-game" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition">
+                Continue to Game Room
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Error modal -->
+<div id="error-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full">
+        <h2 class="text-2xl font-bold mb-4 text-red-400">Error</h2>
+        <p id="error-message" class="mb-4 text-gray-300"></p>
+        <div class="flex justify-end">
+            <button id="close-error" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded transition">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Socket.IO connection
+        const socket = io();
+        let currentRoomId = null;
+        
+        // UI Elements
+        const createUsernameInput = document.getElementById('create-username');
+        const createGameBtn = document.getElementById('create-game-btn');
+        const joinUsernameInput = document.getElementById('join-username');
+        const roomIdInput = document.getElementById('room-id');
+        const joinGameBtn = document.getElementById('join-game-btn');
+        const gameCreatedModal = document.getElementById('game-created-modal');
+        const roomCodeElement = document.getElementById('room-code');
+        const copyRoomCodeBtn = document.getElementById('copy-room-code');
+        const continueToGameBtn = document.getElementById('continue-to-game');
+        const errorModal = document.getElementById('error-modal');
+        const errorMessageElement = document.getElementById('error-message');
+        const closeErrorBtn = document.getElementById('close-error');
+        
+        // Socket.IO event handlers
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+        
+        socket.on('game_created', (data) => {
+            currentRoomId = data.room_id;
+            roomCodeElement.textContent = data.room_id;
+            gameCreatedModal.classList.remove('hidden');
+            gameCreatedModal.classList.add('flex');
+        });
+        
+        socket.on('game_joined', (data) => {
+            currentRoomId = data.room_id;
+            window.location.href = '/game?room=' + data.room_id;
+        });
+        
+        socket.on('error', (data) => {
+            errorMessageElement.textContent = data.message;
+            errorModal.classList.remove('hidden');
+            errorModal.classList.add('flex');
+        });
+        
+        // Button event handlers
+        createGameBtn.addEventListener('click', () => {
+            const username = createUsernameInput.value.trim();
+            if (!username) {
+                showError('Please enter a username');
+                return;
+            }
+            
+            socket.emit('create_game', { username });
+        });
+        
+        joinGameBtn.addEventListener('click', () => {
+            const username = joinUsernameInput.value.trim();
+            const roomId = roomIdInput.value.trim();
+            
+            if (!username) {
+                showError('Please enter a username');
+                return;
+            }
+            
+            if (!roomId) {
+                showError('Please enter a room code');
+                return;
+            }
+            
+            socket.emit('join_game', { username, room_id: roomId });
+        });
+        
+        continueToGameBtn.addEventListener('click', () => {
+            window.location.href = '/game?room=' + currentRoomId;
+        });
+        
+        copyRoomCodeBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(roomCodeElement.textContent)
+                .then(() => {
+                    copyRoomCodeBtn.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        copyRoomCodeBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy room code: ', err);
+                });
+        });
+        
+        closeErrorBtn.addEventListener('click', () => {
+            errorModal.classList.add('hidden');
+            errorModal.classList.remove('flex');
+        });
+        
+        // Helper functions
+        function showError(message) {
+            errorMessageElement.textContent = message;
+            errorModal.classList.remove('hidden');
+            errorModal.classList.add('flex');
+        }
+    });
+</script>
+{% endblock %}

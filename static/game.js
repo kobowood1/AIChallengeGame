@@ -1,0 +1,505 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // Get room ID from URL
+    const params = getUrlParams();
+    const roomId = params.room;
+    
+    if (!roomId) {
+        window.location.href = '/';
+        return;
+    }
+    
+    // UI elements
+    const waitingRoom = document.getElementById('waiting-room');
+    const gameInProgress = document.getElementById('game-in-progress');
+    const gameFinished = document.getElementById('game-finished');
+    const roomIdDisplay = document.getElementById('room-id-display');
+    const shareRoomCode = document.getElementById('share-room-code');
+    const copyShareCodeBtn = document.getElementById('copy-share-code');
+    const leaveRoomBtn = document.getElementById('leave-room-btn');
+    const startGameBtn = document.getElementById('start-game-btn');
+    const playerList = document.getElementById('player-list');
+    const hostControls = document.getElementById('host-controls');
+    const challengePrompt = document.getElementById('challenge-prompt');
+    const challengeDifficulty = document.getElementById('challenge-difficulty');
+    const testCases = document.getElementById('test-cases');
+    const timeRemaining = document.getElementById('time-remaining');
+    const playersStatus = document.getElementById('players-status');
+    const playerStatus = document.getElementById('player-status');
+    const playerScore = document.getElementById('player-score');
+    const submitSolutionBtn = document.getElementById('submit-solution-btn');
+    const winnerAnnouncement = document.getElementById('winner-announcement');
+    const finalScores = document.getElementById('final-scores');
+    const playAgainBtn = document.getElementById('play-again-btn');
+    
+    // Display room info
+    roomIdDisplay.textContent = roomId;
+    shareRoomCode.textContent = roomId;
+    
+    // Initialize CodeMirror editor
+    const editor = CodeMirror(document.getElementById('code-editor-container'), {
+        mode: 'javascript',
+        theme: 'dracula',
+        lineNumbers: true,
+        indentUnit: 4,
+        tabSize: 4,
+        lineWrapping: true,
+        autofocus: true,
+        extraKeys: {
+            'Tab': function(cm) {
+                cm.replaceSelection('    ', 'end');
+            }
+        }
+    });
+    
+    // Default code template
+    editor.setValue('// Write your solution here\nfunction solution(input) {\n    // Your code here\n}\n');
+    
+    // Socket.IO connection
+    const socket = connectSocket();
+    let isHost = false;
+    let gameState = null;
+    let timerInterval = null;
+    
+    // Join the game room when page loads
+    socket.on('connect', () => {
+        // If we have a player name in sessionStorage, use it to rejoin
+        const username = sessionStorage.getItem('username') || 'Player_' + Math.floor(Math.random() * 1000);
+        sessionStorage.setItem('username', username);
+        
+        // Join the room
+        socket.emit('join_game', { room_id: roomId, username });
+        
+        // Show loading overlay
+        toggleLoading(true, 'Joining game room...');
+    });
+    
+    // Socket.IO event handlers
+    socket.on('game_joined', (data) => {
+        // Hide loading overlay
+        toggleLoading(false);
+        showNotification('Joined game room', 'success');
+        
+        // Store player ID
+        sessionStorage.setItem('playerId', data.player_id);
+    });
+    
+    socket.on('game_state_update', (state) => {
+        gameState = state;
+        updateUI(state);
+    });
+    
+    socket.on('player_joined', (data) => {
+        showNotification(`${data.username} joined the game`, 'info');
+    });
+    
+    socket.on('player_left', (data) => {
+        if (gameState && gameState.players && gameState.players[data.player_id]) {
+            const username = gameState.players[data.player_id].username;
+            showNotification(`${username} left the game`, 'info');
+        }
+    });
+    
+    socket.on('game_started', (data) => {
+        gameState = data.state;
+        updateUI(data.state);
+        showNotification('Game started!', 'success');
+        startGameTimer(data.challenge.time_limit);
+    });
+    
+    socket.on('solution_submitted', (result) => {
+        if (result.success) {
+            showNotification(`Solution submitted! Score: ${result.score}`, 'success');
+            playerStatus.textContent = 'Submitted';
+            playerStatus.className = 'font-bold text-green-400';
+            playerScore.textContent = result.score;
+            submitSolutionBtn.disabled = true;
+            submitSolutionBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+            showNotification(`Error: ${result.message}`, 'error');
+        }
+    });
+    
+    socket.on('game_finished', (data) => {
+        gameState = data.state;
+        updateUI(gameState);
+        clearInterval(timerInterval);
+        showNotification('Game finished!', 'success');
+    });
+    
+    socket.on('error', (data) => {
+        toggleLoading(false);
+        showNotification(`Error: ${data.message}`, 'error');
+    });
+    
+    // Button event handlers
+    copyShareCodeBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(shareRoomCode.textContent)
+            .then(() => {
+                copyShareCodeBtn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    copyShareCodeBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Failed to copy room code: ', err);
+            });
+    });
+    
+    leaveRoomBtn.addEventListener('click', () => {
+        socket.emit('leave_game', { room_id: roomId });
+        window.location.href = '/';
+    });
+    
+    startGameBtn.addEventListener('click', () => {
+        socket.emit('start_game', { room_id: roomId });
+        toggleLoading(true, 'Starting game...');
+    });
+    
+    submitSolutionBtn.addEventListener('click', () => {
+        const solution = editor.getValue();
+        
+        if (solution.trim() === '') {
+            showNotification('Please write a solution before submitting', 'error');
+            return;
+        }
+        
+        socket.emit('submit_solution', { 
+            room_id: roomId, 
+            solution: solution 
+        });
+        
+        toggleLoading(true, 'Submitting solution...');
+        setTimeout(() => toggleLoading(false), 1000);
+    });
+    
+    playAgainBtn.addEventListener('click', () => {
+        // Reset the game state
+        socket.emit('start_game', { room_id: roomId });
+        toggleLoading(true, 'Starting new game...');
+    });
+    
+    // UI update function
+    function updateUI(state) {
+        const playerId = sessionStorage.getItem('playerId');
+        
+        // Determine if current player is host (first player in the room)
+        const playerIds = Object.keys(state.players);
+        isHost = playerIds.length > 0 && playerIds[0] === playerId;
+        
+        // Show/hide host controls
+        if (isHost && state.state === 'waiting') {
+            hostControls.classList.remove('hidden');
+        } else {
+            hostControls.classList.add('hidden');
+        }
+        
+        // Update player list in waiting room
+        updatePlayerList(state.players);
+        
+        // Update game view based on state
+        if (state.state === 'waiting') {
+            waitingRoom.classList.remove('hidden');
+            gameInProgress.classList.add('hidden');
+            gameFinished.classList.add('hidden');
+        } else if (state.state === 'active') {
+            waitingRoom.classList.add('hidden');
+            gameInProgress.classList.remove('hidden');
+            gameFinished.classList.add('hidden');
+            
+            // Update challenge information
+            updateChallengeInfo(state.current_challenge);
+            
+            // Update player statuses
+            updatePlayerStatuses(state.players);
+            
+            // Update current player's status
+            if (state.players[playerId]) {
+                const status = state.players[playerId].status;
+                playerScore.textContent = state.players[playerId].score;
+                
+                if (status === 'coding') {
+                    playerStatus.textContent = 'Coding';
+                    playerStatus.className = 'font-bold text-yellow-400';
+                    submitSolutionBtn.disabled = false;
+                    submitSolutionBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                } else if (status === 'submitted') {
+                    playerStatus.textContent = 'Submitted';
+                    playerStatus.className = 'font-bold text-green-400';
+                    submitSolutionBtn.disabled = true;
+                    submitSolutionBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            }
+        } else if (state.state === 'finished') {
+            waitingRoom.classList.add('hidden');
+            gameInProgress.classList.add('hidden');
+            gameFinished.classList.remove('hidden');
+            
+            // Update winner announcement
+            updateWinnerAnnouncement(state.winners, state.players);
+            
+            // Update final scores
+            updateFinalScores(state.players);
+        }
+    }
+    
+    // Update player list in waiting room
+    function updatePlayerList(players) {
+        playerList.innerHTML = '';
+        
+        if (Object.keys(players).length === 0) {
+            playerList.innerHTML = `
+                <div class="p-4 bg-gray-700 rounded flex items-center">
+                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white mr-3">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span class="flex-grow">Waiting for players...</span>
+                </div>
+            `;
+            return;
+        }
+        
+        Object.entries(players).forEach(([id, player], index) => {
+            const isHost = index === 0;
+            const badge = isHost ? 
+                '<span class="ml-2 text-xs bg-yellow-600 text-white px-2 py-0.5 rounded">Host</span>' : '';
+            
+            const playerItem = document.createElement('div');
+            playerItem.className = 'p-4 bg-gray-700 rounded flex items-center';
+            playerItem.innerHTML = `
+                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white mr-3">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span class="flex-grow">${player.username}${badge}</span>
+            `;
+            
+            playerList.appendChild(playerItem);
+        });
+    }
+    
+    // Update challenge information
+    function updateChallengeInfo(challenge) {
+        if (!challenge) return;
+        
+        // Set challenge prompt
+        challengePrompt.textContent = challenge.prompt;
+        
+        // Set difficulty badge
+        let difficultyColor = '';
+        switch (challenge.difficulty) {
+            case 'easy':
+                difficultyColor = 'bg-green-600';
+                break;
+            case 'medium':
+                difficultyColor = 'bg-yellow-600';
+                break;
+            case 'hard':
+                difficultyColor = 'bg-red-600';
+                break;
+            default:
+                difficultyColor = 'bg-blue-600';
+        }
+        
+        challengeDifficulty.className = `inline-block px-3 py-1 rounded text-sm font-bold mb-3 ${difficultyColor}`;
+        challengeDifficulty.textContent = challenge.difficulty.toUpperCase();
+        
+        // Set test cases
+        testCases.innerHTML = '';
+        challenge.test_cases.forEach((testCase, index) => {
+            const testCaseEl = document.createElement('div');
+            testCaseEl.className = 'mb-2';
+            
+            let testCaseHtml = `<div class="font-bold">Test Case ${index + 1}:</div>`;
+            
+            // Format input based on type
+            let inputStr = '';
+            if (typeof testCase.input === 'object' && testCase.input !== null) {
+                inputStr = JSON.stringify(testCase.input, null, 2);
+            } else {
+                inputStr = JSON.stringify(testCase.input);
+            }
+            
+            // Format expected output based on type
+            let expectedStr = '';
+            if (typeof testCase.expected === 'object' && testCase.expected !== null) {
+                expectedStr = JSON.stringify(testCase.expected, null, 2);
+            } else {
+                expectedStr = JSON.stringify(testCase.expected);
+            }
+            
+            testCaseHtml += `<div>Input: <code>${inputStr}</code></div>`;
+            testCaseHtml += `<div>Expected: <code>${expectedStr}</code></div>`;
+            
+            testCaseEl.innerHTML = testCaseHtml;
+            testCases.appendChild(testCaseEl);
+        });
+    }
+    
+    // Update player statuses in game
+    function updatePlayerStatuses(players) {
+        playersStatus.innerHTML = '';
+        
+        Object.entries(players).forEach(([id, player]) => {
+            const statusColor = getStatusColor(player.status);
+            
+            const playerStatusItem = document.createElement('div');
+            playerStatusItem.className = 'flex items-center justify-between p-3 bg-gray-700 rounded';
+            playerStatusItem.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white mr-2">
+                        <i class="fas fa-user text-xs"></i>
+                    </div>
+                    <span>${player.username}</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="mr-3">Score: ${player.score}</span>
+                    <span class="${statusColor}">${formatStatus(player.status)}</span>
+                </div>
+            `;
+            
+            playersStatus.appendChild(playerStatusItem);
+        });
+    }
+    
+    // Update winner announcement
+    function updateWinnerAnnouncement(winners, players) {
+        if (!winners || winners.length === 0) {
+            winnerAnnouncement.innerHTML = `
+                <div class="text-2xl font-bold text-yellow-400 mb-2">It's a tie!</div>
+                <p class="text-gray-300">Everyone did great!</p>
+            `;
+            return;
+        }
+        
+        if (winners.length === 1) {
+            const winnerId = winners[0];
+            const winner = players[winnerId];
+            
+            winnerAnnouncement.innerHTML = `
+                <div class="text-2xl font-bold text-yellow-400 mb-2">Winner!</div>
+                <div class="flex justify-center items-center mb-4">
+                    <div class="w-16 h-16 bg-yellow-600 rounded-full flex items-center justify-center text-white mr-3">
+                        <i class="fas fa-trophy text-3xl"></i>
+                    </div>
+                </div>
+                <p class="text-xl font-bold text-blue-400">${winner.username}</p>
+                <p class="text-gray-300">with a score of ${winner.score}</p>
+            `;
+        } else {
+            // Multiple winners (tie)
+            const winnerNames = winners.map(id => players[id].username).join(', ');
+            
+            winnerAnnouncement.innerHTML = `
+                <div class="text-2xl font-bold text-yellow-400 mb-2">It's a tie!</div>
+                <div class="flex justify-center items-center mb-4">
+                    <div class="w-16 h-16 bg-yellow-600 rounded-full flex items-center justify-center text-white mr-3">
+                        <i class="fas fa-trophy text-3xl"></i>
+                    </div>
+                </div>
+                <p class="text-xl font-bold text-blue-400">${winnerNames}</p>
+                <p class="text-gray-300">with a score of ${players[winners[0]].score}</p>
+            `;
+        }
+    }
+    
+    // Update final scores
+    function updateFinalScores(players) {
+        finalScores.innerHTML = '';
+        
+        // Sort players by score
+        const sortedPlayers = Object.entries(players).sort((a, b) => b[1].score - a[1].score);
+        
+        sortedPlayers.forEach(([id, player], index) => {
+            const rank = index + 1;
+            const rankClass = rank === 1 ? 'text-yellow-400' : (rank === 2 ? 'text-gray-400' : (rank === 3 ? 'text-yellow-700' : 'text-gray-300'));
+            
+            const scoreItem = document.createElement('div');
+            scoreItem.className = 'flex items-center justify-between p-3 bg-gray-700 rounded';
+            scoreItem.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-6 h-6 ${rankClass} font-bold rounded-full flex items-center justify-center mr-2">
+                        ${rank}
+                    </div>
+                    <span>${player.username}</span>
+                </div>
+                <div>
+                    <span class="font-bold">${player.score}</span> points
+                </div>
+            `;
+            
+            finalScores.appendChild(scoreItem);
+        });
+    }
+    
+    // Helper function to get status color
+    function getStatusColor(status) {
+        switch (status) {
+            case 'waiting':
+                return 'text-gray-400';
+            case 'coding':
+                return 'text-yellow-400';
+            case 'submitted':
+                return 'text-green-400';
+            case 'verified':
+                return 'text-blue-400';
+            default:
+                return 'text-gray-300';
+        }
+    }
+    
+    // Helper function to format status text
+    function formatStatus(status) {
+        switch (status) {
+            case 'waiting':
+                return 'Waiting';
+            case 'coding':
+                return 'Coding';
+            case 'submitted':
+                return 'Submitted';
+            case 'verified':
+                return 'Verified';
+            default:
+                return status;
+        }
+    }
+    
+    // Start the game timer
+    function startGameTimer(seconds) {
+        clearInterval(timerInterval);
+        
+        let timeLeft = seconds;
+        timeRemaining.textContent = formatTime(timeLeft);
+        
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timeLeft = 0;
+                
+                // Auto-submit if not submitted yet
+                const playerId = sessionStorage.getItem('playerId');
+                if (gameState && 
+                    gameState.players && 
+                    gameState.players[playerId] && 
+                    gameState.players[playerId].status === 'coding') {
+                    
+                    const solution = editor.getValue();
+                    socket.emit('submit_solution', { 
+                        room_id: roomId, 
+                        solution: solution 
+                    });
+                }
+            }
+            
+            timeRemaining.textContent = formatTime(timeLeft);
+            
+            // Make timer flash red when low on time
+            if (timeLeft <= 10) {
+                timeRemaining.classList.toggle('text-red-500');
+            }
+        }, 1000);
+    }
+    
+    // Request current game state in case we missed any updates
+    socket.emit('get_game_state', { room_id: roomId });
+});
