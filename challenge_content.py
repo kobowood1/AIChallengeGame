@@ -42,25 +42,27 @@ class PolicyArea:
 
 # The backstory and context for the Republic of Bean policy simulation
 SCENARIO_TEXT = """
-The Republic of Bean, a small coastal nation, has experienced an unexpected influx
-of 50,000 refugees from neighboring Coffea due to civil unrest. As education policy
-advisors to the Bean Ministry of Education, you must develop an inclusive education
-strategy with limited resources.
+The Republic of Bean, a small coastal nation, has experienced an unexpected 
+influx of 50,000 refugees from neighboring Coffea due to civil unrest. As 
+education policy advisors to the Bean Ministry of Education, you must develop 
+an inclusive education strategy with limited resources.
 
-Bean is known for its stable but modest economy, with education already accounting
-for 18% of the national budget. The refugees include approximately 12,000 school-age
-children who need immediate educational support. Most speak a different primary
-language and have experienced significant trauma and disruption to their education.
+Bean is known for its stable but modest economy, with education already 
+accounting for 18% of the national budget. The refugees include approximately 
+12,000 school-age children who need immediate educational support. Most speak 
+a different primary language and have experienced significant trauma and 
+disruption to their education.
 
-Your task is to design a comprehensive refugee education policy package that balances
-the needs of the newcomers with those of Bean's citizens. Your decisions will affect
-social cohesion, economic development, and diplomatic relations with neighboring
-countries. The total cost of your policy package cannot exceed 14 budget units, and
-you must select options of different levels to create a nuanced approach.
+Your task is to design a comprehensive refugee education policy package that 
+balances the needs of the newcomers with those of Bean's citizens. Your 
+decisions will affect social cohesion, economic development, and diplomatic 
+relations with neighboring countries. The total cost of your policy package 
+cannot exceed 14 budget units, and you must select options of different levels 
+to create a nuanced approach.
 
 As you deliberate, consider both immediate humanitarian needs and long-term
-integration goals. Your recommendations will shape the future of both the refugee
-children and the Republic of Bean for generations to come.
+integration goals. Your recommendations will shape the future of both the 
+refugee children and the Republic of Bean for generations to come.
 """
 
 # Maximum budget allowed for the policy package
@@ -95,7 +97,7 @@ POLICY_AREAS = [
         options=[
             PolicyOption(
                 label="Option 1",
-                summary="Basic language survival courses, primarily in refugees' native language.",
+                summary="Basic language survival courses primarily in native language.",
                 cost=1
             ),
             PolicyOption(
@@ -224,8 +226,8 @@ The policy package must not exceed MAX_BUDGET (14 units).
 Each policy area requires selecting exactly one option.
 A balanced approach is required - players must select options of different levels
 (cannot choose all Option 1s, all Option 2s, or all Option 3s) to create a more
-nuanced and realistic policy package that addresses different aspects with varying
-levels of investment.
+nuanced and realistic policy package that addresses different aspects with 
+varying levels of investment.
 """
 
 
@@ -234,7 +236,7 @@ GAME_PHASES = {
     "phase1": {
         "title": "Individual Policy Selection",
         "duration_minutes": 20,
-        "objective": "Select policy options within budget constraints to create your proposed package.",
+        "objective": "Select policy options within budget constraints for your package.",
         "actions": [
             "Review the Republic of Bean scenario and understand the constraints.",
             "Examine all seven policy areas and their available options.",
@@ -247,7 +249,7 @@ GAME_PHASES = {
     "phase2": {
         "title": "AI-Moderated Deliberation and Voting",
         "duration_minutes": 30,
-        "objective": "Discuss policy options with AI representatives and reach consensus through voting.",
+        "objective": "Discuss options with AI citizens and reach consensus through voting.",
         "actions": [
             "Present your policy package to the group including AI representatives.",
             "Listen to feedback from AI citizens with diverse perspectives.",
@@ -261,7 +263,7 @@ GAME_PHASES = {
     "phase3": {
         "title": "Reflection and Analysis",
         "duration_minutes": "participant-paced",
-        "objective": "Reflect on the policy-making process, decisions made, and lessons learned.",
+        "objective": "Reflect on decisions made and lessons learned from the process.",
         "actions": [
             "Review the final adopted policy package.",
             "Consider the strengths and weaknesses of the adopted approach.",
@@ -276,23 +278,33 @@ GAME_PHASES = {
 """
 Reflection Questions:
 
-1. How did your initial policy package differ from the final adopted package? What factors influenced these changes?
+1. How did your initial policy package differ from the final adopted package? What 
+   factors influenced these changes?
 
-2. Which policy area generated the most debate during deliberation, and why do you think this was the case?
+2. Which policy area generated the most debate during deliberation, and why do you 
+   think this was the case?
 
-3. How did you balance immediate humanitarian needs with long-term integration goals in your policy decisions?
+3. How did you balance immediate humanitarian needs with long-term integration 
+   goals in your policy decisions?
 
-4. What perspectives did the AI representatives bring that you might not have considered otherwise?
+4. What perspectives did the AI representatives bring that you might not have 
+   considered otherwise?
 
-5. How did budget constraints affect your decision-making process? What trade-offs were most difficult?
+5. How did budget constraints affect your decision-making process? What trade-offs 
+   were most difficult?
 
-6. Which policy option do you believe will have the greatest positive impact, and what evidence supports this?
+6. Which policy option do you believe will have the greatest positive impact, and 
+   what evidence supports this?
 
-7. How might the policy package be received differently by refugee families versus long-term Bean residents?
+7. How might the policy package be received differently by refugee families versus 
+   long-term Bean residents?
 
-8. What additional information would have helped you make more informed policy decisions?
+8. What additional information would have helped you make more informed policy 
+   decisions?
 
-9. How did this exercise change your understanding of education policy challenges in refugee contexts?
+9. How did this exercise change your understanding of education policy challenges 
+   in refugee contexts?
 
-10. If you were to implement this policy package in reality, what additional considerations or modifications would you suggest?
+10. If you were to implement this policy package in reality, what additional 
+    considerations or modifications would you suggest?
 """
