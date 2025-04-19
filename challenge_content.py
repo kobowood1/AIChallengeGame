@@ -42,13 +42,25 @@ class PolicyArea:
 
 # The backstory and context for the Republic of Bean policy simulation
 SCENARIO_TEXT = """
-The Republic of Bean, a small coastal nation, has experienced an unexpected influx of 50,000 refugees from neighboring Coffea due to civil unrest. As education policy advisors to the Bean Ministry of Education, you must develop an inclusive education strategy with limited resources.
+The Republic of Bean, a small coastal nation, has experienced an unexpected influx of 
+50,000 refugees from neighboring Coffea due to civil unrest. As education policy 
+advisors to the Bean Ministry of Education, you must develop an inclusive education 
+strategy with limited resources.
 
-Bean is known for its stable but modest economy, with education already accounting for 18% of the national budget. The refugees include approximately 12,000 school-age children who need immediate educational support. Most speak a different primary language and have experienced significant trauma and disruption to their education.
+Bean is known for its stable but modest economy, with education already accounting 
+for 18% of the national budget. The refugees include approximately 12,000 school-age 
+children who need immediate educational support. Most speak a different primary 
+language and have experienced significant trauma and disruption to their education.
 
-Your task is to design a comprehensive refugee education policy package that balances the needs of the newcomers with those of Bean's citizens. Your decisions will affect social cohesion, economic development, and diplomatic relations with neighboring countries. The total cost of your policy package cannot exceed 14 budget units, and you must select options of different levels to create a nuanced approach.
+Your task is to design a comprehensive refugee education policy package that balances 
+the needs of the newcomers with those of Bean's citizens. Your decisions will affect 
+social cohesion, economic development, and diplomatic relations with neighboring 
+countries. The total cost of your policy package cannot exceed 14 budget units, and 
+you must select options of different levels to create a nuanced approach.
 
-As you deliberate, consider both immediate humanitarian needs and long-term integration goals. Your recommendations will shape the future of both the refugee children and the Republic of Bean for generations to come.
+As you deliberate, consider both immediate humanitarian needs and long-term 
+integration goals. Your recommendations will shape the future of both the refugee 
+children and the Republic of Bean for generations to come.
 """
 
 # Maximum budget allowed for the policy package
@@ -72,7 +84,7 @@ POLICY_AREAS = [
             ),
             PolicyOption(
                 label="Option 3",
-                summary="Full integration into existing schools with supplementary support services.",
+                summary="Full integration into existing schools with supplementary support.",
                 cost=3
             )
         ]
@@ -83,7 +95,7 @@ POLICY_AREAS = [
         options=[
             PolicyOption(
                 label="Option 1",
-                summary="Basic language survival courses, instruction primarily in refugees' native language.",
+                summary="Basic language survival courses, primarily in refugees' native language.",
                 cost=1
             ),
             PolicyOption(
@@ -93,7 +105,7 @@ POLICY_AREAS = [
             ),
             PolicyOption(
                 label="Option 3",
-                summary="Comprehensive bilingual education program with qualified teachers and cultural mediators.",
+                summary="Comprehensive bilingual education with qualified teachers and mediators.",
                 cost=3
             )
         ]
@@ -109,12 +121,12 @@ POLICY_AREAS = [
             ),
             PolicyOption(
                 label="Option 2",
-                summary="Ongoing professional development on trauma-informed and culturally responsive teaching.",
+                summary="Ongoing professional development on trauma-informed teaching.",
                 cost=2
             ),
             PolicyOption(
                 label="Option 3",
-                summary="Comprehensive certification program plus mentoring networks and specialized staff positions.",
+                summary="Comprehensive certification program with mentoring and specialized staff.",
                 cost=3
             )
         ]
@@ -130,12 +142,12 @@ POLICY_AREAS = [
             ),
             PolicyOption(
                 label="Option 2",
-                summary="Modified curriculum with flexible assessment and cultural context integration.",
+                summary="Modified curriculum with flexible assessment and cultural integration.",
                 cost=2
             ),
             PolicyOption(
                 label="Option 3",
-                summary="Comprehensive curriculum redesign with student-centered, project-based learning approaches.",
+                summary="Comprehensive curriculum redesign with student-centered approaches.",
                 cost=3
             )
         ]
@@ -146,17 +158,17 @@ POLICY_AREAS = [
         options=[
             PolicyOption(
                 label="Option 1",
-                summary="Basic teacher awareness training on trauma recognition and referral process.",
+                summary="Basic teacher awareness training on trauma recognition and referral.",
                 cost=1
             ),
             PolicyOption(
                 label="Option 2",
-                summary="School counselors and regular group support sessions for refugee students.",
+                summary="School counselors and regular group support sessions for refugees.",
                 cost=2
             ),
             PolicyOption(
                 label="Option 3",
-                summary="Comprehensive mental health services with specialized therapists and family support systems.",
+                summary="Comprehensive mental health services with therapists and family support.",
                 cost=3
             )
         ]
@@ -172,12 +184,12 @@ POLICY_AREAS = [
             ),
             PolicyOption(
                 label="Option 2",
-                summary="Comprehensive school materials plus transportation subsidies and meal program.",
+                summary="School materials plus transportation subsidies and meal program.",
                 cost=2
             ),
             PolicyOption(
                 label="Option 3",
-                summary="Full financial support package including technology access, uniforms, and family stipends.",
+                summary="Full support including technology, uniforms, and family stipends.",
                 cost=3
             )
         ]
@@ -193,12 +205,12 @@ POLICY_AREAS = [
             ),
             PolicyOption(
                 label="Option 2",
-                summary="Standardized equivalency exams with bridging courses for identified gaps.",
+                summary="Standardized equivalency exams with bridging courses for gaps.",
                 cost=2
             ),
             PolicyOption(
                 label="Option 3",
-                summary="Comprehensive prior learning assessment with flexible pathways and individualized plans.",
+                summary="Comprehensive assessment with flexible pathways and individual plans.",
                 cost=3
             )
         ]
@@ -235,7 +247,7 @@ GAME_PHASES = {
     "phase2": {
         "title": "AI-Moderated Deliberation and Voting",
         "duration_minutes": 30,
-        "objective": "Discuss policy options with AI citizen representatives and reach consensus through voting.",
+        "objective": "Discuss policy options with AI representatives and reach consensus through voting.",
         "actions": [
             "Present your policy package to the group including AI representatives.",
             "Listen to feedback from AI citizens with diverse perspectives.",
