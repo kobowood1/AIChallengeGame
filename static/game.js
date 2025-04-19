@@ -57,10 +57,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Socket.IO connection
     const socket = connectSocket();
     let isHost = false;
-    let gameState = null;
+    let deliberationState = null;
     let timerInterval = null;
     
-    // Join the game room when page loads
+    // Join the deliberation room when page loads
     socket.on('connect', () => {
         // If we have a player name in sessionStorage, use it to rejoin
         const username = sessionStorage.getItem('username') || 'Player_' + Math.floor(Math.random() * 1000);
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     socket.on('game_state_update', (state) => {
-        gameState = state;
+        deliberationState = state;
         updateUI(state);
     });
     
@@ -93,8 +93,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     socket.on('advisor_left', (data) => {
-        if (gameState && gameState.players && gameState.players[data.advisor_id]) {
-            const username = gameState.players[data.advisor_id].username;
+        if (deliberationState && deliberationState.players && deliberationState.players[data.advisor_id]) {
+            const username = deliberationState.players[data.advisor_id].username;
             showNotification(`${username} left the policy deliberation`, 'info');
         }
     });
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white mr-3">
                         <i class="fas fa-user"></i>
                     </div>
-                    <span class="flex-grow">Waiting for players...</span>
+                    <span class="flex-grow">Waiting for policy advisors...</span>
                 </div>
             `;
             return;
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
         testCases.appendChild(instructionsEl);
     }
     
-    // Update player statuses in game
+    // Update advisor statuses in deliberation
     function updatePlayerStatuses(players) {
         playersStatus.innerHTML = '';
         
@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Start the game timer
+    // Start the deliberation timer
     function startGameTimer(seconds) {
         clearInterval(timerInterval);
         
@@ -495,6 +495,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000);
     }
     
-    // Request current game state in case we missed any updates
+    // Request current deliberation state in case we missed any updates
     socket.emit('get_deliberation_state', { room_id: roomId });
 });
