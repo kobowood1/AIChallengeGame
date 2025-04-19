@@ -3,7 +3,9 @@ from game_data import POLICIES, validate_package, MAX_BUDGET
 from ai_agents import generate_agents, agent_justify
 import markdown
 import json
+import tempfile
 from datetime import datetime
+from weasyprint import HTML, CSS
 
 main = Blueprint('main', __name__)
 
@@ -114,7 +116,7 @@ def phase3():
 @main.route('/submit-reflection', methods=['POST'])
 def submit_reflection():
     """
-    Process the reflection form submission and generate a markdown report
+    Process the reflection form submission and generate a PDF report
     """
     # Check if user has completed the necessary phases
     if 'final_package' not in session or 'player_package' not in session:
@@ -125,13 +127,59 @@ def submit_reflection():
     form_data = request.form
     
     # Build the markdown report
-    report = generate_markdown_report(form_data)
+    md_report = generate_markdown_report(form_data)
     
-    # Create downloadable response
+    # Convert markdown to HTML with extended features
+    html_content = markdown.markdown(md_report, extensions=['tables', 'fenced_code', 'nl2br'])
+    
+    # Style the HTML for PDF generation
+    styled_html = f"""
+    <html>
+    <head>
+        <style>
+            body {{ 
+                font-family: Arial, sans-serif; 
+                line-height: 1.6;
+                margin: 2cm;
+            }}
+            h1 {{ color: #2c3e50; font-size: 24px; margin-bottom: 20px; }}
+            h2 {{ color: #3498db; font-size: 20px; margin-top: 30px; margin-bottom: 15px; }}
+            h3 {{ color: #2980b9; font-size: 16px; margin-top: 25px; }}
+            p {{ margin-bottom: 15px; }}
+            ul {{ margin-bottom: 15px; }}
+            li {{ margin-bottom: 5px; }}
+            .policy-option {{ 
+                padding: 5px 10px;
+                background-color: #f8f9fa;
+                border-left: 3px solid #3498db;
+                margin-bottom: 5px;
+            }}
+            .changed {{
+                border-left: 3px solid #e74c3c;
+            }}
+            .budget-info {{
+                padding: 8px;
+                background-color: #eef2f7;
+                border-radius: 5px;
+                display: inline-block;
+                margin-bottom: 15px;
+            }}
+        </style>
+    </head>
+    <body>
+        {html_content}
+    </body>
+    </html>
+    """
+    
+    # Create PDF using WeasyPrint
+    pdf_file = HTML(string=styled_html).write_pdf()
+    
+    # Create downloadable response with PDF
     response = Response(
-        report,
-        mimetype='text/markdown',
-        headers={'Content-Disposition': 'attachment;filename=policy_reflection_report.md'}
+        pdf_file,
+        mimetype='application/pdf',
+        headers={'Content-Disposition': 'attachment;filename=policy_reflection_report.pdf'}
     )
     
     return response
