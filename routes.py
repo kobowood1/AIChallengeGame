@@ -189,16 +189,16 @@ def generate_markdown_report(form_data):
     
     # Add each reflection question and answer
     questions = [
-        "What factors influenced your initial policy selections?",
-        "How did you feel about the voting process and the final policy package?",
-        "What strategies did you use to persuade the AI agents during discussion?",
-        "How did different ideological perspectives influence the policy decisions?",
-        "What were the most challenging aspects of the policy-making process?",
-        "How did budget constraints shape your decision-making?",
-        "What did you learn about compromise and consensus-building?",
-        "How did your perspective on policy-making change throughout this exercise?",
-        "What aspects of real-world policy-making were simulated effectively, and what was missing?",
-        "How might you apply insights from this simulation to real-world civic engagement?"
+        "What emotions came up for you during the decision-making process—discomfort, frustration, detachment, guilt? What do those feelings reveal about your position in relation to refugee education?",
+        "Did anything about your role in the game feel familiar—either from your personal or professional life? If so, how?",
+        "What assumptions about refugees, policy, or education were challenged or reinforced during the game?",
+        "How did the group dynamics impact your ability to advocate for certain policies? Were there moments when you chose silence or compromise? Why?",
+        "Has your understanding of refugee education shifted from seeing it as a service 'for them' to a system embedded in broader struggles over power, identity, and justice? If so, how?",
+        "Whose interests did your decisions ultimately serve—refugees, citizens, or the state? Why?",
+        "What power did you assume you had as a policymaker—and who did you imagine was absent or voiceless in that process?",
+        "What compromises did you make for the sake of consensus, and who or what got erased in the process?",
+        "How did the structure of the game (budget, options, scenario) shape or limit your imagination of justice?",
+        "If refugee education wasn't about inclusion into existing systems—but about transforming those systems—what would that look like, and did your decisions move toward or away from that?"
     ]
     
     for i, question in enumerate(questions):
