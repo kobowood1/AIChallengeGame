@@ -17,37 +17,15 @@
         </div>
     </div>
 
-    <div class="grid md:grid-cols-2 gap-8 mb-10">
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-4 text-blue-400">Create a Policy Deliberation</h2>
-            <p class="mb-4 text-gray-300">
-                Start a new policy challenge and invite your fellow advisors to join
-            </p>
-            <div class="mb-4">
-                <label for="create-username" class="block text-gray-300 mb-2">Your Username</label>
-                <input type="text" id="create-username" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" placeholder="Enter your username">
-            </div>
-            <button id="create-game-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition">
-                Create Policy Room
-            </button>
-        </div>
-
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-4 text-blue-400">Join a Policy Deliberation</h2>
-            <p class="mb-4 text-gray-300">
-                Enter a room code to join an existing policy challenge
-            </p>
-            <div class="mb-4">
-                <label for="join-username" class="block text-gray-300 mb-2">Your Username</label>
-                <input type="text" id="join-username" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" placeholder="Enter your username">
-            </div>
-            <div class="mb-4">
-                <label for="room-id" class="block text-gray-300 mb-2">Room Code</label>
-                <input type="text" id="room-id" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" placeholder="Enter room code">
-            </div>
-            <button id="join-game-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded transition">
-                Join Policy Room
-            </button>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-10 text-center">
+        <h2 class="text-2xl font-bold mb-4 text-blue-400">Welcome to the Republic of Bean</h2>
+        <p class="mb-6 text-gray-300">
+            Take on the role of an education policy advisor and tackle the challenge of refugee integration.
+        </p>
+        <div class="mt-4">
+            <a href="{{ url_for('main.scenario') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center">
+                <i class="fas fa-play-circle mr-2"></i>Start the Simulation
+            </a>
         </div>
     </div>
 
@@ -102,139 +80,16 @@
     </div>
 </div>
 
-<!-- Game creation success modal -->
-<div id="game-created-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full">
-        <h2 class="text-2xl font-bold mb-4 text-blue-400">Policy Deliberation Created!</h2>
-        <p class="mb-4 text-gray-300">Share this code with your fellow policy advisors to join:</p>
-        <div class="bg-gray-700 p-4 rounded mb-4 flex justify-between items-center">
-            <code id="room-code" class="text-xl font-mono text-white"></code>
-            <button id="copy-room-code" class="text-blue-400 hover:text-blue-300">
-                <i class="fas fa-copy"></i>
-            </button>
-        </div>
-        <div class="flex justify-end">
-            <button id="continue-to-game" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition">
-                Continue to Policy Room
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Error modal -->
-<div id="error-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full">
-        <h2 class="text-2xl font-bold mb-4 text-red-400">Error</h2>
-        <p id="error-message" class="mb-4 text-gray-300"></p>
-        <div class="flex justify-end">
-            <button id="close-error" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded transition">
-                Close
-            </button>
-        </div>
-    </div>
-</div>
+<!-- No modals needed since we removed the room creation functionality -->
 {% endblock %}
 
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Socket.IO connection
-        const socket = io();
-        let currentRoomId = null;
+        // Basic page initialization
+        console.log('Republic of Bean simulation ready to start');
         
-        // UI Elements
-        const createUsernameInput = document.getElementById('create-username');
-        const createGameBtn = document.getElementById('create-game-btn');
-        const joinUsernameInput = document.getElementById('join-username');
-        const roomIdInput = document.getElementById('room-id');
-        const joinGameBtn = document.getElementById('join-game-btn');
-        const gameCreatedModal = document.getElementById('game-created-modal');
-        const roomCodeElement = document.getElementById('room-code');
-        const copyRoomCodeBtn = document.getElementById('copy-room-code');
-        const continueToGameBtn = document.getElementById('continue-to-game');
-        const errorModal = document.getElementById('error-modal');
-        const errorMessageElement = document.getElementById('error-message');
-        const closeErrorBtn = document.getElementById('close-error');
-        
-        // Socket.IO event handlers
-        socket.on('connect', () => {
-            console.log('Connected to server');
-        });
-        
-        socket.on('deliberation_created', (data) => {
-            currentRoomId = data.room_id;
-            roomCodeElement.textContent = data.room_id;
-            gameCreatedModal.classList.remove('hidden');
-            gameCreatedModal.classList.add('flex');
-        });
-        
-        socket.on('deliberation_joined', (data) => {
-            currentRoomId = data.room_id;
-            window.location.href = '/game?room=' + data.room_id;
-        });
-        
-        socket.on('error', (data) => {
-            errorMessageElement.textContent = data.message;
-            errorModal.classList.remove('hidden');
-            errorModal.classList.add('flex');
-        });
-        
-        // Button event handlers
-        createGameBtn.addEventListener('click', () => {
-            const username = createUsernameInput.value.trim();
-            if (!username) {
-                showError('Please enter a username');
-                return;
-            }
-            
-            socket.emit('create_deliberation', { username });
-        });
-        
-        joinGameBtn.addEventListener('click', () => {
-            const username = joinUsernameInput.value.trim();
-            const roomId = roomIdInput.value.trim();
-            
-            if (!username) {
-                showError('Please enter a username');
-                return;
-            }
-            
-            if (!roomId) {
-                showError('Please enter a room code');
-                return;
-            }
-            
-            socket.emit('join_deliberation', { username, room_id: roomId });
-        });
-        
-        continueToGameBtn.addEventListener('click', () => {
-            window.location.href = '/game?room=' + currentRoomId;
-        });
-        
-        copyRoomCodeBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(roomCodeElement.textContent)
-                .then(() => {
-                    copyRoomCodeBtn.innerHTML = '<i class="fas fa-check"></i>';
-                    setTimeout(() => {
-                        copyRoomCodeBtn.innerHTML = '<i class="fas fa-copy"></i>';
-                    }, 2000);
-                })
-                .catch(err => {
-                    console.error('Failed to copy room code: ', err);
-                });
-        });
-        
-        closeErrorBtn.addEventListener('click', () => {
-            errorModal.classList.add('hidden');
-            errorModal.classList.remove('flex');
-        });
-        
-        // Helper functions
-        function showError(message) {
-            errorMessageElement.textContent = message;
-            errorModal.classList.remove('hidden');
-            errorModal.classList.add('flex');
-        }
+        // Add any additional interactive elements here if needed
     });
 </script>
 {% endblock %}
