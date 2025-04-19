@@ -52,7 +52,7 @@
         
         <div id="host-controls" class="mb-6 hidden">
             <button id="start-game-btn" class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded text-lg transition">
-                Start Game
+                Begin Deliberation
             </button>
         </div>
         
@@ -75,7 +75,7 @@
             <div class="lg:w-2/3">
                 <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
                     <div class="flex justify-between items-start mb-4">
-                        <h2 class="text-2xl font-bold text-blue-400">Challenge</h2>
+                        <h2 class="text-2xl font-bold text-blue-400">Policy Challenge</h2>
                         <div class="flex items-center bg-gray-700 px-3 py-1 rounded">
                             <i class="fas fa-clock mr-2 text-yellow-400"></i>
                             <span id="time-remaining" class="font-mono">00:00</span>
@@ -88,20 +88,20 @@
                         <!-- Challenge description will be added dynamically -->
                     </p>
                     <div class="bg-gray-700 p-4 rounded">
-                        <h3 class="font-bold mb-2">Test Cases:</h3>
-                        <div id="test-cases" class="space-y-2 font-mono text-sm text-gray-300">
-                            <!-- Test cases will be added dynamically -->
+                        <h3 class="font-bold mb-2">Policy Domains:</h3>
+                        <div id="test-cases" class="space-y-2 text-sm text-gray-300">
+                            <!-- Policy domains will be added dynamically -->
                         </div>
                     </div>
                 </div>
                 
                 <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-                    <h2 class="text-2xl font-bold mb-4 text-blue-400">Your Solution</h2>
+                    <h2 class="text-2xl font-bold mb-4 text-blue-400">Your Policy Proposal</h2>
                     <div id="code-editor-container" class="mb-4">
                         <!-- CodeMirror will be initialized here -->
                     </div>
                     <button id="submit-solution-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded transition">
-                        Submit Solution
+                        Submit Policy Proposal
                     </button>
                 </div>
             </div>
@@ -120,7 +120,7 @@
                     <div class="space-y-3">
                         <div class="flex justify-between">
                             <span class="text-gray-300">Status:</span>
-                            <span id="player-status" class="font-bold text-yellow-400">Coding</span>
+                            <span id="player-status" class="font-bold text-yellow-400">Deliberating</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-300">Score:</span>
@@ -135,7 +135,7 @@
     <!-- Game finished view -->
     <div id="game-finished" class="hidden">
         <div class="bg-gray-800 p-8 rounded-lg shadow-lg text-center mb-8">
-            <h2 class="text-3xl font-bold mb-6 text-blue-400">Game Finished!</h2>
+            <h2 class="text-3xl font-bold mb-6 text-blue-400">Policy Deliberation Complete!</h2>
             
             <div id="winner-announcement" class="mb-8">
                 <!-- Winner announcement will be added dynamically -->
@@ -150,7 +150,7 @@
             
             <div class="flex justify-center gap-4">
                 <button id="play-again-btn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded transition">
-                    Play Again
+                    New Deliberation
                 </button>
                 <a href="/" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded transition">
                     Back to Home
