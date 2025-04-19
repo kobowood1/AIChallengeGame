@@ -192,8 +192,8 @@ def handle_start_game(data):
     
     logging.debug(f"Policy deliberation started: {room_id}")
     
-    # Notify all players in the room
-    emit('game_started', {
+    # Notify all policy advisors in the room
+    emit('deliberation_started', {
         'challenge': challenge,
         'state': game.get_game_state()
     }, room=room_id)
