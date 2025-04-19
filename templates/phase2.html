@@ -357,13 +357,34 @@
             if (isVoting) return;
             
             const agentIndex = parseInt(card.dataset.agentIndex);
-            // Pick a random policy to respond about
+            
+            // Get the user's latest message for context
+            const userMessage = window.latestUserMessage || '';
+            
+            // Try to determine which policy the agent should discuss
+            // First check if there's a recent message mentioning a policy
+            let policyToDiscuss = null;
             const policies = Object.keys(selections);
-            const randomPolicy = policies[Math.floor(Math.random() * policies.length)];
+            
+            if (userMessage) {
+                // Try to detect which policy the user was discussing from their message
+                for (const policy of policies) {
+                    if (userMessage.toLowerCase().includes(policy.toLowerCase())) {
+                        policyToDiscuss = policy;
+                        break;
+                    }
+                }
+            }
+            
+            // If no policy detected, pick a random one
+            if (!policyToDiscuss) {
+                policyToDiscuss = policies[Math.floor(Math.random() * policies.length)];
+            }
             
             socket.emit('agent_response', {
                 agent_index: agentIndex,
-                policy_name: randomPolicy
+                policy_name: policyToDiscuss,
+                user_message: userMessage
             });
             
             // Visual feedback
@@ -456,10 +477,26 @@
         const message = messageInput.value.trim();
         if (message === '') return;
         
+        // We'll try to identify which policy the user is discussing
+        // by looking for policy names in the message
+        let detectedPolicy = null;
+        const policyNames = Object.keys(selections);
+        
+        for (const policy of policyNames) {
+            if (message.toLowerCase().includes(policy.toLowerCase())) {
+                detectedPolicy = policy;
+                break;
+            }
+        }
+        
         socket.emit('send_message', {
             message: message,
-            sender: 'You'
+            sender: 'You',
+            policy_name: detectedPolicy
         });
+        
+        // Store the latest message for context
+        window.latestUserMessage = message;
         
         // Clear input
         messageInput.value = '';
