@@ -124,13 +124,16 @@
                                         {% for policy in policies %}
                                             {% if policy.name == policy_name %}
                                                 {% for option in policy.options %}
-                                                    {% if option.level|int == level|int %}
-                                                        <div class="p-2 border-b border-gray-700">
-                                                            <div class="font-semibold mb-1">Option {{ option.level }}</div>
-                                                            <div class="text-xs">{{ option.summary }}</div>
-                                                            <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
+                                                    <div class="p-2 border-b border-gray-700 {% if loop.index != level|int %}opacity-70{% endif %}">
+                                                        <div class="font-semibold mb-1">
+                                                            Option {{ loop.index }}
+                                                            {% if loop.index == level|int %}
+                                                                <span class="text-blue-400 text-xs">(Selected)</span>
+                                                            {% endif %}
                                                         </div>
-                                                    {% endif %}
+                                                        <div class="text-xs">{{ option.summary }}</div>
+                                                        <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
+                                                    </div>
                                                 {% endfor %}
                                             {% endif %}
                                         {% endfor %}
