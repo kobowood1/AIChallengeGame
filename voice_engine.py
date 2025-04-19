@@ -117,7 +117,8 @@ def generate_agent_voice(text: str, voice: str, filename: str,
                 f.write(response.content)
             
             logger.info(f"Successfully saved audio to {full_path}")
-            return str(full_path)
+            # Return relative path for web access (without "static/" prefix since Flask serves static files)
+            return str(full_path).replace("static/", "")
             
         except Exception as e:
             attempt += 1

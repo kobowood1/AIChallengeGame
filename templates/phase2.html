@@ -429,7 +429,9 @@
         // Message content
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
-        contentDiv.textContent = data.message;
+        
+        // We need to use innerText/innerHTML instead of textContent to avoid showing raw path
+        contentDiv.innerText = data.message;
         
         // Append to message div
         messageDiv.appendChild(headerDiv);
@@ -444,20 +446,12 @@
             audioPlayer.controls = true;
             audioPlayer.className = 'w-full h-8';
             
-            // Create a source element
-            const audioSource = document.createElement('source');
-            audioSource.src = '/' + data.audio_path;
-            audioSource.type = 'audio/mpeg';
-            
-            // Add fallback text
-            audioPlayer.textContent = 'Your browser does not support the audio element.';
-            
-            // Append source to audio player
-            audioPlayer.appendChild(audioSource);
+            // Set the source directly
+            audioPlayer.src = '/' + data.audio_path;
             
             // Add play button for better styling
             const playButton = document.createElement('button');
-            playButton.className = 'bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 mr-2 flex items-center justify-center';
+            playButton.className = 'bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 mr-2 flex items-center justify-center w-8 h-8';
             playButton.innerHTML = '<i class="fas fa-play"></i>';
             playButton.onclick = function() {
                 if (audioPlayer.paused) {
@@ -481,18 +475,17 @@
             
             // Create label
             const audioLabel = document.createElement('span');
-            audioLabel.className = 'text-xs text-gray-400';
-            audioLabel.innerHTML = '<i class="fas fa-volume-up mr-1"></i> Listen';
+            audioLabel.className = 'text-xs text-gray-400 ml-2';
+            audioLabel.innerHTML = '<i class="fas fa-volume-up mr-1"></i> Listen to voice';
             
             audioWrapper.appendChild(audioLabel);
             
-            // Append audio container to message div
-            audioContainer.appendChild(audioWrapper);
-            audioContainer.appendChild(audioPlayer);
-            messageDiv.appendChild(audioContainer);
+            // Append audio wrapper to message div
+            messageDiv.appendChild(audioWrapper);
             
-            // Hide the default controls and use our custom button
-            audioPlayer.controls = false;
+            // Hide the actual audio player element (we'll use our custom controls)
+            audioPlayer.style.display = 'none';
+            messageDiv.appendChild(audioPlayer);
         }
         
         // Add to messages container
