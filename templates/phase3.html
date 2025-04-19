@@ -554,6 +554,89 @@
         // Handle dropdown functionality
         const dropdownButtons = document.querySelectorAll('.dropdown button');
         
+        // Process the dropdowns to show all options
+        function processDropdowns() {
+            // Get all dropdown menus that need processing
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                // Skip menus that have already been processed
+                if (menu.dataset.processed === 'true') return;
+                
+                // Find all policy option containers that only show the selected option
+                const containers = menu.querySelectorAll('.p-2.border-b.border-gray-700');
+                
+                // Get the policy name and selected level from parent elements and buttons
+                const parentDropdown = menu.closest('.dropdown');
+                const dropdownButton = parentDropdown.querySelector('button');
+                const buttonText = dropdownButton.textContent.trim();
+                const selectedLevel = buttonText.match(/Option (\d+)/)?.[1] || "1";
+                
+                // Only process if we have containers with conditional display
+                if (containers.length > 0 && containers[0].querySelector('.font-semibold')) {
+                    // Mark as processed to avoid duplicate processing
+                    menu.dataset.processed = 'true';
+                    
+                    // Clear existing content
+                    menu.innerHTML = '';
+                    
+                    // Get policy data from existing containers
+                    const policyData = Array.from(containers).map(container => {
+                        const titleEl = container.querySelector('.font-semibold');
+                        const summaryEl = container.querySelector('.text-xs:not(.text-gray-400)');
+                        const costEl = container.querySelector('.text-gray-400');
+                        
+                        return {
+                            level: titleEl ? titleEl.textContent.match(/Option (\d+)/)?.[1] || "1" : "1",
+                            summary: summaryEl ? summaryEl.textContent : "",
+                            cost: costEl ? costEl.textContent : ""
+                        };
+                    });
+                    
+                    // Find out how many options we have in this policy (usually 3)
+                    const maxLevel = 3;
+                    
+                    // Create option elements for levels 1-3
+                    for (let i = 1; i <= maxLevel; i++) {
+                        const container = document.createElement('div');
+                        container.className = `p-2 border-b border-gray-700 ${i != selectedLevel ? 'opacity-70' : ''}`;
+                        
+                        // Get data for this option level
+                        const option = policyData.find(p => p.level == i.toString()) || 
+                                     { summary: `Option ${i} summary`, cost: `Cost: ${i}` };
+                        
+                        // Create title element
+                        const title = document.createElement('div');
+                        title.className = 'font-semibold mb-1';
+                        const isApproved = buttonText.includes('Approved');
+                        const selectedClass = isApproved ? 'text-green-400' : 'text-blue-400';
+                        const selectedLabel = isApproved ? '(Approved)' : '(Selected)';
+                        
+                        title.innerHTML = `Option ${i} ${i == selectedLevel ? `<span class="${selectedClass} text-xs">${selectedLabel}</span>` : ''}`;
+                        
+                        // Create summary element
+                        const summary = document.createElement('div');
+                        summary.className = 'text-xs';
+                        summary.textContent = option.summary;
+                        
+                        // Create cost element
+                        const cost = document.createElement('div');
+                        cost.className = 'text-xs text-gray-400 mt-1';
+                        cost.textContent = option.cost || `Cost: ${i}`;
+                        
+                        // Assemble the container
+                        container.appendChild(title);
+                        container.appendChild(summary);
+                        container.appendChild(cost);
+                        
+                        // Add to the menu
+                        menu.appendChild(container);
+                    }
+                }
+            });
+        }
+        
+        // Process dropdowns on page load
+        processDropdowns();
+        
         dropdownButtons.forEach(button => {
             button.addEventListener('click', function(e) {
                 e.stopPropagation(); // Prevent clicks from propagating
@@ -561,6 +644,11 @@
                 // Toggle dropdown visibility
                 const dropdownMenu = this.nextElementSibling;
                 dropdownMenu.classList.toggle('hidden');
+                
+                // Process this dropdown if needed
+                if (dropdownMenu.dataset.processed !== 'true') {
+                    processDropdowns();
+                }
                 
                 // Close all other dropdowns
                 document.querySelectorAll('.dropdown-menu').forEach(menu => {
@@ -656,52 +744,6 @@
         }
     }
     
-    // Handle dropdown functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const dropdownButtons = document.querySelectorAll('.dropdown button');
-        
-        dropdownButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Find the dropdown menu (next sibling element)
-                const dropdownMenu = this.nextElementSibling;
-                
-                // Toggle dropdown visibility
-                if (dropdownMenu.classList.contains('hidden')) {
-                    // Close all other open dropdowns first
-                    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                        menu.classList.add('hidden');
-                    });
-                    
-                    // Then open this dropdown
-                    dropdownMenu.classList.remove('hidden');
-                    this.closest('.dropdown').classList.add('dropdown-active');
-                } else {
-                    // Close this dropdown
-                    dropdownMenu.classList.add('hidden');
-                    this.closest('.dropdown').classList.remove('dropdown-active');
-                }
-            });
-        });
-        
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function() {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                menu.classList.add('hidden');
-            });
-            document.querySelectorAll('.dropdown').forEach(dropdown => {
-                dropdown.classList.remove('dropdown-active');
-            });
-        });
-        
-        // Prevent dropdown menus from closing when clicking inside them
-        document.querySelectorAll('.dropdown-menu').forEach(menu => {
-            menu.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-        });
-    });
+    // Fireworks animation continues to run on this page
 </script>
 {% endblock %}
