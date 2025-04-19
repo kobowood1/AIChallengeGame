@@ -89,6 +89,30 @@ def handle_join_game(data):
     
     logging.debug(f"Player {username} joined game: {room_id}")
     
+    # Add AI agents as players if this is a human player joining
+    from ai_agents import generate_agents
+    
+    # First check if there are already AI agents in the game (by checking for names that start with "AI-")
+    ai_agents_exist = any(p.get('username', '').startswith('AI-') for p in game.players.values())
+    
+    if not ai_agents_exist:
+        # Generate 4 AI agents
+        agents = generate_agents()
+        
+        # Add them to the game
+        for i, agent in enumerate(agents):
+            ai_player_id = f"ai-agent-{i}-{room_id}"
+            ai_username = f"AI-{agent['name']}"
+            
+            # Add AI player to game
+            game.add_player(ai_player_id, ai_username)
+            
+            # Notify all players about the new AI player
+            emit('player_joined', {
+                'player_id': ai_player_id,
+                'username': ai_username
+            }, room=room_id)
+    
     # Notify the player
     emit('game_joined', {
         'room_id': room_id,
@@ -96,7 +120,7 @@ def handle_join_game(data):
         'player': player
     })
     
-    # Notify all players in the room
+    # Notify all players in the room about the human player
     emit('player_joined', {
         'player_id': request.sid,
         'username': username
