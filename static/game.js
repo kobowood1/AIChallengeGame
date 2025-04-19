@@ -74,12 +74,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Socket.IO event handlers
-    socket.on('game_joined', (data) => {
+    socket.on('deliberation_joined', (data) => {
         // Hide loading overlay
         toggleLoading(false);
         showNotification('Joined policy deliberation room', 'success');
         
-        // Store player ID
+        // Store policy advisor ID
         sessionStorage.setItem('playerId', data.player_id);
     });
     
@@ -106,9 +106,9 @@ document.addEventListener('DOMContentLoaded', function() {
         startGameTimer(data.challenge.time_limit);
     });
     
-    socket.on('solution_submitted', (result) => {
+    socket.on('policy_submitted', (result) => {
         if (result.success) {
-            showNotification(`Solution submitted! Score: ${result.score}`, 'success');
+            showNotification(`Policy proposal submitted! Score: ${result.score}`, 'success');
             playerStatus.textContent = 'Submitted';
             playerStatus.className = 'font-bold text-green-400';
             playerScore.textContent = result.score;
@@ -146,36 +146,36 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     leaveRoomBtn.addEventListener('click', () => {
-        socket.emit('leave_game', { room_id: roomId });
+        socket.emit('leave_deliberation', { room_id: roomId });
         window.location.href = '/';
     });
     
     startGameBtn.addEventListener('click', () => {
-        socket.emit('start_game', { room_id: roomId });
-        toggleLoading(true, 'Starting game...');
+        socket.emit('start_deliberation', { room_id: roomId });
+        toggleLoading(true, 'Starting policy deliberation...');
     });
     
     submitSolutionBtn.addEventListener('click', () => {
-        const solution = editor.getValue();
+        const policyProposal = editor.getValue();
         
-        if (solution.trim() === '') {
-            showNotification('Please write a solution before submitting', 'error');
+        if (policyProposal.trim() === '') {
+            showNotification('Please write a policy proposal before submitting', 'error');
             return;
         }
         
-        socket.emit('submit_solution', { 
+        socket.emit('submit_policy_proposal', { 
             room_id: roomId, 
-            solution: solution 
+            solution: policyProposal 
         });
         
-        toggleLoading(true, 'Submitting solution...');
+        toggleLoading(true, 'Submitting policy proposal...');
         setTimeout(() => toggleLoading(false), 1000);
     });
     
     playAgainBtn.addEventListener('click', () => {
-        // Reset the game state
-        socket.emit('start_game', { room_id: roomId });
-        toggleLoading(true, 'Starting new game...');
+        // Reset the deliberation state
+        socket.emit('start_deliberation', { room_id: roomId });
+        toggleLoading(true, 'Starting new policy deliberation...');
     });
     
     // UI update function
@@ -496,5 +496,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Request current game state in case we missed any updates
-    socket.emit('get_game_state', { room_id: roomId });
+    socket.emit('get_deliberation_state', { room_id: roomId });
 });
