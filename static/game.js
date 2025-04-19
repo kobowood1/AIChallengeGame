@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Default code template
-    editor.setValue('// Write your solution here\nfunction solution(input) {\n    // Your code here\n}\n');
+    // Default policy recommendation template
+    editor.setValue('# Refugee Education Policy Recommendations\n\n1. Language Support: \n\n2. Teacher Training: \n\n3. School Integration: \n\n4. Psychosocial Support: \n\n5. Curriculum Adaptation: \n');
     
     // Socket.IO connection
     const socket = connectSocket();
@@ -217,8 +217,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const status = state.players[playerId].status;
                 playerScore.textContent = state.players[playerId].score;
                 
-                if (status === 'coding') {
-                    playerStatus.textContent = 'Coding';
+                if (status === 'deliberating') {
+                    playerStatus.textContent = 'Deliberating';
                     playerStatus.className = 'font-bold text-yellow-400';
                     submitSolutionBtn.disabled = false;
                     submitSolutionBtn.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -283,55 +283,50 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set challenge prompt
         challengePrompt.textContent = challenge.prompt;
         
-        // Set difficulty badge
-        let difficultyColor = '';
-        switch (challenge.difficulty) {
-            case 'easy':
-                difficultyColor = 'bg-green-600';
-                break;
-            case 'medium':
-                difficultyColor = 'bg-yellow-600';
-                break;
-            case 'hard':
-                difficultyColor = 'bg-red-600';
-                break;
-            default:
-                difficultyColor = 'bg-blue-600';
+        // Set policy difficulty badge
+        challengeDifficulty.className = 'inline-block px-3 py-1 rounded text-sm font-bold mb-3 bg-blue-600';
+        challengeDifficulty.textContent = 'POLICY DELIBERATION';
+        
+        // Set policy domains instead of test cases
+        testCases.innerHTML = '';
+        
+        // Add description
+        const descriptionEl = document.createElement('div');
+        descriptionEl.className = 'mb-4 p-3 bg-gray-700 rounded';
+        descriptionEl.innerHTML = `<p>${challenge.description}</p>`;
+        testCases.appendChild(descriptionEl);
+        
+        // Add policy domains if available
+        if (challenge.policy_domains) {
+            const domainsTitle = document.createElement('div');
+            domainsTitle.className = 'font-bold mb-2';
+            domainsTitle.textContent = 'Policy Domains to Address:';
+            testCases.appendChild(domainsTitle);
+            
+            const domainsList = document.createElement('ul');
+            domainsList.className = 'list-disc pl-5 mb-4';
+            
+            challenge.policy_domains.forEach(domain => {
+                const domainItem = document.createElement('li');
+                domainItem.textContent = domain;
+                domainsList.appendChild(domainItem);
+            });
+            
+            testCases.appendChild(domainsList);
         }
         
-        challengeDifficulty.className = `inline-block px-3 py-1 rounded text-sm font-bold mb-3 ${difficultyColor}`;
-        challengeDifficulty.textContent = challenge.difficulty.toUpperCase();
-        
-        // Set test cases
-        testCases.innerHTML = '';
-        challenge.test_cases.forEach((testCase, index) => {
-            const testCaseEl = document.createElement('div');
-            testCaseEl.className = 'mb-2';
-            
-            let testCaseHtml = `<div class="font-bold">Test Case ${index + 1}:</div>`;
-            
-            // Format input based on type
-            let inputStr = '';
-            if (typeof testCase.input === 'object' && testCase.input !== null) {
-                inputStr = JSON.stringify(testCase.input, null, 2);
-            } else {
-                inputStr = JSON.stringify(testCase.input);
-            }
-            
-            // Format expected output based on type
-            let expectedStr = '';
-            if (typeof testCase.expected === 'object' && testCase.expected !== null) {
-                expectedStr = JSON.stringify(testCase.expected, null, 2);
-            } else {
-                expectedStr = JSON.stringify(testCase.expected);
-            }
-            
-            testCaseHtml += `<div>Input: <code>${inputStr}</code></div>`;
-            testCaseHtml += `<div>Expected: <code>${expectedStr}</code></div>`;
-            
-            testCaseEl.innerHTML = testCaseHtml;
-            testCases.appendChild(testCaseEl);
-        });
+        // Add instructions
+        const instructionsEl = document.createElement('div');
+        instructionsEl.className = 'p-3 bg-blue-900 bg-opacity-30 rounded border-l-4 border-blue-500';
+        instructionsEl.innerHTML = `
+            <p class="font-bold mb-2">Instructions:</p>
+            <p>1. Work with your team to develop comprehensive refugee education policies.</p>
+            <p>2. Consider all policy domains and their interconnections.</p>
+            <p>3. Listen to feedback from citizen representatives (AI agents).</p>
+            <p>4. Craft your final policy document in the editor.</p>
+            <p>5. Submit when ready or when the time expires.</p>
+        `;
+        testCases.appendChild(instructionsEl);
     }
     
     // Update player statuses in game
@@ -435,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
         switch (status) {
             case 'waiting':
                 return 'text-gray-400';
-            case 'coding':
+            case 'deliberating':
                 return 'text-yellow-400';
             case 'submitted':
                 return 'text-green-400';
@@ -451,8 +446,8 @@ document.addEventListener('DOMContentLoaded', function() {
         switch (status) {
             case 'waiting':
                 return 'Waiting';
-            case 'coding':
-                return 'Coding';
+            case 'deliberating':
+                return 'Deliberating';
             case 'submitted':
                 return 'Submitted';
             case 'verified':
@@ -481,7 +476,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (gameState && 
                     gameState.players && 
                     gameState.players[playerId] && 
-                    gameState.players[playerId].status === 'coding') {
+                    gameState.players[playerId].status === 'deliberating') {
                     
                     const solution = editor.getValue();
                     socket.emit('submit_solution', { 
