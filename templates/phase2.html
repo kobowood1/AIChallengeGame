@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Republic of Bean - Policy Discussion{% endblock %}
+{% block title %}Republic of Bean - Education Policy Deliberation{% endblock %}
 
 {% block head %}
 <style>
@@ -67,7 +67,13 @@
 
 {% block content %}
 <div class="max-w-7xl mx-auto">
-    <h1 class="text-3xl font-bold mb-4 text-center text-blue-400">Policy Discussion and Voting</h1>
+    <h1 class="text-3xl font-bold mb-4 text-center text-blue-400">Education Policy Deliberation</h1>
+    
+    <div class="bg-gray-800 p-4 rounded-lg shadow-lg mb-6 prose prose-invert max-w-none">
+        <p class="m-0">
+            Now your education policy proposals will be discussed by the Citizen Panel. These representatives have diverse backgrounds and ideological perspectives on refugee education. Engage with them to explain your choices and understand their concerns. After discussion, everyone will vote on the final education policy package.
+        </p>
+    </div>
     
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Left Column: Policies and Votes -->
@@ -159,22 +165,26 @@
                 
                 <!-- Message Input -->
                 <div class="flex">
-                    <input type="text" id="message-input" class="flex-grow bg-gray-700 border border-gray-600 rounded-l-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your argument here...">
+                    <input type="text" id="message-input" class="flex-grow bg-gray-700 border border-gray-600 rounded-l-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Share your perspective on refugee education policy...">
                     <button id="send-message-btn" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-r-lg transition">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
                 
                 <div class="mt-4 text-sm text-gray-400">
-                    <p>Tip: Make compelling arguments to influence citizens' votes. Address their concerns based on their backgrounds.</p>
+                    <p>Tip: Click on any citizen to hear their perspective on a specific education policy. Consider how different ideologies affect views on refugee education.</p>
                 </div>
             </div>
             
             <!-- Final Vote Results (Hidden until voting is complete) -->
             <div id="voting-results" class="bg-gray-800 p-6 rounded-lg shadow-lg hidden">
                 <h2 class="text-xl font-bold mb-4 flex items-center">
-                    <i class="fas fa-chart-pie mr-2"></i>Final Vote Results
+                    <i class="fas fa-chart-pie mr-2"></i>Final Education Policy Package
                 </h2>
+                
+                <p class="mb-4 text-gray-300">
+                    The citizens of Bean have voted and reached a collective decision on education policies for refugees. This democratically approved package will now be implemented across the republic.
+                </p>
                 
                 <div class="space-y-4" id="final-results-container">
                     <!-- Results will be filled by JavaScript -->
@@ -182,7 +192,7 @@
                 
                 <div class="mt-6 text-center">
                     <a href="/phase3" id="continue-btn" class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg text-lg transition">
-                        Continue to Implementation
+                        Continue to Reflection
                     </a>
                 </div>
             </div>
