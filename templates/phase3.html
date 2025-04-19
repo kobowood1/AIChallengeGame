@@ -162,15 +162,81 @@
                                 {% if changed %}
                                     <div class="flex items-center justify-between text-sm mb-1">
                                         <span class="text-gray-400">Your proposal:</span>
-                                        <span class="text-blue-400">Option {{ player_level }}</span>
+                                        <div class="dropdown inline-block relative">
+                                            <button class="text-blue-400 hover:text-blue-300 focus:outline-none flex items-center">
+                                                Option {{ player_level }}
+                                                <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                                                </svg>
+                                            </button>
+                                            <div class="dropdown-menu absolute hidden bg-gray-800 text-white rounded shadow-lg p-2 mt-1 z-10 w-64">
+                                                {% for policy in policies %}
+                                                    {% if policy.name == policy_name %}
+                                                        {% for option in policy.options %}
+                                                            {% if option.level == player_level %}
+                                                                <div class="p-2 border-b border-gray-700">
+                                                                    <div class="font-semibold mb-1">Option {{ option.level }}</div>
+                                                                    <div class="text-xs">{{ option.description }}</div>
+                                                                    <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="flex items-center justify-between text-sm">
                                         <span class="text-gray-400">Final approved:</span>
-                                        <span class="text-green-400">Option {{ final_level }}</span>
+                                        <div class="dropdown inline-block relative">
+                                            <button class="text-green-400 hover:text-green-300 focus:outline-none flex items-center">
+                                                Option {{ final_level }}
+                                                <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                                                </svg>
+                                            </button>
+                                            <div class="dropdown-menu absolute hidden bg-gray-800 text-white rounded shadow-lg p-2 mt-1 z-10 w-64">
+                                                {% for policy in policies %}
+                                                    {% if policy.name == policy_name %}
+                                                        {% for option in policy.options %}
+                                                            {% if option.level == final_level %}
+                                                                <div class="p-2 border-b border-gray-700">
+                                                                    <div class="font-semibold mb-1">Option {{ option.level }}</div>
+                                                                    <div class="text-xs">{{ option.description }}</div>
+                                                                    <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
                                     </div>
                                 {% else %}
                                     <div class="text-center py-2 mb-2 bg-green-900 bg-opacity-20 rounded">
-                                        <span class="text-green-400 font-semibold">Option {{ final_level }}</span>
+                                        <div class="dropdown inline-block relative">
+                                            <button class="text-green-400 hover:text-green-300 focus:outline-none font-semibold flex items-center justify-center w-full">
+                                                Option {{ final_level }}
+                                                <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                                                </svg>
+                                            </button>
+                                            <div class="dropdown-menu absolute hidden bg-gray-800 text-white rounded shadow-lg p-2 mt-1 z-10 w-64">
+                                                {% for policy in policies %}
+                                                    {% if policy.name == policy_name %}
+                                                        {% for option in policy.options %}
+                                                            {% if option.level == final_level %}
+                                                                <div class="p-2 border-b border-gray-700">
+                                                                    <div class="font-semibold mb-1">Option {{ option.level }}</div>
+                                                                    <div class="text-xs">{{ option.description }}</div>
+                                                                    <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
                                     </div>
                                 {% endif %}
                             </div>
@@ -464,6 +530,40 @@
             // Scroll to top
             window.scrollTo(0, 0);
         }
+        
+        // Handle dropdown functionality
+        const dropdownButtons = document.querySelectorAll('.dropdown button');
+        
+        dropdownButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent clicks from propagating
+                
+                // Toggle dropdown visibility
+                const dropdownMenu = this.nextElementSibling;
+                dropdownMenu.classList.toggle('hidden');
+                
+                // Close all other dropdowns
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    if (menu !== dropdownMenu) {
+                        menu.classList.add('hidden');
+                    }
+                });
+            });
+        });
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.classList.add('hidden');
+            });
+        });
+        
+        // Prevent dropdown menus from closing when clicking inside them
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
         
         // Form submission handler for AJAX
         const reflectionForm = document.getElementById('reflection-form');

@@ -94,7 +94,8 @@ def phase3():
                          final_package=session['final_package'],
                          final_cost=session['final_cost'],
                          player_package=session['player_package'],
-                         max_budget=MAX_BUDGET)
+                         max_budget=MAX_BUDGET,
+                         policies=POLICIES)
 
 @main.route('/submit-reflection', methods=['POST'])
 def submit_reflection():
