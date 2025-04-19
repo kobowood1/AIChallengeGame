@@ -474,6 +474,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pycodestyle"
+version = "2.13.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/04/6e/1f4a62078e4d95d82367f24e685aef3a672abfd27d1a868068fed4ed2254/pycodestyle-2.13.0.tar.gz", hash = "sha256:c8415bf09abe81d9c7f872502a6eee881fbe85d8763dd5b9924bb0a01d67efae", size = 39312 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/07/be/b00116df1bfb3e0bb5b45e29d604799f7b91dd861637e4d448b4e09e6a3e/pycodestyle-2.13.0-py2.py3-none-any.whl", hash = "sha256:35863c5974a271c7a726ed228a14a4f6daf49df369d8c50cd9a6f58a5e143ba9", size = 31424 },
+]
+
+[[package]]
 name = "pydantic"
 version = "2.11.3"
 source = { registry = "https://pypi.org/simple" }
@@ -616,6 +625,7 @@ dependencies = [
     { name = "markdown" },
     { name = "openai" },
     { name = "psycopg2-binary" },
+    { name = "pycodestyle" },
     { name = "pytest" },
     { name = "python-socketio" },
     { name = "sendgrid" },
@@ -632,6 +642,7 @@ requires-dist = [
     { name = "markdown", specifier = ">=3.8" },
     { name = "openai", specifier = ">=1.75.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
+    { name = "pycodestyle", specifier = ">=2.13.0" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "python-socketio", specifier = ">=5.13.0" },
     { name = "sendgrid", specifier = ">=6.11.0" },

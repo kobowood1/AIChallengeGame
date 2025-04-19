@@ -1,0 +1,64 @@
+creating a content module for an online policy‑simulation game called AI CHALLENGE.
+Objective: Encode every rule, narrative, and phase described below into clean, reusable Python data structures and docstrings. Do not build any UI or networking logic here—this file is only for game content.
+
+Deliverables:
+
+A single file named challenge_content.py that exports:
+
+SCENARIO_TEXT – multiline string containing the Republic of Bean backstory, resource constraints, and political stakes (keep it under 300 words).
+
+POLICY_AREAS – list of seven ordered PolicyArea dataclass instances. Each instance has fields: name, options (list of three PolicyOption items), and description (one‑sentence rationale).
+
+PolicyOption dataclass has label (“Option 1”, etc.), summary (≤ 20 words), and cost (int 1‑3).
+
+MAX_BUDGET = 14 – integer constant.
+
+Docstrings that explain how the budget rule works and why every player must mix option levels.
+
+A dictionary GAME_PHASES keyed "phase1", "phase2", "phase3", each mapping to a dict that includes:
+
+"title" – human‑readable heading.
+
+"duration_minutes" – integer (20, 30, or “participant‑paced”).
+
+"objective" – concise explanation of what happens in that phase.
+
+"actions" – ordered list of bullet strings that outline step‑by‑step flow.
+
+Inline comment block that lists the ten reflection questions verbatim for later reuse by the UI layer.
+
+Acceptance Criteria:
+
+Every cost value matches the original rules.
+
+The seven policy areas are ordered exactly as listed below, with summaries that capture their ethical trade‑offs:
+
+Access to Education
+
+Language Instruction
+
+Teacher Training
+
+Curriculum Adaptation
+
+Psychosocial Support
+
+Financial Support
+
+Certification / Accreditation of Previous Education
+
+Total file length ≤ 500 LOC, fully PEP8 compliant.
+
+No identity markers such as race, gender, or sexuality appear in agent or option descriptions.
+
+Add a quick unit‑test stub in tests/test_content.py that asserts len(POLICY_AREAS) == 7 and MAX_BUDGET == 14.
+
+Reference Text:
+
+Phase I – Individual selection under a 14‑unit cap.
+
+Phase II – 30‑minute AI‑moderated deliberation, majority vote, tie breaks at random, package must stay ≤ 14 units.
+
+Phase III – Reflection by the real participant using ten guided questions.
+
+Generate the complete challenge_content.py, including all imports, dataclass definitions, constants, and phase metadata.
