@@ -82,6 +82,11 @@ def scenario():
 @main.route('/game')
 def game():
     """Route for the game page"""
+    # Check if user is registered
+    if 'participant_registered' not in session or not session['participant_registered']:
+        flash('Please register before accessing the simulation.', 'warning')
+        return redirect(url_for('main.register'))
+        
     return render_template('game.html')
 
 @main.route('/phase1', methods=['GET', 'POST'])
@@ -89,6 +94,10 @@ def phase1():
     """
     Policy selection phase where user selects policy options within a budget
     """
+    # Check if user is registered
+    if 'participant_registered' not in session or not session['participant_registered']:
+        flash('Please register before accessing the simulation.', 'warning')
+        return redirect(url_for('main.register'))
     if request.method == 'POST':
         # Extract the selected policy options from the form
         selections = {}
@@ -124,6 +133,11 @@ def phase2():
     """
     Policy discussion and voting phase
     """
+    # Check if user is registered
+    if 'participant_registered' not in session or not session['participant_registered']:
+        flash('Please register before accessing the simulation.', 'warning')
+        return redirect(url_for('main.register'))
+        
     # Check if user has completed phase1
     if 'player_package' not in session:
         flash('Please complete the policy selections first', 'error')
@@ -148,6 +162,11 @@ def phase3():
     """
     Final implementation phase after voting
     """
+    # Check if user is registered
+    if 'participant_registered' not in session or not session['participant_registered']:
+        flash('Please register before accessing the simulation.', 'warning')
+        return redirect(url_for('main.register'))
+        
     # Check if user has player_package (meaning they at least did phase 1)
     if 'player_package' not in session:
         flash('Please complete the policy selections first', 'error')
@@ -178,6 +197,11 @@ def submit_reflection():
     """
     Process the reflection form submission and generate a report
     """
+    # Check if user is registered
+    if 'participant_registered' not in session or not session['participant_registered']:
+        flash('Please register before accessing the simulation.', 'warning')
+        return redirect(url_for('main.register'))
+        
     # Check if user has completed the necessary phases
     if 'final_package' not in session or 'player_package' not in session:
         flash('Please complete the policy process first', 'error')
@@ -261,6 +285,11 @@ def thank_you():
     """
     Thank you page after submission
     """
+    # Check if user is registered
+    if 'participant_registered' not in session or not session['participant_registered']:
+        flash('Please register before accessing the simulation.', 'warning')
+        return redirect(url_for('main.register'))
+        
     return render_template('thank_you.html')
 
 def generate_markdown_report(form_data):
@@ -276,18 +305,32 @@ def generate_markdown_report(form_data):
     # Get the current date and time
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
+    # Get participant information from the database
+    participant = None
+    if 'session_id' in session:
+        participant = Participant.query.filter_by(session_id=session['session_id']).first()
+    
     # Format the participant information
     participant_info = f"""# Policy Simulation Reflection Report
 
 ## Generated on: {current_time}
 
 ## Participant Information
-- **Age:** {form_data.get('age', 'Not provided')}
-- **Gender:** {form_data.get('gender', 'Not provided')}
-- **Nationality:** {form_data.get('nationality', 'Not provided')}
-- **Education Level:** {form_data.get('education', 'Not provided')}
-
 """
+    
+    if participant:
+        participant_info += f"""- **Age:** {participant.age}
+- **Nationality:** {participant.nationality}
+- **Occupation:** {participant.occupation}
+- **Education Level:** {participant.education_level}
+- **Current Location:** {participant.current_location_city}, {participant.current_location_country}
+"""
+        if participant.displacement_experience:
+            participant_info += f"- **Displacement Experience:** {participant.displacement_experience}\n"
+    else:
+        participant_info += "- Participant information not available\n"
+    
+    participant_info += "\n"
     
     # Format the policy packages
     player_package = session.get('player_package', {})
