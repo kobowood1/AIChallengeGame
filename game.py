@@ -41,11 +41,11 @@ class AIChallenge:
     
     def add_player(self, player_id, username):
         """
-        Add a player to the game
+        Add a policy advisor to the deliberation session
         
         Args:
-            player_id: Unique identifier for the player
-            username: Display name for the player
+            player_id: Unique identifier for the policy advisor
+            username: Display name for the policy advisor
         """
         self.players[player_id] = {
             "username": username,
@@ -58,17 +58,17 @@ class AIChallenge:
     
     def remove_player(self, player_id):
         """
-        Remove a player from the game
+        Remove a policy advisor from the deliberation session
         
         Args:
-            player_id: Unique identifier for the player to remove
+            player_id: Unique identifier for the policy advisor to remove
         """
         if player_id in self.players:
             del self.players[player_id]
     
     def start_game(self):
         """
-        Start the game with a random challenge
+        Start the policy deliberation session with a challenge
         """
         if self.state == "waiting" and len(self.players) > 0:
             self.current_challenge = random.choice(self.CHALLENGES)
@@ -88,10 +88,10 @@ class AIChallenge:
     
     def submit_solution(self, player_id, solution):
         """
-        Submit a policy proposal from a player
+        Submit a policy proposal from a policy advisor
         
         Args:
-            player_id: ID of the player submitting
+            player_id: ID of the policy advisor submitting
             solution: The policy proposal text submitted
             
         Returns:
@@ -111,13 +111,13 @@ class AIChallenge:
         player["submission_time"] = current_time
         player["status"] = "submitted"
         
-        # For a realistic implementation, we would validate the solution here
-        # For this demo, we'll simulate a successful submission
+        # For a realistic implementation, we would validate the policy proposal here
+        # For this demo, we'll simulate a successful policy proposal submission
         submission_time = current_time - self.start_time
         score = max(0, self.current_challenge["time_limit"] - submission_time)
         player["score"] += int(score)
         
-        # Check if all players have submitted
+        # Check if all policy advisors have submitted their proposals
         all_submitted = all(p["status"] == "submitted" for p in self.players.values())
         if all_submitted:
             self.finish_game()
@@ -136,7 +136,7 @@ class AIChallenge:
         if self.state == "active":
             self.state = "finished"
             
-            # Determine winners (players with highest score)
+            # Determine leading policy advisors (those with highest evaluation scores)
             max_score = max([p["score"] for p in self.players.values()], default=0)
             self.winners = [
                 player_id for player_id, player in self.players.items() 
