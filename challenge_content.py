@@ -102,12 +102,12 @@ POLICY_AREAS = [
             ),
             PolicyOption(
                 label="Option 2",
-                summary="Intensive language immersion program with bilingual teaching assistants.",
+                summary="Intensive language immersion with bilingual teaching assistants.",
                 cost=2
             ),
             PolicyOption(
                 label="Option 3",
-                summary="Comprehensive bilingual education with qualified teachers and mediators.",
+                summary="Comprehensive bilingual education with qualified staff.",
                 cost=3
             )
         ]
@@ -128,7 +128,7 @@ POLICY_AREAS = [
             ),
             PolicyOption(
                 label="Option 3",
-                summary="Comprehensive certification program with mentoring and specialized staff.",
+                summary="Comprehensive certification with mentoring and specialized staff.",
                 cost=3
             )
         ]
@@ -139,12 +139,12 @@ POLICY_AREAS = [
         options=[
             PolicyOption(
                 label="Option 1",
-                summary="Minimal adjustments to existing curriculum with supplementary materials.",
+                summary="Minimal curriculum adjustments with supplementary materials.",
                 cost=1
             ),
             PolicyOption(
                 label="Option 2",
-                summary="Modified curriculum with flexible assessment and cultural integration.",
+                summary="Modified curriculum with flexible assessment and cultural elements.",
                 cost=2
             ),
             PolicyOption(
@@ -160,17 +160,17 @@ POLICY_AREAS = [
         options=[
             PolicyOption(
                 label="Option 1",
-                summary="Basic teacher awareness training on trauma recognition and referral.",
+                summary="Basic teacher training on trauma recognition and referral.",
                 cost=1
             ),
             PolicyOption(
                 label="Option 2",
-                summary="School counselors and regular group support sessions for refugees.",
+                summary="School counselors and regular group support sessions.",
                 cost=2
             ),
             PolicyOption(
                 label="Option 3",
-                summary="Comprehensive mental health services with therapists and family support.",
+                summary="Comprehensive mental health services with family support.",
                 cost=3
             )
         ]
@@ -186,7 +186,7 @@ POLICY_AREAS = [
             ),
             PolicyOption(
                 label="Option 2",
-                summary="School materials plus transportation subsidies and meal program.",
+                summary="School materials plus transportation and meal subsidies.",
                 cost=2
             ),
             PolicyOption(
@@ -212,7 +212,7 @@ POLICY_AREAS = [
             ),
             PolicyOption(
                 label="Option 3",
-                summary="Comprehensive assessment with flexible pathways and individual plans.",
+                summary="Comprehensive assessment with flexible pathways and plans.",
                 cost=3
             )
         ]
