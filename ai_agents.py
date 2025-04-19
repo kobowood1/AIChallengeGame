@@ -4,7 +4,6 @@ Module for generating AI agents for policy simulation.
 import random
 import os
 import logging
-from typing import Dict, List, Optional, Tuple, Union
 
 # Initialize OpenAI client if API key is available
 try:
@@ -19,14 +18,6 @@ try:
 except ImportError:
     logging.warning("OpenAI package not installed. Using fallback responses.")
     openai_available = False
-
-# Import voice engine for generating audio
-try:
-    import voice_engine
-    voice_engine_available = True
-except ImportError:
-    logging.warning("Voice engine module not found. Agent audio will not be available.")
-    voice_engine_available = False
 
 def generate_agents():
     """
@@ -99,7 +90,7 @@ def generate_agents():
     
     return agents
 
-def agent_justify(policy_domain, option_chosen, agent) -> Union[str, Tuple[str, Optional[str]]]:
+def agent_justify(policy_domain, option_chosen, agent):
     """
     Generate a justification for a policy choice based on agent characteristics
     
@@ -109,12 +100,8 @@ def agent_justify(policy_domain, option_chosen, agent) -> Union[str, Tuple[str, 
         agent (dict): The agent's demographic and ideological information
     
     Returns:
-        Union[str, Tuple[str, Optional[str]]]: Either a justification string, or a tuple containing
-        (justification_text, audio_file_path)
+        str: A three-sentence justification for the policy choice
     """
-    # Generate a unique agent ID from the name (removing spaces and making lowercase)
-    agent_id = agent['name'].lower().replace(" ", "_")
-    
     # Check if OpenAI is available
     if 'openai_available' in globals() and openai_available:
         try:
@@ -141,27 +128,7 @@ def agent_justify(policy_domain, option_chosen, agent) -> Union[str, Tuple[str, 
             )
             
             justification = response.choices[0].message.content.strip()
-            
-            # Generate voice audio if voice engine is available
-            if 'voice_engine_available' in globals() and voice_engine_available:
-                try:
-                    # Generate audio for the justification
-                    text, audio_path = voice_engine.generate_justification_audio(
-                        agent_id, 
-                        policy_domain, 
-                        justification
-                    )
-                    
-                    # Return both the text and audio path
-                    return (justification, audio_path)
-                except Exception as e:
-                    logging.error(f"Error generating voice audio: {e}")
-                    # Return just the text if voice generation fails
-                    return (justification, None)
-            
-            # If voice engine is not available, just return the text
             return justification
-            
         except Exception as e:
             logging.error(f"Error using OpenAI API: {e}")
             # Fall through to the fallback response
@@ -183,20 +150,4 @@ def agent_justify(policy_domain, option_chosen, agent) -> Union[str, Tuple[str, 
     
     occupation_relevance = f"As a {agent['occupation']}, I see how this directly affects my work and community."
     
-    fallback_text = f"{ideologies.get(agent['ideology'], 'I have well-considered views on this issue.')} {option_attitudes.get(option_chosen, 'This option aligns with my values.')} {occupation_relevance}"
-    
-    # Try to generate voice for fallback text
-    if 'voice_engine_available' in globals() and voice_engine_available:
-        try:
-            # Generate audio for the fallback justification
-            text, audio_path = voice_engine.generate_justification_audio(
-                agent_id, 
-                policy_domain, 
-                fallback_text
-            )
-            return (fallback_text, audio_path)
-        except Exception as e:
-            logging.error(f"Error generating voice audio for fallback text: {e}")
-    
-    # Return just the fallback text if voice generation fails or isn't available
-    return fallback_text
+    return f"{ideologies.get(agent['ideology'], 'I have well-considered views on this issue.')} {option_attitudes.get(option_chosen, 'This option aligns with my values.')} {occupation_relevance}"

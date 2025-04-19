@@ -379,30 +379,16 @@ def handle_agent_response(data):
         # Use the policy's option level from the player's selections
         option_level = selections.get(policy_name, 2)  # Default to option 2 if not found
         
-        # Generate a justification as a response, possibly with audio
-        response = agent_justify(policy_name, option_level, agent)
+        # Generate a justification as a response
+        justification = agent_justify(policy_name, option_level, agent)
         
-        # Check if we got a tuple (text, audio_path) or just text
-        if isinstance(response, tuple):
-            justification_text, audio_path = response
-            
-            emit('chat_message', {
-                'sender': agent['name'],
-                'message': justification_text,
-                'agent': agent,
-                'timestamp': time.time(),
-                'policy': policy_name,
-                'audio_path': audio_path  # Include the path to the audio file
-            }, to=room_id)
-        else:
-            # Just got text, no audio
-            emit('chat_message', {
-                'sender': agent['name'],
-                'message': response,
-                'agent': agent,
-                'timestamp': time.time(),
-                'policy': policy_name
-            }, to=room_id)
+        emit('chat_message', {
+            'sender': agent['name'],
+            'message': justification,
+            'agent': agent,
+            'timestamp': time.time(),
+            'policy': policy_name
+        }, to=room_id)
     except Exception as e:
         logging.error(f"Error generating agent response: {e}")
 

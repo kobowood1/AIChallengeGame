@@ -429,64 +429,11 @@
         // Message content
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
-        
-        // We need to use innerText/innerHTML instead of textContent to avoid showing raw path
-        contentDiv.innerText = data.message;
+        contentDiv.textContent = data.message;
         
         // Append to message div
         messageDiv.appendChild(headerDiv);
         messageDiv.appendChild(contentDiv);
-        
-        // Add audio player if there's an audio path
-        if (data.audio_path) {
-            const audioContainer = document.createElement('div');
-            audioContainer.className = 'audio-container mt-2';
-            
-            const audioPlayer = document.createElement('audio');
-            audioPlayer.controls = true;
-            audioPlayer.className = 'w-full h-8';
-            
-            // Set the source directly
-            audioPlayer.src = '/' + data.audio_path;
-            
-            // Add play button for better styling
-            const playButton = document.createElement('button');
-            playButton.className = 'bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 mr-2 flex items-center justify-center w-8 h-8';
-            playButton.innerHTML = '<i class="fas fa-play"></i>';
-            playButton.onclick = function() {
-                if (audioPlayer.paused) {
-                    audioPlayer.play();
-                    this.innerHTML = '<i class="fas fa-pause"></i>';
-                } else {
-                    audioPlayer.pause();
-                    this.innerHTML = '<i class="fas fa-play"></i>';
-                }
-            };
-            
-            // Add event listener to reset button when audio ends
-            audioPlayer.addEventListener('ended', function() {
-                playButton.innerHTML = '<i class="fas fa-play"></i>';
-            });
-            
-            // Create a wrapper div for better styling
-            const audioWrapper = document.createElement('div');
-            audioWrapper.className = 'flex items-center mt-2';
-            audioWrapper.appendChild(playButton);
-            
-            // Create label
-            const audioLabel = document.createElement('span');
-            audioLabel.className = 'text-xs text-gray-400 ml-2';
-            audioLabel.innerHTML = '<i class="fas fa-volume-up mr-1"></i> Listen to voice';
-            
-            audioWrapper.appendChild(audioLabel);
-            
-            // Append audio wrapper to message div
-            messageDiv.appendChild(audioWrapper);
-            
-            // Hide the actual audio player element (we'll use our custom controls)
-            audioPlayer.style.display = 'none';
-            messageDiv.appendChild(audioPlayer);
-        }
         
         // Add to messages container
         messagesContainer.appendChild(messageDiv);
