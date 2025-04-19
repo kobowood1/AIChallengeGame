@@ -70,14 +70,14 @@ document.addEventListener('DOMContentLoaded', function() {
         socket.emit('join_game', { room_id: roomId, username });
         
         // Show loading overlay
-        toggleLoading(true, 'Joining game room...');
+        toggleLoading(true, 'Joining policy deliberation room...');
     });
     
     // Socket.IO event handlers
     socket.on('game_joined', (data) => {
         // Hide loading overlay
         toggleLoading(false);
-        showNotification('Joined game room', 'success');
+        showNotification('Joined policy deliberation room', 'success');
         
         // Store player ID
         sessionStorage.setItem('playerId', data.player_id);
@@ -89,20 +89,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     socket.on('player_joined', (data) => {
-        showNotification(`${data.username} joined the game`, 'info');
+        showNotification(`${data.username} joined the policy deliberation`, 'info');
     });
     
     socket.on('player_left', (data) => {
         if (gameState && gameState.players && gameState.players[data.player_id]) {
             const username = gameState.players[data.player_id].username;
-            showNotification(`${username} left the game`, 'info');
+            showNotification(`${username} left the policy deliberation`, 'info');
         }
     });
     
-    socket.on('game_started', (data) => {
+    socket.on('deliberation_started', (data) => {
         gameState = data.state;
         updateUI(data.state);
-        showNotification('Game started!', 'success');
+        showNotification('Policy deliberation started!', 'success');
         startGameTimer(data.challenge.time_limit);
     });
     
@@ -119,11 +119,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    socket.on('game_finished', (data) => {
+    socket.on('deliberation_finished', (data) => {
         gameState = data.state;
         updateUI(gameState);
         clearInterval(timerInterval);
-        showNotification('Game finished!', 'success');
+        showNotification('Policy deliberation finished!', 'success');
     });
     
     socket.on('error', (data) => {
