@@ -74,11 +74,11 @@ def handle_join_game(data):
     game = game_manager.get_game(room_id)
     
     if not game:
-        emit('error', {'message': 'Game room not found'})
+        emit('error', {'message': 'Policy deliberation room not found'})
         return
     
     if game.state != 'waiting':
-        emit('error', {'message': 'Game already started'})
+        emit('error', {'message': 'Policy deliberation already in progress'})
         return
     
     # Add player to the game
@@ -113,11 +113,11 @@ def handle_join_game(data):
                 'username': ai_username
             }, room=room_id)
     
-    # Notify the player
-    emit('game_joined', {
+    # Notify the policy advisor
+    emit('deliberation_joined', {
         'room_id': room_id,
-        'player_id': request.sid,
-        'player': player
+        'advisor_id': request.sid,
+        'advisor': player
     })
     
     # Notify all players in the room about the human player
@@ -144,7 +144,7 @@ def handle_leave_game(data):
     game = game_manager.get_game(room_id)
     
     if not game:
-        emit('error', {'message': 'Game room not found'})
+        emit('error', {'message': 'Policy deliberation room not found'})
         return
     
     # Remove player from the game
@@ -180,10 +180,10 @@ def handle_start_game(data):
     game = game_manager.get_game(room_id)
     
     if not game:
-        emit('error', {'message': 'Game room not found'})
+        emit('error', {'message': 'Policy deliberation room not found'})
         return
     
-    # Start the game
+    # Start the policy deliberation session
     challenge = game.start_game()
     
     if not challenge:
@@ -227,9 +227,9 @@ def handle_submit_solution(data):
     # Broadcast updated game state
     emit('game_state_update', game.get_game_state(), room=room_id)
     
-    # If game finished, notify everyone
+    # If policy deliberation finished, notify everyone
     if game.state == 'finished':
-        emit('game_finished', {
+        emit('deliberation_finished', {
             'winners': game.winners,
             'state': game.get_game_state()
         }, room=room_id)
@@ -249,7 +249,7 @@ def handle_get_game_state(data):
     game = game_manager.get_game(room_id)
     
     if not game:
-        emit('error', {'message': 'Game room not found'})
+        emit('error', {'message': 'Policy deliberation room not found'})
         return
     
     # Send the game state
