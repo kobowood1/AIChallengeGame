@@ -91,8 +91,14 @@
     <!-- Results Tab -->
     <div id="results-tab" class="tab active">
         <div class="bg-gray-800 p-6 rounded-t-none rounded-b-lg shadow-lg mb-8">
-            <h1 class="text-3xl font-bold mb-2 text-center text-blue-400">Policy Implementation Plan</h1>
-            <p class="text-center text-gray-400 mb-6">The final policy package has been approved by the citizens of Bean</p>
+            <h1 class="text-3xl font-bold mb-2 text-center text-blue-400">Refugee Education Policy Implementation</h1>
+            <p class="text-center text-gray-400 mb-6">The citizens of Bean have approved your education policy package for refugee integration</p>
+            
+            <div class="bg-blue-900 bg-opacity-30 p-4 rounded-lg border-l-4 border-blue-500 mb-6">
+                <p class="text-sm text-gray-200 m-0">
+                    The following implementation plan outlines how your refugee education policies will be executed across Bean's school system. These policies will directly impact the educational outcomes and integration of newly arrived refugee children.
+                </p>
+            </div>
             
             <div class="bg-gray-700 p-6 rounded-lg shadow-lg mb-8">
                 <h2 class="text-xl font-bold mb-4 flex items-center">
@@ -202,9 +208,9 @@
                                 </div>
                             </div>
                             <div class="bg-gray-800 p-4 rounded-lg">
-                                <h3 class="font-bold">Phase 1: Policy Approval</h3>
+                                <h3 class="font-bold">Phase 1: Education Policy Approval</h3>
                                 <p class="text-green-400 text-sm mb-2">Completed</p>
-                                <p class="text-sm text-gray-300">The citizens of Bean have approved the final policy package through democratic voting.</p>
+                                <p class="text-sm text-gray-300">The citizens of Bean have approved the refugee education policy package through democratic voting.</p>
                             </div>
                         </div>
                         
@@ -216,9 +222,9 @@
                                 </div>
                             </div>
                             <div class="bg-gray-800 p-4 rounded-lg">
-                                <h3 class="font-bold">Phase 2: Planning & Resource Allocation</h3>
+                                <h3 class="font-bold">Phase 2: School System Planning</h3>
                                 <p class="text-yellow-400 text-sm mb-2">In Progress</p>
-                                <p class="text-sm text-gray-300">Detailed implementation plans are being developed and resources are being allocated.</p>
+                                <p class="text-sm text-gray-300">Education department is developing detailed implementation plans for each school with refugee students.</p>
                             </div>
                         </div>
                         
@@ -230,9 +236,9 @@
                                 </div>
                             </div>
                             <div class="bg-gray-800 p-4 rounded-lg">
-                                <h3 class="font-bold">Phase 3: Stakeholder Engagement</h3>
+                                <h3 class="font-bold">Phase 3: Teacher Training & Support</h3>
                                 <p class="text-gray-400 text-sm mb-2">Upcoming</p>
-                                <p class="text-sm text-gray-300">Key stakeholders will be engaged to ensure successful implementation.</p>
+                                <p class="text-sm text-gray-300">Teachers will receive specialized training on refugee education needs and cultural sensitivity.</p>
                             </div>
                         </div>
                         
@@ -244,9 +250,9 @@
                                 </div>
                             </div>
                             <div class="bg-gray-800 p-4 rounded-lg">
-                                <h3 class="font-bold">Phase 4: Policy Implementation</h3>
+                                <h3 class="font-bold">Phase 4: Classroom Integration</h3>
                                 <p class="text-gray-400 text-sm mb-2">Upcoming</p>
-                                <p class="text-sm text-gray-300">Rollout of the approved policies will begin with careful monitoring.</p>
+                                <p class="text-sm text-gray-300">Refugee students will begin attending classes with appropriate language and psychosocial support.</p>
                             </div>
                         </div>
                         
@@ -258,9 +264,9 @@
                                 </div>
                             </div>
                             <div class="bg-gray-800 p-4 rounded-lg">
-                                <h3 class="font-bold">Phase 5: Evaluation & Refinement</h3>
+                                <h3 class="font-bold">Phase 5: Monitoring & Adaptation</h3>
                                 <p class="text-gray-400 text-sm mb-2">Upcoming</p>
-                                <p class="text-sm text-gray-300">Continuous monitoring and refinement to ensure optimal results.</p>
+                                <p class="text-sm text-gray-300">Ongoing assessment of student progress and policy effectiveness will inform refinements.</p>
                             </div>
                         </div>
                     </div>
@@ -269,9 +275,14 @@
             
             <div class="text-center mb-10">
                 <h2 class="text-3xl font-bold mb-4 text-gradient">Congratulations!</h2>
-                <p class="text-xl text-gray-300 mb-6">You've successfully navigated the policy-making process in the Republic of Bean</p>
+                <p class="text-xl text-gray-300 mb-6">You've successfully created an education policy framework for refugee integration in the Republic of Bean</p>
+                <div class="max-w-2xl mx-auto bg-gray-900 p-4 rounded-lg mb-6">
+                    <p class="text-sm text-gray-300">
+                        Your education policies will have a profound impact on thousands of refugee children seeking to build new lives in Bean. Through careful deliberation and compromise, you've balanced competing priorities to create a sustainable education system that works for all students.
+                    </p>
+                </div>
                 <button class="switch-tab-btn bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center" data-tab="reflection-tab">
-                    <i class="fas fa-pen-fancy mr-2"></i>Complete Reflection
+                    <i class="fas fa-pen-fancy mr-2"></i>Complete Your Reflection
                 </button>
             </div>
         </div>
@@ -280,8 +291,8 @@
     <!-- Reflection Tab -->
     <div id="reflection-tab" class="tab">
         <div class="bg-gray-800 p-6 rounded-t-none rounded-b-lg shadow-lg">
-            <h1 class="text-3xl font-bold mb-2 text-center text-blue-400">Policy Reflection Form</h1>
-            <p class="text-center text-gray-400 mb-6">Please take a moment to reflect on your policy-making experience</p>
+            <h1 class="text-3xl font-bold mb-2 text-center text-blue-400">Refugee Education Policy Reflection</h1>
+            <p class="text-center text-gray-400 mb-6">Share your insights on refugee education policy-making and the deliberative process</p>
             
             <form id="reflection-form" class="space-y-6" action="{{ url_for('main.submit_reflection') }}" method="POST">
                 <!-- Participant Information -->
@@ -328,56 +339,62 @@
                 
                 <!-- Reflection Questions -->
                 <div class="bg-gray-700 p-6 rounded-lg shadow-lg">
-                    <h2 class="text-xl font-bold mb-4">Reflection Questions</h2>
+                    <h2 class="text-xl font-bold mb-4">Reflection on Refugee Education Policy</h2>
+                    
+                    <div class="mb-6 bg-blue-900 bg-opacity-30 p-4 rounded-lg border-l-4 border-blue-500">
+                        <p class="text-gray-200 m-0">
+                            This reflection is a critical part of understanding the complexity of refugee education policy-making. Your thoughtful responses will help generate a personalized report on your policy journey.
+                        </p>
+                    </div>
                     
                     <div class="space-y-6">
                         <div>
-                            <label for="q1" class="block mb-2 text-sm font-medium">1. What factors influenced your initial policy selections?</label>
+                            <label for="q1" class="block mb-2 text-sm font-medium">1. What values and priorities guided your initial refugee education policy selections?</label>
                             <textarea id="q1" name="q1" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
                         </div>
                         
                         <div>
-                            <label for="q2" class="block mb-2 text-sm font-medium">2. How did you feel about the voting process and the final policy package?</label>
+                            <label for="q2" class="block mb-2 text-sm font-medium">2. How did you weigh the needs of refugee students against the constraints of Bean's education budget?</label>
                             <textarea id="q2" name="q2" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
                         </div>
                         
                         <div>
-                            <label for="q3" class="block mb-2 text-sm font-medium">3. What strategies did you use to persuade the AI agents during discussion?</label>
+                            <label for="q3" class="block mb-2 text-sm font-medium">3. What strategies did you use to advocate for your education policy positions during the deliberation?</label>
                             <textarea id="q3" name="q3" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
                         </div>
                         
                         <div>
-                            <label for="q4" class="block mb-2 text-sm font-medium">4. How did different ideological perspectives influence the policy decisions?</label>
+                            <label for="q4" class="block mb-2 text-sm font-medium">4. How did different ideological perspectives from citizens affect your thinking about refugee education?</label>
                             <textarea id="q4" name="q4" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
                         </div>
                         
                         <div>
-                            <label for="q5" class="block mb-2 text-sm font-medium">5. What were the most challenging aspects of the policy-making process?</label>
+                            <label for="q5" class="block mb-2 text-sm font-medium">5. What trade-offs were most difficult to make when designing an education system for both citizen and refugee students?</label>
                             <textarea id="q5" name="q5" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
                         </div>
                         
                         <div>
-                            <label for="q6" class="block mb-2 text-sm font-medium">6. How did budget constraints shape your decision-making?</label>
+                            <label for="q6" class="block mb-2 text-sm font-medium">6. How did you prioritize between access, language support, teacher training, curriculum, and psychosocial needs?</label>
                             <textarea id="q6" name="q6" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
                         </div>
                         
                         <div>
-                            <label for="q7" class="block mb-2 text-sm font-medium">7. What did you learn about compromise and consensus-building?</label>
+                            <label for="q7" class="block mb-2 text-sm font-medium">7. What did you learn about consensus-building on contentious issues like education for displaced populations?</label>
                             <textarea id="q7" name="q7" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
                         </div>
                         
                         <div>
-                            <label for="q8" class="block mb-2 text-sm font-medium">8. How did your perspective on policy-making change throughout this exercise?</label>
+                            <label for="q8" class="block mb-2 text-sm font-medium">8. How did your perspective on refugee education change throughout this simulation?</label>
                             <textarea id="q8" name="q8" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
                         </div>
                         
                         <div>
-                            <label for="q9" class="block mb-2 text-sm font-medium">9. What aspects of real-world policy-making were simulated effectively, and what was missing?</label>
+                            <label for="q9" class="block mb-2 text-sm font-medium">9. How do you think the final education policy package will impact the lives of refugee children in Bean?</label>
                             <textarea id="q9" name="q9" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
                         </div>
                         
                         <div>
-                            <label for="q10" class="block mb-2 text-sm font-medium">10. How might you apply insights from this simulation to real-world civic engagement?</label>
+                            <label for="q10" class="block mb-2 text-sm font-medium">10. How might insights from this simulation inform real-world approaches to refugee education policy?</label>
                             <textarea id="q10" name="q10" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
                         </div>
                     </div>
