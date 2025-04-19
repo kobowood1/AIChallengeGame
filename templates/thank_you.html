@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Thank You - Republic of Bean{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto text-center py-12">
+    <div class="bg-gray-800 rounded-lg shadow-lg p-8">
+        <div class="mb-6">
+            <i class="fas fa-check-circle text-green-500 text-7xl"></i>
+        </div>
+        
+        <h1 class="text-3xl font-bold mb-4 text-blue-400">Thank You!</h1>
+        
+        <div class="mb-8">
+            <p class="text-xl text-gray-300 mb-4">Your reflection has been successfully submitted and your report has been downloaded.</p>
+            <p class="text-gray-400">Your thoughtful feedback will help improve our understanding of the policy-making process.</p>
+        </div>
+        
+        <div class="bg-gray-700 p-6 rounded-lg mb-8">
+            <h2 class="text-xl font-bold mb-4">What Happens Next?</h2>
+            <p class="text-gray-300 mb-4">Your report contains valuable insights about your experience navigating the policy-making process in the Republic of Bean. It includes:</p>
+            
+            <ul class="text-left list-disc pl-6 mb-4 text-gray-400">
+                <li>Your demographic information</li>
+                <li>Your original policy selections</li>
+                <li>The final package after democratic voting</li>
+                <li>Your reflection responses to all questions</li>
+            </ul>
+            
+            <p class="text-gray-300">This information will be used to better understand how people engage with complex policy decisions and virtual deliberative processes.</p>
+        </div>
+        
+        <div class="flex justify-center">
+            <a href="{{ url_for('main.index') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center">
+                <i class="fas fa-home mr-2"></i>Return Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

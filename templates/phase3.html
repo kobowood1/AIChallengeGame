@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Republic of Bean - Policy Implementation{% endblock %}
+{% block title %}Republic of Bean - Policy Implementation & Reflection{% endblock %}
 
 {% block head %}
 <style>
@@ -47,202 +47,441 @@
             opacity: 0;
         }
     }
+    
+    textarea {
+        min-height: 120px;
+    }
+    
+    /* Tab styling */
+    .tab {
+        display: none;
+    }
+    
+    .tab.active {
+        display: block;
+    }
+    
+    .tab-button {
+        padding: 10px 15px;
+        background-color: rgba(75, 85, 99, 0.5);
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .tab-button.active {
+        background-color: rgb(55, 65, 81);
+        font-weight: bold;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl font-bold mb-2 text-center text-blue-400">Policy Implementation Plan</h1>
-    <p class="text-center text-gray-400 mb-6">The final policy package has been approved by the citizens of Bean</p>
-    
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
-        <h2 class="text-xl font-bold mb-4 flex items-center">
-            <i class="fas fa-chart-bar mr-2"></i>Budget Breakdown
-        </h2>
-        
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="bg-gray-700 p-4 rounded-lg w-full md:w-1/2">
-                <h3 class="font-bold mb-2">Original Proposal</h3>
-                <div class="flex justify-between items-center mb-2">
-                    <span>Budget Used:</span>
-                    <span class="text-blue-400 font-bold">{{ session.package_cost }} / {{ max_budget }}</span>
-                </div>
-                <div class="w-full bg-gray-600 rounded-full h-4 mb-2">
-                    <div class="bg-blue-500 h-4 rounded-full" style="width: {{ (session.package_cost / max_budget) * 100 }}%"></div>
-                </div>
-            </div>
-            
-            <div class="comparison-arrow bg-gray-600">
-                <i class="fas fa-arrow-right"></i>
-            </div>
-            
-            <div class="bg-gray-700 p-4 rounded-lg w-full md:w-1/2">
-                <h3 class="font-bold mb-2">Final Approved</h3>
-                <div class="flex justify-between items-center mb-2">
-                    <span>Budget Used:</span>
-                    <span class="text-green-400 font-bold">{{ final_cost }} / {{ max_budget }}</span>
-                </div>
-                <div class="w-full bg-gray-600 rounded-full h-4 mb-2">
-                    <div class="bg-green-500 h-4 rounded-full" style="width: {{ (final_cost / max_budget) * 100 }}%"></div>
-                </div>
-            </div>
-        </div>
+    <!-- Tab Buttons -->
+    <div class="flex mb-0 border-b border-gray-700">
+        <button class="tab-button active" data-tab="results-tab">
+            <i class="fas fa-chart-bar mr-2"></i>Policy Results
+        </button>
+        <button class="tab-button" data-tab="reflection-tab">
+            <i class="fas fa-pen-fancy mr-2"></i>Reflection Form
+        </button>
     </div>
     
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
-        <h2 class="text-xl font-bold mb-6 flex items-center">
-            <i class="fas fa-file-contract mr-2"></i>Final Policy Package
-        </h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for policy_name, final_level in final_package.items() %}
-                {% set player_level = player_package[policy_name] %}
-                {% set changed = player_level != final_level %}
+    <!-- Results Tab -->
+    <div id="results-tab" class="tab active">
+        <div class="bg-gray-800 p-6 rounded-t-none rounded-b-lg shadow-lg mb-8">
+            <h1 class="text-3xl font-bold mb-2 text-center text-blue-400">Policy Implementation Plan</h1>
+            <p class="text-center text-gray-400 mb-6">The final policy package has been approved by the citizens of Bean</p>
+            
+            <div class="bg-gray-700 p-6 rounded-lg shadow-lg mb-8">
+                <h2 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-chart-bar mr-2"></i>Budget Breakdown
+                </h2>
                 
-                <div class="bg-gray-700 p-4 rounded-lg policy-card" data-policy="{{ policy_name }}">
-                    <h3 class="font-bold mb-3 flex items-center justify-between">
-                        {{ policy_name }}
-                        {% if changed %}
-                            <span class="text-yellow-400 text-sm">
-                                <i class="fas fa-exchange-alt"></i> Modified
-                            </span>
-                        {% else %}
-                            <span class="text-green-400 text-sm">
-                                <i class="fas fa-check"></i> Approved
-                            </span>
-                        {% endif %}
-                    </h3>
-                    
-                    <div class="mb-3">
-                        {% if changed %}
-                            <div class="flex items-center justify-between text-sm mb-1">
-                                <span class="text-gray-400">Your proposal:</span>
-                                <span class="text-blue-400">Option {{ player_level }}</span>
-                            </div>
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-gray-400">Final approved:</span>
-                                <span class="text-green-400">Option {{ final_level }}</span>
-                            </div>
-                        {% else %}
-                            <div class="text-center py-2 mb-2 bg-green-900 bg-opacity-20 rounded">
-                                <span class="text-green-400 font-semibold">Option {{ final_level }}</span>
-                            </div>
-                        {% endif %}
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="bg-gray-800 p-4 rounded-lg w-full md:w-1/2">
+                        <h3 class="font-bold mb-2">Original Proposal</h3>
+                        <div class="flex justify-between items-center mb-2">
+                            <span>Budget Used:</span>
+                            <span class="text-blue-400 font-bold">{{ session.package_cost }} / {{ max_budget }}</span>
+                        </div>
+                        <div class="w-full bg-gray-600 rounded-full h-4 mb-2">
+                            <div class="bg-blue-500 h-4 rounded-full" style="width: {{ (session.package_cost / max_budget) * 100 }}%"></div>
+                        </div>
                     </div>
                     
-                    <div class="text-sm text-gray-300">
-                        <p class="mb-2">Implementation phases:</p>
-                        <ul class="list-disc pl-5 space-y-1">
-                            <li>Planning & resource allocation</li>
-                            <li>Stakeholder engagement</li>
-                            <li>Phased deployment</li>
-                            <li>Monitoring & evaluation</li>
-                        </ul>
+                    <div class="comparison-arrow bg-gray-600">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-4 rounded-lg w-full md:w-1/2">
+                        <h3 class="font-bold mb-2">Final Approved</h3>
+                        <div class="flex justify-between items-center mb-2">
+                            <span>Budget Used:</span>
+                            <span class="text-green-400 font-bold">{{ final_cost }} / {{ max_budget }}</span>
+                        </div>
+                        <div class="w-full bg-gray-600 rounded-full h-4 mb-2">
+                            <div class="bg-green-500 h-4 rounded-full" style="width: {{ (final_cost / max_budget) * 100 }}%"></div>
+                        </div>
                     </div>
                 </div>
-            {% endfor %}
-        </div>
-    </div>
-    
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
-        <h2 class="text-xl font-bold mb-4 flex items-center">
-            <i class="fas fa-calendar-alt mr-2"></i>Implementation Timeline
-        </h2>
-        
-        <div class="relative pt-6">
-            <!-- Timeline Line -->
-            <div class="absolute top-0 left-6 bottom-0 w-1 bg-blue-900 z-0"></div>
+            </div>
             
-            <!-- Timeline Items -->
-            <div class="relative z-10">
-                <!-- Item 1 -->
-                <div class="mb-10 ml-10 relative">
-                    <div class="absolute -left-14 mt-1.5">
-                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                            <i class="fas fa-file-signature text-white"></i>
-                        </div>
-                    </div>
-                    <div class="bg-gray-700 p-4 rounded-lg">
-                        <h3 class="font-bold">Phase 1: Policy Approval</h3>
-                        <p class="text-green-400 text-sm mb-2">Completed</p>
-                        <p class="text-sm text-gray-300">The citizens of Bean have approved the final policy package through democratic voting.</p>
-                    </div>
-                </div>
+            <div class="bg-gray-700 p-6 rounded-lg shadow-lg mb-8">
+                <h2 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-file-contract mr-2"></i>Final Policy Package
+                </h2>
                 
-                <!-- Item 2 -->
-                <div class="mb-10 ml-10 relative">
-                    <div class="absolute -left-14 mt-1.5">
-                        <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
-                            <i class="fas fa-clipboard-list text-white"></i>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for policy_name, final_level in final_package.items() %}
+                        {% set player_level = player_package[policy_name] %}
+                        {% set changed = player_level != final_level %}
+                        
+                        <div class="bg-gray-800 p-4 rounded-lg policy-card" data-policy="{{ policy_name }}">
+                            <h3 class="font-bold mb-3 flex items-center justify-between">
+                                {{ policy_name }}
+                                {% if changed %}
+                                    <span class="text-yellow-400 text-sm">
+                                        <i class="fas fa-exchange-alt"></i> Modified
+                                    </span>
+                                {% else %}
+                                    <span class="text-green-400 text-sm">
+                                        <i class="fas fa-check"></i> Approved
+                                    </span>
+                                {% endif %}
+                            </h3>
+                            
+                            <div class="mb-3">
+                                {% if changed %}
+                                    <div class="flex items-center justify-between text-sm mb-1">
+                                        <span class="text-gray-400">Your proposal:</span>
+                                        <span class="text-blue-400">Option {{ player_level }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-gray-400">Final approved:</span>
+                                        <span class="text-green-400">Option {{ final_level }}</span>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-2 mb-2 bg-green-900 bg-opacity-20 rounded">
+                                        <span class="text-green-400 font-semibold">Option {{ final_level }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="text-sm text-gray-300">
+                                <p class="mb-2">Implementation phases:</p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>Planning & resource allocation</li>
+                                    <li>Stakeholder engagement</li>
+                                    <li>Phased deployment</li>
+                                    <li>Monitoring & evaluation</li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <div class="bg-gray-700 p-4 rounded-lg">
-                        <h3 class="font-bold">Phase 2: Planning & Resource Allocation</h3>
-                        <p class="text-yellow-400 text-sm mb-2">In Progress</p>
-                        <p class="text-sm text-gray-300">Detailed implementation plans are being developed and resources are being allocated.</p>
-                    </div>
+                    {% endfor %}
                 </div>
+            </div>
+            
+            <div class="bg-gray-700 p-6 rounded-lg shadow-lg mb-8">
+                <h2 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-calendar-alt mr-2"></i>Implementation Timeline
+                </h2>
                 
-                <!-- Item 3 -->
-                <div class="mb-10 ml-10 relative">
-                    <div class="absolute -left-14 mt-1.5">
-                        <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
-                            <i class="fas fa-people-arrows text-white"></i>
+                <div class="relative pt-6">
+                    <!-- Timeline Line -->
+                    <div class="absolute top-0 left-6 bottom-0 w-1 bg-blue-900 z-0"></div>
+                    
+                    <!-- Timeline Items -->
+                    <div class="relative z-10">
+                        <!-- Item 1 -->
+                        <div class="mb-10 ml-10 relative">
+                            <div class="absolute -left-14 mt-1.5">
+                                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-file-signature text-white"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-lg">
+                                <h3 class="font-bold">Phase 1: Policy Approval</h3>
+                                <p class="text-green-400 text-sm mb-2">Completed</p>
+                                <p class="text-sm text-gray-300">The citizens of Bean have approved the final policy package through democratic voting.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 2 -->
+                        <div class="mb-10 ml-10 relative">
+                            <div class="absolute -left-14 mt-1.5">
+                                <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-clipboard-list text-white"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-lg">
+                                <h3 class="font-bold">Phase 2: Planning & Resource Allocation</h3>
+                                <p class="text-yellow-400 text-sm mb-2">In Progress</p>
+                                <p class="text-sm text-gray-300">Detailed implementation plans are being developed and resources are being allocated.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 3 -->
+                        <div class="mb-10 ml-10 relative">
+                            <div class="absolute -left-14 mt-1.5">
+                                <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-people-arrows text-white"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-lg">
+                                <h3 class="font-bold">Phase 3: Stakeholder Engagement</h3>
+                                <p class="text-gray-400 text-sm mb-2">Upcoming</p>
+                                <p class="text-sm text-gray-300">Key stakeholders will be engaged to ensure successful implementation.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 4 -->
+                        <div class="mb-10 ml-10 relative">
+                            <div class="absolute -left-14 mt-1.5">
+                                <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-rocket text-white"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-lg">
+                                <h3 class="font-bold">Phase 4: Policy Implementation</h3>
+                                <p class="text-gray-400 text-sm mb-2">Upcoming</p>
+                                <p class="text-sm text-gray-300">Rollout of the approved policies will begin with careful monitoring.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 5 -->
+                        <div class="ml-10 relative">
+                            <div class="absolute -left-14 mt-1.5">
+                                <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-chart-line text-white"></i>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-lg">
+                                <h3 class="font-bold">Phase 5: Evaluation & Refinement</h3>
+                                <p class="text-gray-400 text-sm mb-2">Upcoming</p>
+                                <p class="text-sm text-gray-300">Continuous monitoring and refinement to ensure optimal results.</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="bg-gray-700 p-4 rounded-lg">
-                        <h3 class="font-bold">Phase 3: Stakeholder Engagement</h3>
-                        <p class="text-gray-400 text-sm mb-2">Upcoming</p>
-                        <p class="text-sm text-gray-300">Key stakeholders will be engaged to ensure successful implementation.</p>
-                    </div>
                 </div>
-                
-                <!-- Item 4 -->
-                <div class="mb-10 ml-10 relative">
-                    <div class="absolute -left-14 mt-1.5">
-                        <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
-                            <i class="fas fa-rocket text-white"></i>
-                        </div>
-                    </div>
-                    <div class="bg-gray-700 p-4 rounded-lg">
-                        <h3 class="font-bold">Phase 4: Policy Implementation</h3>
-                        <p class="text-gray-400 text-sm mb-2">Upcoming</p>
-                        <p class="text-sm text-gray-300">Rollout of the approved policies will begin with careful monitoring.</p>
-                    </div>
-                </div>
-                
-                <!-- Item 5 -->
-                <div class="ml-10 relative">
-                    <div class="absolute -left-14 mt-1.5">
-                        <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
-                            <i class="fas fa-chart-line text-white"></i>
-                        </div>
-                    </div>
-                    <div class="bg-gray-700 p-4 rounded-lg">
-                        <h3 class="font-bold">Phase 5: Evaluation & Refinement</h3>
-                        <p class="text-gray-400 text-sm mb-2">Upcoming</p>
-                        <p class="text-sm text-gray-300">Continuous monitoring and refinement to ensure optimal results.</p>
-                    </div>
-                </div>
+            </div>
+            
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-4 text-gradient">Congratulations!</h2>
+                <p class="text-xl text-gray-300 mb-6">You've successfully navigated the policy-making process in the Republic of Bean</p>
+                <button class="switch-tab-btn bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center" data-tab="reflection-tab">
+                    <i class="fas fa-pen-fancy mr-2"></i>Complete Reflection
+                </button>
             </div>
         </div>
     </div>
     
-    <div class="text-center mb-10">
-        <h2 class="text-3xl font-bold mb-4 text-gradient">Congratulations!</h2>
-        <p class="text-xl text-gray-300 mb-6">You've successfully navigated the policy-making process in the Republic of Bean</p>
-        <a href="{{ url_for('main.index') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center">
-            <i class="fas fa-home mr-2"></i>Return Home
-        </a>
+    <!-- Reflection Tab -->
+    <div id="reflection-tab" class="tab">
+        <div class="bg-gray-800 p-6 rounded-t-none rounded-b-lg shadow-lg">
+            <h1 class="text-3xl font-bold mb-2 text-center text-blue-400">Policy Reflection Form</h1>
+            <p class="text-center text-gray-400 mb-6">Please take a moment to reflect on your policy-making experience</p>
+            
+            <form id="reflection-form" class="space-y-6" action="{{ url_for('main.submit_reflection') }}" method="POST">
+                <!-- Participant Information -->
+                <div class="bg-gray-700 p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-bold mb-4">Participant Information</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="age" class="block mb-2 text-sm font-medium">Age</label>
+                            <input type="number" id="age" name="age" min="18" max="100" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        </div>
+                        
+                        <div>
+                            <label for="gender" class="block mb-2 text-sm font-medium">Gender</label>
+                            <select id="gender" name="gender" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                                <option value="" selected disabled>Select gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="non-binary">Non-binary</option>
+                                <option value="other">Other</option>
+                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="nationality" class="block mb-2 text-sm font-medium">Nationality</label>
+                            <input type="text" id="nationality" name="nationality" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        </div>
+                        
+                        <div>
+                            <label for="education" class="block mb-2 text-sm font-medium">Highest Level of Education</label>
+                            <select id="education" name="education" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                                <option value="" selected disabled>Select education level</option>
+                                <option value="high-school">High School</option>
+                                <option value="associates">Associate's Degree</option>
+                                <option value="bachelors">Bachelor's Degree</option>
+                                <option value="masters">Master's Degree</option>
+                                <option value="doctorate">Doctorate</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reflection Questions -->
+                <div class="bg-gray-700 p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-bold mb-4">Reflection Questions</h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label for="q1" class="block mb-2 text-sm font-medium">1. What factors influenced your initial policy selections?</label>
+                            <textarea id="q1" name="q1" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="q2" class="block mb-2 text-sm font-medium">2. How did you feel about the voting process and the final policy package?</label>
+                            <textarea id="q2" name="q2" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="q3" class="block mb-2 text-sm font-medium">3. What strategies did you use to persuade the AI agents during discussion?</label>
+                            <textarea id="q3" name="q3" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="q4" class="block mb-2 text-sm font-medium">4. How did different ideological perspectives influence the policy decisions?</label>
+                            <textarea id="q4" name="q4" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="q5" class="block mb-2 text-sm font-medium">5. What were the most challenging aspects of the policy-making process?</label>
+                            <textarea id="q5" name="q5" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="q6" class="block mb-2 text-sm font-medium">6. How did budget constraints shape your decision-making?</label>
+                            <textarea id="q6" name="q6" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="q7" class="block mb-2 text-sm font-medium">7. What did you learn about compromise and consensus-building?</label>
+                            <textarea id="q7" name="q7" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="q8" class="block mb-2 text-sm font-medium">8. How did your perspective on policy-making change throughout this exercise?</label>
+                            <textarea id="q8" name="q8" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="q9" class="block mb-2 text-sm font-medium">9. What aspects of real-world policy-making were simulated effectively, and what was missing?</label>
+                            <textarea id="q9" name="q9" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="q10" class="block mb-2 text-sm font-medium">10. How might you apply insights from this simulation to real-world civic engagement?</label>
+                            <textarea id="q10" name="q10" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between">
+                    <button type="button" class="switch-tab-btn bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition" data-tab="results-tab">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Results
+                    </button>
+                    
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg transition">
+                        <i class="fas fa-paper-plane mr-2"></i>Submit & Generate Report
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    // Create firework animation when the page loads
+    // Tab switching functionality
     document.addEventListener('DOMContentLoaded', () => {
+        // Create firework animation
         createFireworks();
+        
+        // Tab switching
+        const tabs = document.querySelectorAll('.tab');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const switchTabButtons = document.querySelectorAll('.switch-tab-btn');
+        
+        // Tab button click handler
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                switchToTab(tabId);
+            });
+        });
+        
+        // Switch tab button click handler
+        switchTabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                switchToTab(tabId);
+            });
+        });
+        
+        // Function to switch to a tab
+        function switchToTab(tabId) {
+            // Hide all tabs
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all tab buttons
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show the selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activate the corresponding tab button
+            document.querySelector(`.tab-button[data-tab="${tabId}"]`).classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+        
+        // Form submission handler for AJAX
+        const reflectionForm = document.getElementById('reflection-form');
+        reflectionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(reflectionForm);
+            
+            try {
+                const response = await fetch(reflectionForm.action, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'policy_reflection_report.md';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    
+                    // Redirect to thank you page
+                    window.location.href = '/thank-you';
+                } else {
+                    alert('There was an error submitting your reflection. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error submitting your reflection. Please try again.');
+            }
+        });
     });
     
     // Function to create fireworks
