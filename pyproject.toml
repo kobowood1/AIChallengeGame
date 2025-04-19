@@ -17,4 +17,5 @@ dependencies = [
     "sendgrid>=6.11.0",
     "markdown>=3.8",
     "pycodestyle>=2.13.0",
+    "weasyprint>=65.1",
 ]
