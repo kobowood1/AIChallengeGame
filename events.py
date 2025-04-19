@@ -49,9 +49,9 @@ def handle_create_deliberation(data):
     logging.debug(f"Policy deliberation room created: {room_id} by {username}")
     
     # Send confirmation to the creator
-    emit('game_created', {
+    emit('deliberation_created', {
         'room_id': room_id,
-        'player_id': request.sid
+        'advisor_id': request.sid
     })
     
     # Broadcast game state
@@ -107,9 +107,9 @@ def handle_join_deliberation(data):
             # Add AI player to game
             game.add_player(ai_player_id, ai_username)
             
-            # Notify all players about the new AI player
-            emit('player_joined', {
-                'player_id': ai_player_id,
+            # Notify all advisors about the new AI agent
+            emit('advisor_joined', {
+                'advisor_id': ai_player_id,
                 'username': ai_username
             }, room=room_id)
     
@@ -120,9 +120,9 @@ def handle_join_deliberation(data):
         'advisor': player
     })
     
-    # Notify all players in the room about the human player
-    emit('player_joined', {
-        'player_id': request.sid,
+    # Notify all advisors in the room about the human advisor
+    emit('advisor_joined', {
+        'advisor_id': request.sid,
         'username': username
     }, room=room_id)
     
@@ -155,8 +155,8 @@ def handle_leave_deliberation(data):
     
     logging.debug(f"Policy advisor {request.sid} left deliberation room: {room_id}")
     
-    # Notify all players in the room
-    emit('player_left', {'player_id': request.sid}, room=room_id)
+    # Notify all advisors in the room
+    emit('advisor_left', {'advisor_id': request.sid}, room=room_id)
     
     # Broadcast updated game state
     emit('game_state_update', game.get_game_state(), room=room_id)

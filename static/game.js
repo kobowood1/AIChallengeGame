@@ -88,13 +88,13 @@ document.addEventListener('DOMContentLoaded', function() {
         updateUI(state);
     });
     
-    socket.on('player_joined', (data) => {
+    socket.on('advisor_joined', (data) => {
         showNotification(`${data.username} joined the policy deliberation`, 'info');
     });
     
-    socket.on('player_left', (data) => {
-        if (gameState && gameState.players && gameState.players[data.player_id]) {
-            const username = gameState.players[data.player_id].username;
+    socket.on('advisor_left', (data) => {
+        if (gameState && gameState.players && gameState.players[data.advisor_id]) {
+            const username = gameState.players[data.advisor_id].username;
             showNotification(`${username} left the policy deliberation`, 'info');
         }
     });
