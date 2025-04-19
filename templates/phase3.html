@@ -193,7 +193,7 @@
                                                             {% if option.level == player_level %}
                                                                 <div class="p-2 border-b border-gray-700">
                                                                     <div class="font-semibold mb-1">Option {{ option.level }}</div>
-                                                                    <div class="text-xs">{{ option.description }}</div>
+                                                                    <div class="text-xs">{{ option.summary }}</div>
                                                                     <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
                                                                 </div>
                                                             {% endif %}
@@ -219,7 +219,7 @@
                                                             {% if option.level == final_level %}
                                                                 <div class="p-2 border-b border-gray-700">
                                                                     <div class="font-semibold mb-1">Option {{ option.level }}</div>
-                                                                    <div class="text-xs">{{ option.description }}</div>
+                                                                    <div class="text-xs">{{ option.summary }}</div>
                                                                     <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
                                                                 </div>
                                                             {% endif %}
@@ -245,7 +245,7 @@
                                                             {% if option.level == final_level %}
                                                                 <div class="p-2 border-b border-gray-700">
                                                                     <div class="font-semibold mb-1">Option {{ option.level }}</div>
-                                                                    <div class="text-xs">{{ option.description }}</div>
+                                                                    <div class="text-xs">{{ option.summary }}</div>
                                                                     <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
                                                                 </div>
                                                             {% endif %}
@@ -652,5 +652,53 @@
             }, i * 100); // Stagger the fireworks
         }
     }
+    
+    // Handle dropdown functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropdownButtons = document.querySelectorAll('.dropdown button');
+        
+        dropdownButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Find the dropdown menu (next sibling element)
+                const dropdownMenu = this.nextElementSibling;
+                
+                // Toggle dropdown visibility
+                if (dropdownMenu.classList.contains('hidden')) {
+                    // Close all other open dropdowns first
+                    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                        menu.classList.add('hidden');
+                    });
+                    
+                    // Then open this dropdown
+                    dropdownMenu.classList.remove('hidden');
+                    this.closest('.dropdown').classList.add('dropdown-active');
+                } else {
+                    // Close this dropdown
+                    dropdownMenu.classList.add('hidden');
+                    this.closest('.dropdown').classList.remove('dropdown-active');
+                }
+            });
+        });
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.classList.add('hidden');
+            });
+            document.querySelectorAll('.dropdown').forEach(dropdown => {
+                dropdown.classList.remove('dropdown-active');
+            });
+        });
+        
+        // Prevent dropdown menus from closing when clicking inside them
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    });
 </script>
 {% endblock %}
