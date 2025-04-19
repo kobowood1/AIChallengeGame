@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Republic of Bean - Policy Impact{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold mb-4 text-center text-blue-400">Policy Impact Analysis</h1>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <h2 class="text-xl font-bold mb-4">Your Selected Policies</h2>
+        
+        <div class="mb-6">
+            <div class="bg-gray-700 p-4 rounded-lg">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-lg font-bold">Total Budget Spent:</span>
+                    <span class="text-lg">{{ cost }} / {{ max_budget }}</span>
+                </div>
+                <div class="w-full bg-gray-600 rounded-full h-4">
+                    <div class="bg-blue-500 h-4 rounded-full" style="width: {{ (cost / max_budget) * 100 }}%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-4">
+            {% for policy_name, level in selections.items() %}
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <h3 class="font-bold">{{ policy_name }}</h3>
+                    <p>Selected Option: {{ level }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="mt-6 text-center">
+            <a href="{{ url_for('main.phase1') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg text-lg transition">
+                Edit Selections
+            </a>
+        </div>
+    </div>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-bold mb-4">Impact Simulation</h2>
+        <p class="text-gray-300 mb-4">The impact simulation feature will be implemented in the next development phase.</p>
+    </div>
+</div>
+{% endblock %}

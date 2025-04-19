@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Republic of Bean - Policy Selection{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold mb-4 text-center text-blue-400">Policy Selection Phase</h1>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Budget Allocation</h2>
+            <div class="text-lg">
+                <span>Remaining Budget: </span>
+                <span id="remaining-budget" class="font-bold">{{ max_budget }}</span>
+                <span>/{{ max_budget }}</span>
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <div class="w-full bg-gray-700 rounded-full h-4">
+                <div id="budget-bar" class="bg-blue-500 h-4 rounded-full" style="width: 100%"></div>
+            </div>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="p-4 mb-4 {% if category == 'error' %}bg-red-800{% else %}bg-blue-800{% endif %} rounded-lg">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form id="policy-form" method="POST" action="{{ url_for('main.phase1') }}">
+            <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-6">
+                {% for policy in policies %}
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <h3 class="text-lg font-bold mb-2">{{ policy.name }}</h3>
+                        
+                        <div class="space-y-3">
+                            {% for option in policy.options %}
+                                <div class="flex items-center">
+                                    <input 
+                                        type="radio" 
+                                        id="{{ policy.name }}-{{ option.level }}" 
+                                        name="{{ policy.name }}" 
+                                        value="{{ option.level }}"
+                                        data-cost="{{ option.cost }}"
+                                        class="mr-2 policy-option"
+                                    >
+                                    <label for="{{ policy.name }}-{{ option.level }}" class="flex justify-between w-full">
+                                        <span>Option {{ option.level }}: {{ option.description }}</span>
+                                        <span class="ml-2 px-2 py-0.5 bg-gray-600 rounded text-sm">
+                                            Cost: {{ option.cost }}
+                                        </span>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div class="mt-6 text-center">
+                <button 
+                    type="submit" 
+                    id="submit-button"
+                    class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg text-lg transition"
+                >
+                    Submit Policy Package
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const policyOptions = document.querySelectorAll('.policy-option');
+        const remainingBudgetElement = document.getElementById('remaining-budget');
+        const budgetBarElement = document.getElementById('budget-bar');
+        const submitButton = document.getElementById('submit-button');
+        const maxBudget = {{ max_budget }};
+        
+        let currentBudget = maxBudget;
+        let selections = {};
+        
+        // Pre-select first option for all policies as default
+        document.querySelectorAll('[id$="-1"]').forEach(radio => {
+            radio.checked = true;
+            const policyName = radio.id.split('-')[0];
+            selections[policyName] = 1;
+        });
+        
+        // Initial budget calculation
+        updateBudget();
+        
+        // Add event listeners to all radio buttons
+        policyOptions.forEach(option => {
+            option.addEventListener('change', function() {
+                const policyName = this.name;
+                const level = parseInt(this.value);
+                
+                // Update selections
+                selections[policyName] = level;
+                
+                // Update the budget display
+                updateBudget();
+            });
+        });
+        
+        function updateBudget() {
+            // Calculate total cost of current selections
+            let totalCost = 0;
+            for (const [policyName, level] of Object.entries(selections)) {
+                const radioButton = document.getElementById(`${policyName}-${level}`);
+                if (radioButton) {
+                    totalCost += parseInt(radioButton.dataset.cost);
+                }
+            }
+            
+            // Update remaining budget
+            currentBudget = maxBudget - totalCost;
+            remainingBudgetElement.textContent = currentBudget;
+            
+            // Update progress bar
+            const percentage = (currentBudget / maxBudget) * 100;
+            budgetBarElement.style.width = `${Math.max(0, percentage)}%`;
+            
+            // Change color based on budget status
+            if (currentBudget < 0) {
+                remainingBudgetElement.classList.add('text-red-500');
+                budgetBarElement.classList.remove('bg-blue-500');
+                budgetBarElement.classList.add('bg-red-500');
+                
+                // Disable submit button if over budget
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                remainingBudgetElement.classList.remove('text-red-500');
+                budgetBarElement.classList.remove('bg-red-500');
+                budgetBarElement.classList.add('bg-blue-500');
+                
+                // Enable submit button if within budget
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+        
+        // Form validation
+        document.getElementById('policy-form').addEventListener('submit', function(e) {
+            // Check if any policy is missing a selection
+            const policies = {{ policies|tojson }};
+            let isComplete = true;
+            
+            policies.forEach(policy => {
+                if (!selections[policy.name]) {
+                    isComplete = false;
+                }
+            });
+            
+            if (!isComplete) {
+                e.preventDefault();
+                alert('Please select an option for each policy domain.');
+                return;
+            }
+            
+            // Check if over budget
+            if (currentBudget < 0) {
+                e.preventDefault();
+                alert('Your policy package exceeds the maximum budget. Please revise your selections.');
+                return;
+            }
+            
+            // Check if all selections are the same level
+            const levels = Object.values(selections);
+            const uniqueLevels = new Set(levels);
+            
+            if (uniqueLevels.size === 1) {
+                e.preventDefault();
+                alert('All your selections are the same level. Please diversify your policy choices.');
+                return;
+            }
+        });
+    });
+</script>
+{% endblock %}
