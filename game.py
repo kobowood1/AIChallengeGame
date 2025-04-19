@@ -88,11 +88,11 @@ class AIChallenge:
     
     def submit_solution(self, player_id, solution):
         """
-        Submit a solution for a player
+        Submit a policy proposal from a player
         
         Args:
             player_id: ID of the player submitting
-            solution: The code solution submitted
+            solution: The policy proposal text submitted
             
         Returns:
             Dictionary with submission status
@@ -124,7 +124,7 @@ class AIChallenge:
         
         return {
             "success": True, 
-            "message": "Solution submitted", 
+            "message": "Policy proposal submitted", 
             "score": player["score"],
             "time_taken": submission_time
         }

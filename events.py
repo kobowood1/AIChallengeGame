@@ -168,7 +168,7 @@ def handle_leave_game(data):
 @socketio.on('start_game')
 def handle_start_game(data):
     """
-    Start a game
+    Begin the policy deliberation session
     
     Args:
         data: Dictionary containing:
@@ -187,10 +187,10 @@ def handle_start_game(data):
     challenge = game.start_game()
     
     if not challenge:
-        emit('error', {'message': 'Could not start game'})
+        emit('error', {'message': 'Could not start policy deliberation'})
         return
     
-    logging.debug(f"Game started: {room_id}")
+    logging.debug(f"Policy deliberation started: {room_id}")
     
     # Notify all players in the room
     emit('game_started', {
@@ -201,12 +201,12 @@ def handle_start_game(data):
 @socketio.on('submit_solution')
 def handle_submit_solution(data):
     """
-    Submit a solution for the current challenge
+    Submit a policy proposal for the current challenge
     
     Args:
         data: Dictionary containing:
             - room_id: ID of the room
-            - solution: Code solution submitted
+            - solution: Policy proposal text submitted
     """
     room_id = data.get('room_id')
     solution = data.get('solution')
@@ -215,10 +215,10 @@ def handle_submit_solution(data):
     game = game_manager.get_game(room_id)
     
     if not game:
-        emit('error', {'message': 'Game room not found'})
+        emit('error', {'message': 'Policy deliberation room not found'})
         return
     
-    # Submit the solution
+    # Submit the policy proposal
     result = game.submit_solution(request.sid, solution)
     
     # Notify the submitting player
@@ -237,7 +237,7 @@ def handle_submit_solution(data):
 @socketio.on('get_game_state')
 def handle_get_game_state(data):
     """
-    Get the current state of a game
+    Get the current state of a policy deliberation session
     
     Args:
         data: Dictionary containing:
