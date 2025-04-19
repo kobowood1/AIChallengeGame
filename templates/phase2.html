@@ -38,8 +38,40 @@
     </div>
     
     <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl font-bold mb-4">Impact Simulation</h2>
-        <p class="text-gray-300 mb-4">The impact simulation feature will be implemented in the next development phase.</p>
+        <h2 class="text-xl font-bold mb-4">Citizen Reactions</h2>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+            {% for agent in session.get('agents', []) %}
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="font-bold text-lg">{{ agent.name }}</h3>
+                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">{{ agent.ideology }}</span>
+                    </div>
+                    
+                    <div class="space-y-2 text-sm mb-4">
+                        <p><span class="font-bold">Age:</span> {{ agent.age }}</p>
+                        <p><span class="font-bold">Occupation:</span> {{ agent.occupation }}</p>
+                        <p><span class="font-bold">Education:</span> {{ agent.education_level }}</p>
+                        <p><span class="font-bold">Status:</span> {{ agent.socioeconomic_status }}</p>
+                    </div>
+                    
+                    <div class="border-t border-gray-600 pt-3 mt-3">
+                        <h4 class="font-bold mb-2">Reactions to Your Policies:</h4>
+                        <div class="space-y-3">
+                            {% for policy_name, level in selections.items() %}
+                                <div>
+                                    <p class="text-sm"><span class="font-bold text-blue-400">{{ policy_name }}:</span> Option {{ level }}</p>
+                                    <div class="mt-1 text-xs italic">
+                                        <!-- This will be populated by agent_justify in a future implementation -->
+                                        <p>Reaction not yet available. Will be implemented using OpenAI API.</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}
