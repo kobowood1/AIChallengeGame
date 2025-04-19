@@ -20,8 +20,24 @@ def create_app():
     # Configure logging
     logging.basicConfig(level=logging.DEBUG)
     
+    # Configure database
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_recycle': 300,
+        'pool_pre_ping': True
+    }
+    
     # Initialize extensions with app
     socketio.init_app(app)
+    
+    # Initialize database
+    from models import db
+    db.init_app(app)
+    
+    # Create all database tables
+    with app.app_context():
+        db.create_all()
     
     # Register blueprints
     from routes import main as main_blueprint

@@ -4,19 +4,79 @@ from ai_agents import generate_agents, agent_justify
 import markdown
 import json
 import tempfile
+import uuid
 from datetime import datetime
 from weasyprint import HTML, CSS
+from models import db, Participant
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
     """Route for the home page"""
-    return render_template('index.html')
+    # Check if the user has already registered
+    if 'participant_registered' in session and session['participant_registered']:
+        return render_template('index.html')
+    else:
+        # Redirect to registration page
+        return redirect(url_for('main.register'))
+
+@main.route('/register', methods=['GET', 'POST'])
+def register():
+    """Route for participant registration"""
+    if request.method == 'POST':
+        try:
+            # Extract form data
+            age = request.form.get('age')
+            nationality = request.form.get('nationality')
+            occupation = request.form.get('occupation')
+            education_level = request.form.get('education_level')
+            displacement_experience = request.form.get('displacement_experience')
+            current_location_city = request.form.get('current_location_city')
+            current_location_country = request.form.get('current_location_country')
+            
+            # Generate a unique session ID if not already present
+            if 'session_id' not in session:
+                session['session_id'] = str(uuid.uuid4())
+            
+            # Create new participant
+            participant = Participant(
+                age=age,
+                nationality=nationality,
+                occupation=occupation,
+                education_level=education_level,
+                displacement_experience=displacement_experience,
+                current_location_city=current_location_city,
+                current_location_country=current_location_country,
+                session_id=session['session_id']
+            )
+            
+            # Add to database
+            db.session.add(participant)
+            db.session.commit()
+            
+            # Mark as registered in session
+            session['participant_registered'] = True
+            
+            # Redirect to scenario page
+            flash('Registration successful! Welcome to the Republic of Bean policy simulation.', 'success')
+            return redirect(url_for('main.scenario'))
+            
+        except Exception as e:
+            flash(f'Registration error: {str(e)}', 'error')
+            return render_template('register.html')
+    
+    # GET request - show registration form
+    return render_template('register.html')
 
 @main.route('/scenario')
 def scenario():
     """Route for the Republic of Bean scenario context"""
+    # Check if user is registered
+    if 'participant_registered' not in session or not session['participant_registered']:
+        flash('Please register before accessing the simulation.', 'warning')
+        return redirect(url_for('main.register'))
+        
     return render_template('scenario.html')
 
 @main.route('/game')

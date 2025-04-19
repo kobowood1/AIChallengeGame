@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Republic of Bean - Participant Registration{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
+            Participant Registration
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-400">
+            Please provide your information to participate in the Republic of Bean policy simulation
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <form class="space-y-6" action="/register" method="POST">
+                <!-- Age Field -->
+                <div>
+                    <label for="age" class="block text-sm font-medium text-gray-300">
+                        Age
+                    </label>
+                    <div class="mt-1">
+                        <input id="age" name="age" type="number" min="18" max="120" required
+                            class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <!-- Nationality Field -->
+                <div>
+                    <label for="nationality" class="block text-sm font-medium text-gray-300">
+                        Nationality
+                    </label>
+                    <div class="mt-1">
+                        <input id="nationality" name="nationality" type="text" required
+                            class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <!-- Occupation Field -->
+                <div>
+                    <label for="occupation" class="block text-sm font-medium text-gray-300">
+                        Occupation
+                    </label>
+                    <div class="mt-1">
+                        <input id="occupation" name="occupation" type="text" required
+                            class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <!-- Education Level Field -->
+                <div>
+                    <label for="education_level" class="block text-sm font-medium text-gray-300">
+                        Educational Level
+                    </label>
+                    <div class="mt-1">
+                        <select id="education_level" name="education_level" required
+                            class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">Select education level</option>
+                            <option value="Primary">Primary education</option>
+                            <option value="Secondary">Secondary education</option>
+                            <option value="Vocational">Vocational training</option>
+                            <option value="Bachelor">Bachelor's degree</option>
+                            <option value="Master">Master's degree</option>
+                            <option value="Doctorate">Doctorate</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Displacement Experience Field -->
+                <div>
+                    <label for="displacement_experience" class="block text-sm font-medium text-gray-300">
+                        Displacement Experience
+                    </label>
+                    <div class="mt-1">
+                        <textarea id="displacement_experience" name="displacement_experience" rows="3"
+                            placeholder="Have you ever experienced displacement or migration? If so, please briefly describe."
+                            class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                    </div>
+                    <p class="mt-1 text-xs text-gray-400">This field is optional</p>
+                </div>
+
+                <!-- Location Fields -->
+                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                    <div>
+                        <label for="current_location_city" class="block text-sm font-medium text-gray-300">
+                            Current City
+                        </label>
+                        <div class="mt-1">
+                            <input id="current_location_city" name="current_location_city" type="text" required
+                                class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="current_location_country" class="block text-sm font-medium text-gray-300">
+                            Current Country
+                        </label>
+                        <div class="mt-1">
+                            <input id="current_location_country" name="current_location_country" type="text" required
+                                class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy Notice -->
+                <div class="rounded-md bg-blue-900 bg-opacity-50 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-blue-300">
+                                Privacy Notice
+                            </h3>
+                            <div class="mt-2 text-sm text-blue-200">
+                                <p>
+                                    Your data will be used solely for the purpose of this policy simulation. 
+                                    All information is stored securely and will not be shared with third parties.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Register and Continue to Simulation
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
