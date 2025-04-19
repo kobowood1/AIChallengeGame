@@ -28,7 +28,7 @@
         </div>
         
         <div class="mb-4">
-            <div class="w-full bg-gray-700 rounded-full h-4">
+            <div class="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
                 <div id="budget-bar" class="bg-blue-500 h-4 rounded-full" style="width: 100%"></div>
             </div>
         </div>
@@ -137,9 +137,9 @@
             currentBudget = maxBudget - totalCost;
             remainingBudgetElement.textContent = currentBudget;
             
-            // Update progress bar
+            // Update progress bar - cap at 100% when in surplus, min at 0% when in deficit
             const percentage = (currentBudget / maxBudget) * 100;
-            budgetBarElement.style.width = `${Math.max(0, percentage)}%`;
+            budgetBarElement.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
             
             // Change color based on budget status
             if (currentBudget < 0) {
