@@ -1,5 +1,5 @@
 """
-Socket.IO event handlers for the AI challenge game
+Socket.IO event handlers for the AI policy deliberation simulation
 """
 from flask import request
 from flask_socketio import emit, join_room, leave_room
@@ -29,11 +29,11 @@ def handle_disconnect():
 @socketio.on('create_game')
 def handle_create_game(data):
     """
-    Create a new game room
+    Create a new policy deliberation room
     
     Args:
         data: Dictionary containing:
-            - username: Display name for the creator
+            - username: Display name for the policy advisor creating the room
     """
     username = data.get('username', 'Anonymous')
     room_id = str(uuid.uuid4())[:8]  # Generate a short unique room ID
@@ -46,7 +46,7 @@ def handle_create_game(data):
     # Join the room
     join_room(room_id)
     
-    logging.debug(f"Game created: {room_id} by {username}")
+    logging.debug(f"Policy deliberation room created: {room_id} by {username}")
     
     # Send confirmation to the creator
     emit('game_created', {
@@ -60,12 +60,12 @@ def handle_create_game(data):
 @socketio.on('join_game')
 def handle_join_game(data):
     """
-    Join an existing game room
+    Join an existing policy deliberation room
     
     Args:
         data: Dictionary containing:
-            - room_id: ID of the room to join
-            - username: Display name for the player
+            - room_id: ID of the deliberation room to join
+            - username: Display name for the policy advisor
     """
     room_id = data.get('room_id')
     username = data.get('username', 'Anonymous')
@@ -87,7 +87,7 @@ def handle_join_game(data):
     # Join the room
     join_room(room_id)
     
-    logging.debug(f"Player {username} joined game: {room_id}")
+    logging.debug(f"Policy advisor {username} joined deliberation room: {room_id}")
     
     # Add AI agents as players if this is a human player joining
     from ai_agents import generate_agents
@@ -132,11 +132,11 @@ def handle_join_game(data):
 @socketio.on('leave_game')
 def handle_leave_game(data):
     """
-    Leave a game room
+    Leave a policy deliberation room
     
     Args:
         data: Dictionary containing:
-            - room_id: ID of the room to leave
+            - room_id: ID of the deliberation room to leave
     """
     room_id = data.get('room_id')
     
@@ -153,7 +153,7 @@ def handle_leave_game(data):
     # Leave the room
     leave_room(room_id)
     
-    logging.debug(f"Player {request.sid} left game: {room_id}")
+    logging.debug(f"Policy advisor {request.sid} left deliberation room: {room_id}")
     
     # Notify all players in the room
     emit('player_left', {'player_id': request.sid}, room=room_id)
