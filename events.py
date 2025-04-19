@@ -321,6 +321,7 @@ def handle_send_message(data):
         data: Dictionary containing:
             - message: The message content
             - sender: Name of the sender (default: 'You')
+            - policy_name: Optional policy being discussed
     """
     from flask import session
     import time
@@ -332,27 +333,52 @@ def handle_send_message(data):
     
     message = data.get('message')
     sender = data.get('sender', 'You')
+    policy_name = data.get('policy_name', None)
     
     if not message:
         return
+    
+    # Store message in conversation history
+    conversation_history = session.get('conversation_history', [])
+    
+    # Limit history size
+    if len(conversation_history) >= 20:
+        conversation_history = conversation_history[1:]  # Remove oldest message
+    
+    # Add new message to history
+    conversation_history.append({
+        'sender': sender,
+        'message': message,
+        'timestamp': time.time(),
+        'is_player': True,
+        'policy': policy_name
+    })
+    
+    # Update session
+    session['conversation_history'] = conversation_history
+    
+    # Store the latest user message separately for AI context
+    session['latest_user_message'] = message
     
     # Broadcast the message to the room
     emit('chat_message', {
         'sender': sender,
         'message': message,
         'timestamp': time.time(),
-        'is_player': True
+        'is_player': True,
+        'policy': policy_name
     }, to=room_id)
 
 @socketio.on('agent_response')
 def handle_agent_response(data):
     """
-    Trigger an agent to respond to a player message
+    Trigger an agent to respond to a player message, considering recent conversation context
     
     Args:
         data: Dictionary containing:
             - agent_index: Index of the agent to respond
             - policy_name: The policy being discussed
+            - user_message: The most recent message from the user (optional)
     """
     from flask import session
     import time
@@ -365,6 +391,13 @@ def handle_agent_response(data):
     
     agent_index = data.get('agent_index')
     policy_name = data.get('policy_name')
+    user_message = data.get('user_message', '')
+    
+    # Get conversation history from session if available
+    conversation_history = session.get('conversation_history', [])
+    
+    # Limit to last 5 messages to keep the context relevant
+    recent_messages = conversation_history[-5:] if conversation_history else []
     
     agents = session.get('agents', [])
     selections = session.get('player_package', {})
@@ -379,8 +412,22 @@ def handle_agent_response(data):
         # Use the policy's option level from the player's selections
         option_level = selections.get(policy_name, 2)  # Default to option 2 if not found
         
-        # Generate a justification as a response
-        justification = agent_justify(policy_name, option_level, agent)
+        # Generate a justification as a response, including conversation context
+        justification = agent_justify(policy_name, option_level, agent, user_message, recent_messages)
+        
+        # Store this message in the conversation history
+        if len(conversation_history) >= 20:  # Limit history to prevent session from getting too large
+            conversation_history = conversation_history[1:]  # Remove oldest message
+            
+        conversation_history.append({
+            'sender': agent['name'],
+            'message': justification,
+            'timestamp': time.time(),
+            'policy': policy_name
+        })
+        
+        # Update session
+        session['conversation_history'] = conversation_history
         
         emit('chat_message', {
             'sender': agent['name'],

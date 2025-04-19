@@ -90,21 +90,35 @@ def generate_agents():
     
     return agents
 
-def agent_justify(policy_domain, option_chosen, agent):
+def agent_justify(policy_domain, option_chosen, agent, user_message='', recent_messages=None):
     """
-    Generate a justification for a policy choice based on agent characteristics
+    Generate a justification for a policy choice based on agent characteristics and conversation context
     
     Args:
         policy_domain (str): The policy area being justified
         option_chosen (int): The option level chosen (1, 2, or 3)
         agent (dict): The agent's demographic and ideological information
+        user_message (str, optional): The most recent message from the user
+        recent_messages (list, optional): List of recent messages in the conversation
     
     Returns:
-        str: A three-sentence justification for the policy choice
+        str: A contextual response to the user's perspective
     """
+    if recent_messages is None:
+        recent_messages = []
+    
     # Check if OpenAI is available
     if 'openai_available' in globals() and openai_available:
         try:
+            # Format recent conversation history for context
+            conversation_context = ""
+            if recent_messages:
+                conversation_context = "Recent conversation:\n"
+                for msg in recent_messages:
+                    sender = msg.get('sender', 'Unknown')
+                    message = msg.get('message', '')
+                    conversation_context += f"{sender}: {message}\n"
+            
             # Construct a prompt for the OpenAI API
             prompt = f"""
             You are {agent['name']}, a {agent['age']}-year-old {agent['occupation']} with a {agent['education_level']} education.
@@ -112,15 +126,20 @@ def agent_justify(policy_domain, option_chosen, agent):
             
             You've chosen option {option_chosen} for {policy_domain} policy.
             
-            Provide a three-sentence justification for this policy choice that reflects your background and ideology.
+            {conversation_context}
+            
+            The user just shared their perspective: "{user_message}"
+            
+            Respond to the user's perspective while explaining your policy preference.
+            Your response should reflect your background, ideology, and address what the user said.
+            Keep your response concise (3-4 sentences) and conversational in tone.
             Don't mention race, ethnicity, gender, or sexuality. Focus on your occupation, education, economic status, and political views.
-            Make your response exactly three sentences - no more, no less.
             """
             
             response = client.chat.completions.create(
                 model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
                 messages=[
-                    {"role": "system", "content": "You generate brief, realistic responses from simulated citizens explaining their policy preferences."},
+                    {"role": "system", "content": "You generate brief, realistic responses from simulated citizens who respond to others' perspectives while explaining their policy preferences."},
                     {"role": "user", "content": prompt}
                 ],
                 max_tokens=200,
@@ -133,7 +152,7 @@ def agent_justify(policy_domain, option_chosen, agent):
             logging.error(f"Error using OpenAI API: {e}")
             # Fall through to the fallback response
     
-    # Fallback responses
+    # Fallback responses - now more conversational
     ideologies = {
         "conservative": "I believe in traditional values and limited government spending.",
         "moderate": "I think balanced approaches usually work best.",
@@ -148,6 +167,11 @@ def agent_justify(policy_domain, option_chosen, agent):
         3: "This comprehensive approach, while more expensive, addresses the issue properly."
     }
     
+    # If we have a user message, acknowledge it in the response
+    acknowledgment = ""
+    if user_message:
+        acknowledgment = "I understand your perspective, though I have a different view. "
+    
     occupation_relevance = f"As a {agent['occupation']}, I see how this directly affects my work and community."
     
-    return f"{ideologies.get(agent['ideology'], 'I have well-considered views on this issue.')} {option_attitudes.get(option_chosen, 'This option aligns with my values.')} {occupation_relevance}"
+    return f"{acknowledgment}{ideologies.get(agent['ideology'], 'I have well-considered views on this issue.')} {option_attitudes.get(option_chosen, 'This option aligns with my values.')} {occupation_relevance}"
