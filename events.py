@@ -26,8 +26,8 @@ def handle_disconnect():
             # Update game state for remaining players
             emit('game_state_update', game.get_game_state(), room=game.room_id)
 
-@socketio.on('create_game')
-def handle_create_game(data):
+@socketio.on('create_deliberation')
+def handle_create_deliberation(data):
     """
     Create a new policy deliberation room
     
@@ -57,8 +57,8 @@ def handle_create_game(data):
     # Broadcast game state
     emit('game_state_update', game.get_game_state(), room=room_id)
 
-@socketio.on('join_game')
-def handle_join_game(data):
+@socketio.on('join_deliberation')
+def handle_join_deliberation(data):
     """
     Join an existing policy deliberation room
     
@@ -129,8 +129,8 @@ def handle_join_game(data):
     # Broadcast updated game state
     emit('game_state_update', game.get_game_state(), room=room_id)
 
-@socketio.on('leave_game')
-def handle_leave_game(data):
+@socketio.on('leave_deliberation')
+def handle_leave_deliberation(data):
     """
     Leave a policy deliberation room
     
@@ -165,8 +165,8 @@ def handle_leave_game(data):
     if len(game.players) == 0:
         game_manager.delete_game(room_id)
 
-@socketio.on('start_game')
-def handle_start_game(data):
+@socketio.on('start_deliberation')
+def handle_start_deliberation(data):
     """
     Begin the policy deliberation session
     
@@ -198,8 +198,8 @@ def handle_start_game(data):
         'state': game.get_game_state()
     }, room=room_id)
 
-@socketio.on('submit_solution')
-def handle_submit_solution(data):
+@socketio.on('submit_policy_proposal')
+def handle_submit_policy_proposal(data):
     """
     Submit a policy proposal for the current challenge
     
@@ -222,7 +222,7 @@ def handle_submit_solution(data):
     result = game.submit_solution(request.sid, solution)
     
     # Notify the submitting player
-    emit('solution_submitted', result)
+    emit('policy_proposal_submitted', result)
     
     # Broadcast updated game state
     emit('game_state_update', game.get_game_state(), room=room_id)
@@ -234,8 +234,8 @@ def handle_submit_solution(data):
             'state': game.get_game_state()
         }, room=room_id)
 
-@socketio.on('get_game_state')
-def handle_get_game_state(data):
+@socketio.on('get_deliberation_state')
+def handle_get_deliberation_state(data):
     """
     Get the current state of a policy deliberation session
     
