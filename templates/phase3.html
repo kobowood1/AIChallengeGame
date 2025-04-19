@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}Republic of Bean - Policy Implementation{% endblock %}
+
+{% block head %}
+<style>
+    .policy-card {
+        transition: all 0.3s ease;
+    }
+    
+    .policy-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .comparison-arrow {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+    
+    .text-gradient {
+        background: linear-gradient(90deg, #3b82f6, #10b981);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .firework {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        animation: firework-animation 1s forwards;
+        z-index: 10;
+    }
+    
+    @keyframes firework-animation {
+        0% {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100px) scale(0);
+            opacity: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-2 text-center text-blue-400">Policy Implementation Plan</h1>
+    <p class="text-center text-gray-400 mb-6">The final policy package has been approved by the citizens of Bean</p>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-xl font-bold mb-4 flex items-center">
+            <i class="fas fa-chart-bar mr-2"></i>Budget Breakdown
+        </h2>
+        
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="bg-gray-700 p-4 rounded-lg w-full md:w-1/2">
+                <h3 class="font-bold mb-2">Original Proposal</h3>
+                <div class="flex justify-between items-center mb-2">
+                    <span>Budget Used:</span>
+                    <span class="text-blue-400 font-bold">{{ session.package_cost }} / {{ max_budget }}</span>
+                </div>
+                <div class="w-full bg-gray-600 rounded-full h-4 mb-2">
+                    <div class="bg-blue-500 h-4 rounded-full" style="width: {{ (session.package_cost / max_budget) * 100 }}%"></div>
+                </div>
+            </div>
+            
+            <div class="comparison-arrow bg-gray-600">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+            
+            <div class="bg-gray-700 p-4 rounded-lg w-full md:w-1/2">
+                <h3 class="font-bold mb-2">Final Approved</h3>
+                <div class="flex justify-between items-center mb-2">
+                    <span>Budget Used:</span>
+                    <span class="text-green-400 font-bold">{{ final_cost }} / {{ max_budget }}</span>
+                </div>
+                <div class="w-full bg-gray-600 rounded-full h-4 mb-2">
+                    <div class="bg-green-500 h-4 rounded-full" style="width: {{ (final_cost / max_budget) * 100 }}%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-xl font-bold mb-6 flex items-center">
+            <i class="fas fa-file-contract mr-2"></i>Final Policy Package
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for policy_name, final_level in final_package.items() %}
+                {% set player_level = player_package[policy_name] %}
+                {% set changed = player_level != final_level %}
+                
+                <div class="bg-gray-700 p-4 rounded-lg policy-card" data-policy="{{ policy_name }}">
+                    <h3 class="font-bold mb-3 flex items-center justify-between">
+                        {{ policy_name }}
+                        {% if changed %}
+                            <span class="text-yellow-400 text-sm">
+                                <i class="fas fa-exchange-alt"></i> Modified
+                            </span>
+                        {% else %}
+                            <span class="text-green-400 text-sm">
+                                <i class="fas fa-check"></i> Approved
+                            </span>
+                        {% endif %}
+                    </h3>
+                    
+                    <div class="mb-3">
+                        {% if changed %}
+                            <div class="flex items-center justify-between text-sm mb-1">
+                                <span class="text-gray-400">Your proposal:</span>
+                                <span class="text-blue-400">Option {{ player_level }}</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-400">Final approved:</span>
+                                <span class="text-green-400">Option {{ final_level }}</span>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-2 mb-2 bg-green-900 bg-opacity-20 rounded">
+                                <span class="text-green-400 font-semibold">Option {{ final_level }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="text-sm text-gray-300">
+                        <p class="mb-2">Implementation phases:</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Planning & resource allocation</li>
+                            <li>Stakeholder engagement</li>
+                            <li>Phased deployment</li>
+                            <li>Monitoring & evaluation</li>
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-xl font-bold mb-4 flex items-center">
+            <i class="fas fa-calendar-alt mr-2"></i>Implementation Timeline
+        </h2>
+        
+        <div class="relative pt-6">
+            <!-- Timeline Line -->
+            <div class="absolute top-0 left-6 bottom-0 w-1 bg-blue-900 z-0"></div>
+            
+            <!-- Timeline Items -->
+            <div class="relative z-10">
+                <!-- Item 1 -->
+                <div class="mb-10 ml-10 relative">
+                    <div class="absolute -left-14 mt-1.5">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-file-signature text-white"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="font-bold">Phase 1: Policy Approval</h3>
+                        <p class="text-green-400 text-sm mb-2">Completed</p>
+                        <p class="text-sm text-gray-300">The citizens of Bean have approved the final policy package through democratic voting.</p>
+                    </div>
+                </div>
+                
+                <!-- Item 2 -->
+                <div class="mb-10 ml-10 relative">
+                    <div class="absolute -left-14 mt-1.5">
+                        <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-clipboard-list text-white"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="font-bold">Phase 2: Planning & Resource Allocation</h3>
+                        <p class="text-yellow-400 text-sm mb-2">In Progress</p>
+                        <p class="text-sm text-gray-300">Detailed implementation plans are being developed and resources are being allocated.</p>
+                    </div>
+                </div>
+                
+                <!-- Item 3 -->
+                <div class="mb-10 ml-10 relative">
+                    <div class="absolute -left-14 mt-1.5">
+                        <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-people-arrows text-white"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="font-bold">Phase 3: Stakeholder Engagement</h3>
+                        <p class="text-gray-400 text-sm mb-2">Upcoming</p>
+                        <p class="text-sm text-gray-300">Key stakeholders will be engaged to ensure successful implementation.</p>
+                    </div>
+                </div>
+                
+                <!-- Item 4 -->
+                <div class="mb-10 ml-10 relative">
+                    <div class="absolute -left-14 mt-1.5">
+                        <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-rocket text-white"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="font-bold">Phase 4: Policy Implementation</h3>
+                        <p class="text-gray-400 text-sm mb-2">Upcoming</p>
+                        <p class="text-sm text-gray-300">Rollout of the approved policies will begin with careful monitoring.</p>
+                    </div>
+                </div>
+                
+                <!-- Item 5 -->
+                <div class="ml-10 relative">
+                    <div class="absolute -left-14 mt-1.5">
+                        <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-chart-line text-white"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="font-bold">Phase 5: Evaluation & Refinement</h3>
+                        <p class="text-gray-400 text-sm mb-2">Upcoming</p>
+                        <p class="text-sm text-gray-300">Continuous monitoring and refinement to ensure optimal results.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold mb-4 text-gradient">Congratulations!</h2>
+        <p class="text-xl text-gray-300 mb-6">You've successfully navigated the policy-making process in the Republic of Bean</p>
+        <a href="{{ url_for('main.index') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center">
+            <i class="fas fa-home mr-2"></i>Return Home
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Create firework animation when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        createFireworks();
+    });
+    
+    // Function to create fireworks
+    function createFireworks() {
+        const colors = ['#3b82f6', '#10b981', '#ec4899', '#f59e0b', '#8b5cf6'];
+        const container = document.querySelector('body');
+        
+        // Create 50 fireworks
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                
+                // Random position
+                const x = Math.random() * window.innerWidth;
+                const y = window.innerHeight;
+                
+                // Random color
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                firework.style.left = `${x}px`;
+                firework.style.top = `${y}px`;
+                firework.style.backgroundColor = color;
+                
+                // Random animation duration
+                const duration = 0.5 + Math.random() * 1;
+                firework.style.animationDuration = `${duration}s`;
+                
+                // Append to container and remove after animation
+                container.appendChild(firework);
+                setTimeout(() => {
+                    firework.remove();
+                }, duration * 1000);
+            }, i * 100); // Stagger the fireworks
+        }
+    }
+</script>
+{% endblock %}

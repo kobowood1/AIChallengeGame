@@ -52,40 +52,38 @@ def phase1():
 @main.route('/phase2')
 def phase2():
     """
-    Next phase after policy selections
+    Policy discussion and voting phase
     """
     # Check if user has completed phase1
     if 'player_package' not in session:
         flash('Please complete the policy selections first', 'error')
         return redirect(url_for('main.phase1'))
     
-    # Generate justifications for each agent and policy
-    selections = session['player_package']
-    agents = session.get('agents', [])
+    # Clear any existing agent votes (in case of returning to this page)
+    if 'agent_votes' in session:
+        session.pop('agent_votes')
     
-    # Create a dictionary to store justifications for each agent
-    justifications = {}
+    # Clear any existing final package (in case of returning to this page)
+    if 'final_package' in session:
+        session.pop('final_package')
     
-    # Find the policy objects from their names
-    policy_objects = {}
-    for policy in POLICIES:
-        policy_objects[policy['name']] = policy
-    
-    # Generate justifications for each agent
-    for agent in agents:
-        agent_id = agent['name']
-        justifications[agent_id] = {}
-        
-        for policy_name, option_level in selections.items():
-            # Get the full policy object
-            policy = policy_objects.get(policy_name, {})
-            
-            # Generate a justification for this policy choice
-            justification = agent_justify(policy_name, option_level, agent)
-            justifications[agent_id][policy_name] = justification
-    
-    return render_template('phase2.html', 
+    return render_template('phase2.html',
                          selections=session['player_package'], 
                          cost=session['package_cost'],
-                         max_budget=MAX_BUDGET,
-                         justifications=justifications)
+                         max_budget=MAX_BUDGET)
+
+@main.route('/phase3')
+def phase3():
+    """
+    Final implementation phase after voting
+    """
+    # Check if user has completed phase2
+    if 'final_package' not in session:
+        flash('Please complete the voting phase first', 'error')
+        return redirect(url_for('main.phase2'))
+    
+    return render_template('phase3.html',
+                         final_package=session['final_package'],
+                         final_cost=session['final_cost'],
+                         player_package=session['player_package'],
+                         max_budget=MAX_BUDGET)

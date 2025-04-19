@@ -1,80 +1,530 @@
 {% extends "base.html" %}
 
-{% block title %}Republic of Bean - Policy Impact{% endblock %}
+{% block title %}Republic of Bean - Policy Discussion{% endblock %}
+
+{% block head %}
+<style>
+    .chat-container {
+        height: 50vh;
+        overflow-y: auto;
+    }
+    
+    .message {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 8px;
+    }
+    
+    .system-message {
+        background-color: rgba(59, 130, 246, 0.2);
+        border-left: 3px solid #3b82f6;
+    }
+    
+    .player-message {
+        background-color: rgba(16, 185, 129, 0.2);
+        border-left: 3px solid #10b981;
+        margin-left: 20px;
+    }
+    
+    .agent-message {
+        background-color: rgba(107, 114, 128, 0.2);
+        border-left: 3px solid #6b7280;
+    }
+    
+    .vote-message {
+        background-color: rgba(236, 72, 153, 0.2);
+        border-left: 3px solid #ec4899;
+    }
+    
+    .agent-card {
+        transition: all 0.3s ease;
+    }
+    
+    .agent-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .timer {
+        font-family: monospace;
+    }
+    
+    .policy-card {
+        position: relative;
+    }
+    
+    .vote-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 2px 8px;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto">
-    <h1 class="text-3xl font-bold mb-4 text-center text-blue-400">Policy Impact Analysis</h1>
+<div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold mb-4 text-center text-blue-400">Policy Discussion and Voting</h1>
     
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <h2 class="text-xl font-bold mb-4">Your Selected Policies</h2>
-        
-        <div class="mb-6">
-            <div class="bg-gray-700 p-4 rounded-lg">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-lg font-bold">Total Budget Spent:</span>
-                    <span class="text-lg">{{ cost }} / {{ max_budget }}</span>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Column: Policies and Votes -->
+        <div class="lg:col-span-1">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+                <h2 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-scroll mr-2"></i>Your Proposal
+                    <span class="ml-auto text-sm font-normal">
+                        <span class="text-blue-400">{{ cost }}</span> / {{ max_budget }}
+                    </span>
+                </h2>
+                
+                <div class="w-full bg-gray-700 rounded-full h-3 mb-6">
+                    <div class="bg-blue-500 h-3 rounded-full" style="width: {{ (cost / max_budget) * 100 }}%"></div>
                 </div>
-                <div class="w-full bg-gray-600 rounded-full h-4">
-                    <div class="bg-blue-500 h-4 rounded-full" style="width: {{ (cost / max_budget) * 100 }}%"></div>
+                
+                <div class="space-y-4">
+                    {% for policy_name, level in selections.items() %}
+                        <div class="bg-gray-700 p-4 rounded-lg policy-card" id="policy-{{ policy_name|replace(' ', '_') }}">
+                            <h3 class="font-bold">{{ policy_name }}</h3>
+                            <p class="text-sm mb-1">Your Proposal: <span class="text-blue-400">Option {{ level }}</span></p>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-full bg-gray-600 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full vote-progress" id="vote-progress-{{ policy_name|replace(' ', '_') }}" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <span class="vote-badge hidden bg-gray-800" id="vote-result-{{ policy_name|replace(' ', '_') }}">?</span>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="mt-6 flex justify-between">
+                    <a href="{{ url_for('main.phase1') }}" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition">
+                        <i class="fas fa-arrow-left mr-2"></i>Edit
+                    </a>
+                    <button id="call-vote-btn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition">
+                        <i class="fas fa-vote-yea mr-2"></i>Call Vote
+                    </button>
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <div class="timer text-xl" id="timer">30:00</div>
+                    <p class="text-xs text-gray-400 mt-1">Time until automatic voting</p>
+                </div>
+            </div>
+            
+            <!-- Agents Cards -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4">
+                    <i class="fas fa-users mr-2"></i>Citizens Panel
+                </h2>
+                
+                <div class="space-y-4">
+                    {% for agent in session.get('agents', []) %}
+                        <div class="bg-gray-700 p-3 rounded-lg agent-card flex items-center" data-agent-index="{{ loop.index0 }}">
+                            <div class="flex-shrink-0 w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-lg font-bold">
+                                {{ agent.name[0] }}
+                            </div>
+                            <div class="ml-3 flex-grow">
+                                <h3 class="font-bold text-sm">{{ agent.name }}</h3>
+                                <p class="text-xs text-gray-300">{{ agent.occupation }}, {{ agent.age }}</p>
+                            </div>
+                            <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">{{ agent.ideology }}</span>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
         
-        <div class="grid md:grid-cols-2 gap-4">
-            {% for policy_name, level in selections.items() %}
-                <div class="bg-gray-700 p-4 rounded-lg">
-                    <h3 class="font-bold">{{ policy_name }}</h3>
-                    <p>Selected Option: {{ level }}</p>
-                </div>
-            {% endfor %}
-        </div>
-        
-        <div class="mt-6 text-center">
-            <a href="{{ url_for('main.phase1') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg text-lg transition">
-                Edit Selections
-            </a>
-        </div>
-    </div>
-    
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl font-bold mb-4">Citizen Reactions</h2>
-        
-        <div class="grid md:grid-cols-2 gap-6">
-            {% for agent in session.get('agents', []) %}
-                <div class="bg-gray-700 p-4 rounded-lg">
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="font-bold text-lg">{{ agent.name }}</h3>
-                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">{{ agent.ideology }}</span>
-                    </div>
-                    
-                    <div class="space-y-2 text-sm mb-4">
-                        <p><span class="font-bold">Age:</span> {{ agent.age }}</p>
-                        <p><span class="font-bold">Occupation:</span> {{ agent.occupation }}</p>
-                        <p><span class="font-bold">Education:</span> {{ agent.education_level }}</p>
-                        <p><span class="font-bold">Status:</span> {{ agent.socioeconomic_status }}</p>
-                    </div>
-                    
-                    <div class="border-t border-gray-600 pt-3 mt-3">
-                        <h4 class="font-bold mb-2">Reactions to Your Policies:</h4>
-                        <div class="space-y-3">
-                            {% for policy_name, level in selections.items() %}
-                                <div>
-                                    <p class="text-sm"><span class="font-bold text-blue-400">{{ policy_name }}:</span> Option {{ level }}</p>
-                                    <div class="mt-1 text-xs italic">
-                                        {% if justifications and agent.name in justifications and policy_name in justifications[agent.name] %}
-                                            <p>{{ justifications[agent.name][policy_name] }}</p>
-                                        {% else %}
-                                            <p>No reaction available.</p>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            {% endfor %}
+        <!-- Right Column: Chat Interface -->
+        <div class="lg:col-span-2">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+                <h2 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-comments mr-2"></i>Live Discussion
+                </h2>
+                
+                <!-- Chat Messages -->
+                <div id="chat-container" class="chat-container bg-gray-900 p-4 rounded-lg mb-4">
+                    <div id="messages">
+                        <!-- Messages will be inserted here by JavaScript -->
+                        <div class="message system-message">
+                            <div class="text-xs text-gray-400 mb-1">System</div>
+                            <div class="message-content">
+                                Loading discussion...
+                            </div>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
+                
+                <!-- Message Input -->
+                <div class="flex">
+                    <input type="text" id="message-input" class="flex-grow bg-gray-700 border border-gray-600 rounded-l-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your argument here...">
+                    <button id="send-message-btn" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-r-lg transition">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                
+                <div class="mt-4 text-sm text-gray-400">
+                    <p>Tip: Make compelling arguments to influence citizens' votes. Address their concerns based on their backgrounds.</p>
+                </div>
+            </div>
+            
+            <!-- Final Vote Results (Hidden until voting is complete) -->
+            <div id="voting-results" class="bg-gray-800 p-6 rounded-lg shadow-lg hidden">
+                <h2 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-chart-pie mr-2"></i>Final Vote Results
+                </h2>
+                
+                <div class="space-y-4" id="final-results-container">
+                    <!-- Results will be filled by JavaScript -->
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <a href="/phase3" id="continue-btn" class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg text-lg transition">
+                        Continue to Implementation
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Get the session ID to use as room ID
+    const sessionId = "{{ request.cookies.get('session', '') }}";
+    
+    // Connect to Socket.IO
+    const socket = io();
+    let isVoting = false;
+    let discussionTimer;
+    let timeLeft = 30 * 60; // 30 minutes in seconds
+    
+    // DOM elements
+    const messagesContainer = document.getElementById('messages');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-message-btn');
+    const callVoteButton = document.getElementById('call-vote-btn');
+    const timerElement = document.getElementById('timer');
+    const votingResults = document.getElementById('voting-results');
+    const finalResultsContainer = document.getElementById('final-results-container');
+    
+    // Agent cards
+    const agentCards = document.querySelectorAll('.agent-card');
+    
+    // Policy selections from server
+    const selections = {{ selections|tojson }};
+    
+    // Connect to the server and join the policy room
+    socket.on('connect', () => {
+        console.log('Connected to server');
+        // Join the policy discussion room
+        socket.emit('join_policy_room', { room_id: sessionId });
+        
+        // Start the timer
+        startTimer();
+    });
+    
+    // Handle incoming chat messages
+    socket.on('chat_message', (data) => {
+        addMessage(data);
+        
+        // If this is a vote message, update the vote progress
+        if (data.is_vote) {
+            updateVoteProgress(data.policy, data.vote);
+        }
+        
+        // If this is the final message, show voting results
+        if (data.is_final) {
+            setTimeout(() => {
+                votingResults.classList.remove('hidden');
+                // Scroll to the voting results
+                votingResults.scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
+        }
+    });
+    
+    // Handle voting complete
+    socket.on('voting_complete', (data) => {
+        displayFinalResults(data.final_package, data.total_cost, data.is_valid);
+    });
+    
+    // Handle errors
+    socket.on('error', (data) => {
+        console.error('Socket.IO error:', data.message);
+        addSystemMessage('Error: ' + data.message);
+    });
+    
+    // Send message
+    sendButton.addEventListener('click', () => {
+        sendMessage();
+    });
+    
+    // Send message on Enter key
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+    
+    // Call vote button
+    callVoteButton.addEventListener('click', () => {
+        if (confirm('Are you ready to call for a vote? This will end the discussion phase.')) {
+            isVoting = true;
+            callVoteButton.disabled = true;
+            callVoteButton.classList.add('opacity-50');
+            messageInput.disabled = true;
+            sendButton.disabled = true;
+            
+            // Stop the timer
+            clearInterval(discussionTimer);
+            timerElement.textContent = 'Voting...';
+            
+            // Emit call_vote event
+            socket.emit('call_vote', {});
+            
+            // Add system message
+            addSystemMessage('You called for a vote. The citizens are now voting...');
+        }
+    });
+    
+    // Agent card click event - trigger a response from the agent
+    agentCards.forEach(card => {
+        card.addEventListener('click', () => {
+            if (isVoting) return;
+            
+            const agentIndex = parseInt(card.dataset.agentIndex);
+            // Pick a random policy to respond about
+            const policies = Object.keys(selections);
+            const randomPolicy = policies[Math.floor(Math.random() * policies.length)];
+            
+            socket.emit('agent_response', {
+                agent_index: agentIndex,
+                policy_name: randomPolicy
+            });
+            
+            // Visual feedback
+            card.classList.add('border');
+            card.classList.add('border-blue-500');
+            setTimeout(() => {
+                card.classList.remove('border');
+                card.classList.remove('border-blue-500');
+            }, 1000);
+        });
+    });
+    
+    // Add a message to the chat
+    function addMessage(data) {
+        const messageDiv = document.createElement('div');
+        let messageClass = 'message';
+        
+        if (data.sender === 'System') {
+            messageClass += ' system-message';
+        } else if (data.is_player) {
+            messageClass += ' player-message';
+        } else if (data.is_vote) {
+            messageClass += ' vote-message';
+        } else {
+            messageClass += ' agent-message';
+        }
+        
+        messageDiv.className = messageClass;
+        
+        // Message header with sender name
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'text-xs text-gray-400 mb-1 flex items-center';
+        
+        // Add icon based on message type
+        let iconClass = '';
+        if (data.sender === 'System') {
+            iconClass = 'fas fa-cog mr-1';
+        } else if (data.is_player) {
+            iconClass = 'fas fa-user mr-1';
+        } else if (data.is_vote) {
+            iconClass = 'fas fa-vote-yea mr-1';
+        } else {
+            iconClass = 'fas fa-user-circle mr-1';
+        }
+        
+        headerDiv.innerHTML = `<i class="${iconClass}"></i> ${data.sender}`;
+        
+        // If this is an agent, add their ideology
+        if (data.agent) {
+            const ideologyBadge = document.createElement('span');
+            ideologyBadge.className = 'ml-2 bg-blue-600 text-white px-1 py-0.5 rounded text-xs';
+            ideologyBadge.textContent = data.agent.ideology;
+            headerDiv.appendChild(ideologyBadge);
+        }
+        
+        // Add timestamp
+        const timestamp = new Date(data.timestamp * 1000);
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'ml-auto';
+        timeSpan.textContent = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        headerDiv.appendChild(timeSpan);
+        
+        // Message content
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = data.message;
+        
+        // Append to message div
+        messageDiv.appendChild(headerDiv);
+        messageDiv.appendChild(contentDiv);
+        
+        // Add to messages container
+        messagesContainer.appendChild(messageDiv);
+        
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    // Add a system message
+    function addSystemMessage(message) {
+        addMessage({
+            sender: 'System',
+            message: message,
+            timestamp: Date.now() / 1000
+        });
+    }
+    
+    // Send a message
+    function sendMessage() {
+        const message = messageInput.value.trim();
+        if (message === '') return;
+        
+        socket.emit('send_message', {
+            message: message,
+            sender: 'You'
+        });
+        
+        // Clear input
+        messageInput.value = '';
+    }
+    
+    // Start the timer
+    function startTimer() {
+        updateTimerDisplay();
+        
+        discussionTimer = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+            
+            if (timeLeft <= 0) {
+                clearInterval(discussionTimer);
+                // Automatically call for a vote when time is up
+                if (!isVoting) {
+                    isVoting = true;
+                    callVoteButton.disabled = true;
+                    callVoteButton.classList.add('opacity-50');
+                    messageInput.disabled = true;
+                    sendButton.disabled = true;
+                    
+                    // Emit call_vote event
+                    socket.emit('call_vote', {});
+                    
+                    // Add system message
+                    addSystemMessage('Time is up! Automatic voting has started...');
+                }
+            }
+        }, 1000);
+    }
+    
+    // Update the timer display
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    // Update vote progress for a policy
+    function updateVoteProgress(policyName, voteOption) {
+        const policyId = policyName.replace(/\s+/g, '_');
+        const voteProgressBar = document.getElementById(`vote-progress-${policyId}`);
+        const voteResult = document.getElementById(`vote-result-${policyId}`);
+        
+        // Show the result badge
+        voteResult.classList.remove('hidden');
+        voteResult.textContent = voteOption;
+        
+        // Color the badge based on the vote
+        if (voteOption === 1) {
+            voteResult.classList.add('bg-red-800');
+            voteResult.classList.remove('bg-yellow-800', 'bg-green-800', 'bg-gray-800');
+        } else if (voteOption === 2) {
+            voteResult.classList.add('bg-yellow-800');
+            voteResult.classList.remove('bg-red-800', 'bg-green-800', 'bg-gray-800');
+        } else if (voteOption === 3) {
+            voteResult.classList.add('bg-green-800');
+            voteResult.classList.remove('bg-red-800', 'bg-yellow-800', 'bg-gray-800');
+        }
+        
+        // Animate the progress bar
+        let width = parseInt(voteProgressBar.style.width) || 0;
+        const targetWidth = (voteOption / 3) * 100;
+        
+        const animateProgress = () => {
+            if (width < targetWidth) {
+                width += 2;
+                voteProgressBar.style.width = `${width}%`;
+                requestAnimationFrame(animateProgress);
+            }
+        };
+        
+        requestAnimationFrame(animateProgress);
+    }
+    
+    // Display final voting results
+    function displayFinalResults(finalPackage, totalCost, isValid) {
+        // Clear the container
+        finalResultsContainer.innerHTML = '';
+        
+        // Add budget information
+        const budgetDiv = document.createElement('div');
+        budgetDiv.className = 'bg-gray-700 p-4 rounded-lg mb-4';
+        
+        budgetDiv.innerHTML = `
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-lg font-bold">Final Budget:</span>
+                <span class="text-lg">${totalCost} / {{ max_budget }}</span>
+            </div>
+            <div class="w-full bg-gray-600 rounded-full h-4">
+                <div class="bg-${isValid ? 'green' : 'red'}-500 h-4 rounded-full" style="width: ${(totalCost / {{ max_budget }}) * 100}%"></div>
+            </div>
+            <p class="mt-2 text-sm ${isValid ? 'text-green-400' : 'text-red-400'}">
+                ${isValid ? 'Budget is valid!' : 'Budget required adjustments.'}
+            </p>
+        `;
+        
+        finalResultsContainer.appendChild(budgetDiv);
+        
+        // Add each policy result
+        for (const [policyName, optionLevel] of Object.entries(finalPackage)) {
+            const policyDiv = document.createElement('div');
+            policyDiv.className = 'bg-gray-700 p-4 rounded-lg';
+            
+            // Determine if this matches the player's selection
+            const playerOption = selections[policyName];
+            const matchesPlayer = playerOption === optionLevel;
+            
+            policyDiv.innerHTML = `
+                <h3 class="font-bold">${policyName}</h3>
+                <div class="flex items-center justify-between mt-2">
+                    <div>
+                        <p>Original Proposal: <span class="text-blue-400">Option ${playerOption}</span></p>
+                        <p>Final Vote: <span class="text-${matchesPlayer ? 'green' : 'yellow'}-400">Option ${optionLevel}</span></p>
+                    </div>
+                    <span class="text-${matchesPlayer ? 'green' : 'yellow'}-400">
+                        <i class="fas fa-${matchesPlayer ? 'check' : 'exchange-alt'} mr-1"></i>
+                        ${matchesPlayer ? 'Accepted' : 'Modified'}
+                    </span>
+                </div>
+            `;
+            
+            finalResultsContainer.appendChild(policyDiv);
+        }
+    }
+</script>
 {% endblock %}
