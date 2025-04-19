@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.setItem('username', username);
         
         // Join the room
-        socket.emit('join_game', { room_id: roomId, username });
+        socket.emit('join_deliberation', { room_id: roomId, username });
         
         // Show loading overlay
         toggleLoading(true, 'Joining policy deliberation room...');
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showNotification('Joined policy deliberation room', 'success');
         
         // Store policy advisor ID
-        sessionStorage.setItem('playerId', data.player_id);
+        sessionStorage.setItem('advisorId', data.advisor_id);
     });
     
     socket.on('game_state_update', (state) => {
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         startGameTimer(data.challenge.time_limit);
     });
     
-    socket.on('policy_submitted', (result) => {
+    socket.on('policy_proposal_submitted', (result) => {
         if (result.success) {
             showNotification(`Policy proposal submitted! Score: ${result.score}`, 'success');
             playerStatus.textContent = 'Submitted';
@@ -180,11 +180,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // UI update function
     function updateUI(state) {
-        const playerId = sessionStorage.getItem('playerId');
+        const advisorId = sessionStorage.getItem('advisorId');
         
         // Determine if current player is host (first player in the room)
-        const playerIds = Object.keys(state.players);
-        isHost = playerIds.length > 0 && playerIds[0] === playerId;
+        const advisorIds = Object.keys(state.players);
+        isHost = advisorIds.length > 0 && advisorIds[0] === advisorId;
         
         // Show/hide host controls
         if (isHost && state.state === 'waiting') {
@@ -212,10 +212,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update player statuses
             updatePlayerStatuses(state.players);
             
-            // Update current player's status
-            if (state.players[playerId]) {
-                const status = state.players[playerId].status;
-                playerScore.textContent = state.players[playerId].score;
+            // Update current advisor's status
+            if (state.players[advisorId]) {
+                const status = state.players[advisorId].status;
+                playerScore.textContent = state.players[advisorId].score;
                 
                 if (status === 'deliberating') {
                     playerStatus.textContent = 'Deliberating';
@@ -472,16 +472,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 timeLeft = 0;
                 
                 // Auto-submit if not submitted yet
-                const playerId = sessionStorage.getItem('playerId');
+                const advisorId = sessionStorage.getItem('advisorId');
                 if (gameState && 
                     gameState.players && 
-                    gameState.players[playerId] && 
-                    gameState.players[playerId].status === 'deliberating') {
+                    gameState.players[advisorId] && 
+                    gameState.players[advisorId].status === 'deliberating') {
                     
-                    const solution = editor.getValue();
-                    socket.emit('submit_solution', { 
+                    const policyProposal = editor.getValue();
+                    socket.emit('submit_policy_proposal', { 
                         room_id: roomId, 
-                        solution: solution 
+                        solution: policyProposal 
                     });
                 }
             }
