@@ -20,6 +20,23 @@
         border-left: 3px solid #3b82f6;
     }
     
+    /* Dropdown styling */
+    .dropdown-menu {
+        width: 250px;
+        z-index: 50;
+        max-height: 250px;
+        overflow-y: auto;
+    }
+    
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .dropdown-active .dropdown-menu {
+        display: block;
+    }
+    
     .player-message {
         background-color: rgba(16, 185, 129, 0.2);
         border-left: 3px solid #10b981;
@@ -107,10 +124,10 @@
                                         {% for policy in policies %}
                                             {% if policy.name == policy_name %}
                                                 {% for option in policy.options %}
-                                                    {% if option.level == level %}
+                                                    {% if option.level|int == level|int %}
                                                         <div class="p-2 border-b border-gray-700">
                                                             <div class="font-semibold mb-1">Option {{ option.level }}</div>
-                                                            <div class="text-xs">{{ option.description }}</div>
+                                                            <div class="text-xs">{{ option.summary }}</div>
                                                             <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
                                                         </div>
                                                     {% endif %}
@@ -563,36 +580,50 @@
     }
     
     // Handle dropdown functionality
-    const dropdownButtons = document.querySelectorAll('.dropdown button');
-    
-    dropdownButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation(); // Prevent clicks from propagating
-            
-            // Toggle dropdown visibility
-            const dropdownMenu = this.nextElementSibling;
-            dropdownMenu.classList.toggle('hidden');
-            
-            // Close all other dropdowns
-            document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                if (menu !== dropdownMenu) {
-                    menu.classList.add('hidden');
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropdownButtons = document.querySelectorAll('.dropdown button');
+        
+        dropdownButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Find the dropdown menu (next sibling element)
+                const dropdownMenu = this.nextElementSibling;
+                
+                // Toggle dropdown visibility
+                if (dropdownMenu.classList.contains('hidden')) {
+                    // Close all other open dropdowns first
+                    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                        menu.classList.add('hidden');
+                    });
+                    
+                    // Then open this dropdown
+                    dropdownMenu.classList.remove('hidden');
+                    this.closest('.dropdown').classList.add('dropdown-active');
+                } else {
+                    // Close this dropdown
+                    dropdownMenu.classList.add('hidden');
+                    this.closest('.dropdown').classList.remove('dropdown-active');
                 }
             });
         });
-    });
-    
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', function() {
-        document.querySelectorAll('.dropdown-menu').forEach(menu => {
-            menu.classList.add('hidden');
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.classList.add('hidden');
+            });
+            document.querySelectorAll('.dropdown').forEach(dropdown => {
+                dropdown.classList.remove('dropdown-active');
+            });
         });
-    });
-    
-    // Prevent dropdown menus from closing when clicking inside them
-    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-        menu.addEventListener('click', function(e) {
-            e.stopPropagation();
+        
+        // Prevent dropdown menus from closing when clicking inside them
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
         });
     });
 </script>
