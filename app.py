@@ -1,10 +1,14 @@
 import os
+import eventlet
+# Patch standard library for use with eventlet
+eventlet.monkey_patch()
+
 from flask import Flask
 from flask_socketio import SocketIO
 import logging
 
 # Initialize SocketIO without an app instance yet
-socketio = SocketIO()
+socketio = SocketIO(cors_allowed_origins="*", async_mode='eventlet')
 
 def create_app():
     """
@@ -17,7 +21,7 @@ def create_app():
     logging.basicConfig(level=logging.DEBUG)
     
     # Initialize extensions with app
-    socketio.init_app(app, cors_allowed_origins="*")
+    socketio.init_app(app)
     
     # Register blueprints
     from routes import main as main_blueprint
