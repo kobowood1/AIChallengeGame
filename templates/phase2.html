@@ -62,8 +62,11 @@
                                 <div>
                                     <p class="text-sm"><span class="font-bold text-blue-400">{{ policy_name }}:</span> Option {{ level }}</p>
                                     <div class="mt-1 text-xs italic">
-                                        <!-- This will be populated by agent_justify in a future implementation -->
-                                        <p>Reaction not yet available. Will be implemented using OpenAI API.</p>
+                                        {% if justifications and agent.name in justifications and policy_name in justifications[agent.name] %}
+                                            <p>{{ justifications[agent.name][policy_name] }}</p>
+                                        {% else %}
+                                            <p>No reaction available.</p>
+                                        {% endif %}
                                     </div>
                                 </div>
                             {% endfor %}
