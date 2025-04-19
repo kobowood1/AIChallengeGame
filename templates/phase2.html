@@ -435,6 +435,66 @@
         messageDiv.appendChild(headerDiv);
         messageDiv.appendChild(contentDiv);
         
+        // Add audio player if there's an audio path
+        if (data.audio_path) {
+            const audioContainer = document.createElement('div');
+            audioContainer.className = 'audio-container mt-2';
+            
+            const audioPlayer = document.createElement('audio');
+            audioPlayer.controls = true;
+            audioPlayer.className = 'w-full h-8';
+            
+            // Create a source element
+            const audioSource = document.createElement('source');
+            audioSource.src = '/' + data.audio_path;
+            audioSource.type = 'audio/mpeg';
+            
+            // Add fallback text
+            audioPlayer.textContent = 'Your browser does not support the audio element.';
+            
+            // Append source to audio player
+            audioPlayer.appendChild(audioSource);
+            
+            // Add play button for better styling
+            const playButton = document.createElement('button');
+            playButton.className = 'bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 mr-2 flex items-center justify-center';
+            playButton.innerHTML = '<i class="fas fa-play"></i>';
+            playButton.onclick = function() {
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                    this.innerHTML = '<i class="fas fa-pause"></i>';
+                } else {
+                    audioPlayer.pause();
+                    this.innerHTML = '<i class="fas fa-play"></i>';
+                }
+            };
+            
+            // Add event listener to reset button when audio ends
+            audioPlayer.addEventListener('ended', function() {
+                playButton.innerHTML = '<i class="fas fa-play"></i>';
+            });
+            
+            // Create a wrapper div for better styling
+            const audioWrapper = document.createElement('div');
+            audioWrapper.className = 'flex items-center mt-2';
+            audioWrapper.appendChild(playButton);
+            
+            // Create label
+            const audioLabel = document.createElement('span');
+            audioLabel.className = 'text-xs text-gray-400';
+            audioLabel.innerHTML = '<i class="fas fa-volume-up mr-1"></i> Listen';
+            
+            audioWrapper.appendChild(audioLabel);
+            
+            // Append audio container to message div
+            audioContainer.appendChild(audioWrapper);
+            audioContainer.appendChild(audioPlayer);
+            messageDiv.appendChild(audioContainer);
+            
+            // Hide the default controls and use our custom button
+            audioPlayer.controls = false;
+        }
+        
         // Add to messages container
         messagesContainer.appendChild(messageDiv);
         
