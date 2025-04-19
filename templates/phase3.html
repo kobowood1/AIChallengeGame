@@ -217,10 +217,11 @@
                                                 {% for policy in policies %}
                                                     {% if policy.name == policy_name %}
                                                         {% for option in policy.options %}
-                                                            {% if option.level == final_level %}
+                                                            {% if loop.index == final_level|int %}
                                                                 <div class="p-2 border-b border-gray-700">
-                                                                    <div class="font-semibold mb-1">Option {{ option.level }}</div>
-                                                                    <div class="text-xs">{{ option.summary }}</div>
+                                                                    <div class="font-semibold mb-1">
+                                                                        Option {{ loop.index }}: {{ option.summary }}
+                                                                    </div>
                                                                     <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
                                                                 </div>
                                                             {% endif %}
@@ -243,10 +244,11 @@
                                                 {% for policy in policies %}
                                                     {% if policy.name == policy_name %}
                                                         {% for option in policy.options %}
-                                                            {% if option.level == final_level %}
+                                                            {% if loop.index == final_level|int %}
                                                                 <div class="p-2 border-b border-gray-700">
-                                                                    <div class="font-semibold mb-1">Option {{ option.level }}</div>
-                                                                    <div class="text-xs">{{ option.summary }}</div>
+                                                                    <div class="font-semibold mb-1">
+                                                                        Option {{ loop.index }}: {{ option.summary }}
+                                                                    </div>
                                                                     <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
                                                                 </div>
                                                             {% endif %}
