@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     socket.on('deliberation_started', (data) => {
-        gameState = data.state;
+        deliberationState = data.state;
         updateUI(data.state);
         showNotification('Policy deliberation started!', 'success');
         startGameTimer(data.challenge.time_limit);
@@ -120,8 +120,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     socket.on('deliberation_finished', (data) => {
-        gameState = data.state;
-        updateUI(gameState);
+        deliberationState = data.state;
+        updateUI(deliberationState);
         clearInterval(timerInterval);
         showNotification('Policy deliberation finished!', 'success');
     });
