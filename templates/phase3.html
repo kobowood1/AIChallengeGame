@@ -181,7 +181,15 @@
                                         <span class="text-gray-400">Your proposal:</span>
                                         <div class="dropdown inline-block relative">
                                             <button class="text-blue-400 hover:text-blue-300 focus:outline-none flex items-center">
-                                                Option {{ player_level }}
+                                                {% for policy in policies %}
+                                                    {% if policy.name == policy_name %}
+                                                        {% for option in policy.options %}
+                                                            {% if loop.index == player_level|int %}
+                                                                Option {{ player_level }}: {{ option.summary }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
                                                 <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                                     <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
                                                 </svg>
@@ -208,7 +216,15 @@
                                         <span class="text-gray-400">Final approved:</span>
                                         <div class="dropdown inline-block relative">
                                             <button class="text-green-400 hover:text-green-300 focus:outline-none flex items-center">
-                                                Option {{ final_level }}
+                                                {% for policy in policies %}
+                                                    {% if policy.name == policy_name %}
+                                                        {% for option in policy.options %}
+                                                            {% if loop.index == final_level|int %}
+                                                                Option {{ final_level }}: {{ option.summary }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
                                                 <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                                     <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
                                                 </svg>
@@ -235,7 +251,15 @@
                                     <div class="text-center py-2 mb-2 bg-green-900 bg-opacity-20 rounded">
                                         <div class="dropdown inline-block relative">
                                             <button class="text-green-400 hover:text-green-300 focus:outline-none font-semibold flex items-center justify-center w-full">
-                                                Option {{ final_level }}
+                                                {% for policy in policies %}
+                                                    {% if policy.name == policy_name %}
+                                                        {% for option in policy.options %}
+                                                            {% if loop.index == final_level|int %}
+                                                                Option {{ final_level }}: {{ option.summary }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
                                                 <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                                     <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
                                                 </svg>

@@ -115,7 +115,15 @@
                                 Your Proposal: 
                                 <div class="dropdown inline-block relative">
                                     <button class="text-blue-400 hover:text-blue-300 focus:outline-none flex items-center">
-                                        Option {{ level }}
+                                        {% for policy in policies %}
+                                            {% if policy.name == policy_name %}
+                                                {% for option in policy.options %}
+                                                    {% if loop.index == level|int %}
+                                                        Option {{ level }}: {{ option.summary }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
                                         <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                             <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
                                         </svg>
