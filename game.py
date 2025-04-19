@@ -5,7 +5,7 @@ import random
 
 class AIChallenge:
     """
-    Represents a policy deliberation game session
+    Represents a policy deliberation session with AI agent participants
     """
     
     CHALLENGES = [
@@ -26,10 +26,10 @@ class AIChallenge:
     
     def __init__(self, room_id):
         """
-        Initialize a new game session
+        Initialize a new policy deliberation session
         
         Args:
-            room_id: Unique identifier for the game room
+            room_id: Unique identifier for the policy deliberation room
         """
         self.room_id = room_id
         self.players = {}
@@ -52,7 +52,7 @@ class AIChallenge:
             "score": 0,
             "submission": None,
             "submission_time": None,
-            "status": "waiting"  # waiting, coding, submitted, verified
+            "status": "waiting"  # waiting, deliberating, submitted, verified
         }
         return self.players[player_id]
     
@@ -131,7 +131,7 @@ class AIChallenge:
     
     def finish_game(self):
         """
-        End the current game and determine winners
+        End the current policy deliberation session and determine winners
         """
         if self.state == "active":
             self.state = "finished"
@@ -151,10 +151,10 @@ class AIChallenge:
     
     def get_game_state(self):
         """
-        Get the current state of the game
+        Get the current state of the policy deliberation session
         
         Returns:
-            Dictionary with the current game state
+            Dictionary with the current deliberation state
         """
         import time
         current_time = time.time()
@@ -168,23 +168,23 @@ class AIChallenge:
             "winners": self.winners
         }
 
-# Game room management
+# Policy session management
 class GameManager:
     """
-    Manages all active game rooms
+    Manages all active policy deliberation sessions
     """
     def __init__(self):
         self.games = {}
         
     def create_game(self, room_id):
         """
-        Create a new game room
+        Create a new policy deliberation session
         
         Args:
-            room_id: Unique identifier for the room
+            room_id: Unique identifier for the session room
             
         Returns:
-            The created game instance
+            The created policy deliberation instance
         """
         game = AIChallenge(room_id)
         self.games[room_id] = game
@@ -192,25 +192,25 @@ class GameManager:
     
     def get_game(self, room_id):
         """
-        Get a game by room ID
+        Get a policy deliberation session by room ID
         
         Args:
-            room_id: ID of the game room
+            room_id: ID of the policy deliberation room
             
         Returns:
-            Game instance or None if not found
+            Policy deliberation instance or None if not found
         """
         return self.games.get(room_id)
     
     def delete_game(self, room_id):
         """
-        Delete a game room
+        Delete a policy deliberation session
         
         Args:
-            room_id: ID of the game room to delete
+            room_id: ID of the policy deliberation room to delete
         """
         if room_id in self.games:
             del self.games[room_id]
 
-# Create a singleton instance of the game manager
+# Create a singleton instance of the policy deliberation manager
 game_manager = GameManager()
