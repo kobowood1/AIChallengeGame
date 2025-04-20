@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash, Response
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash, Response, get_flashed_messages
 from game_data import POLICIES, validate_package, MAX_BUDGET
 from ai_agents import generate_agents, agent_justify
 import markdown
@@ -282,10 +282,14 @@ def submit_reflection():
         if email_sent:
             flash('Your reflection report has been sent to the research team.', 'success')
         else:
-            flash('There was an issue sending the email, but your report has been generated.', 'warning')
-            logging.warning("Email couldn't be sent, but report was generated")
+            # More detailed error message that explains emails are optional
+            flash('There was an issue sending the email, but your report has been generated and saved. ' +
+                  'The research team will still receive your submissions through the database.', 'warning')
+            logging.warning("Email couldn't be sent, but report was generated and stored in database")
     except Exception as e:
-        flash('There was an issue sending the email, but your report has been generated.', 'warning')
+        # More reassuring message
+        flash('There was an issue with the email service, but your report has been successfully generated ' +
+              'and your responses are saved in our system.', 'warning')
         logging.error(f"Email error: {str(e)}", exc_info=True)
     
     # Store the report in the session so we can access it later
@@ -319,6 +323,10 @@ def thank_you():
     if 'participant_registered' not in session or not session['participant_registered']:
         flash('Please register before accessing the simulation.', 'warning')
         return redirect(url_for('main.register'))
+    
+    # If there are no flash messages already, provide a default success message
+    if not get_flashed_messages():
+        flash('Your report has been successfully generated and recorded in our system. Thank you for your participation!', 'success')
         
     return render_template('thank_you.html')
 

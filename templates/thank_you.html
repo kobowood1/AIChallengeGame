@@ -29,11 +29,21 @@
             The challenges you faced mirror those of real policymakers worldwide. By reflecting on this experience, you've gained insight into the complexities of designing education systems that serve all members of society equitably.
         </p>
         
-        <div class="bg-blue-900 bg-opacity-30 rounded-lg p-4 my-6 border-l-4 border-blue-500">
-            <p class="m-0">
-                <strong>Your personalized report</strong> has been generated based on your policy selections, the final approved package, and your reflections. This report has been sent to the research team for analysis, and you can also download a copy for your records.
-            </p>
-        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="rounded-lg p-4 my-6 border-l-4 {% if category == 'success' %}bg-green-900 bg-opacity-30 border-green-500{% else %}bg-yellow-900 bg-opacity-30 border-yellow-500{% endif %}">
+                        <p class="m-0">{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="bg-blue-900 bg-opacity-30 rounded-lg p-4 my-6 border-l-4 border-blue-500">
+                    <p class="m-0">
+                        <strong>Your personalized report</strong> has been generated based on your policy selections, the final approved package, and your reflections. This report has been sent to the research team for analysis, and you can also download a copy for your records.
+                    </p>
+                </div>
+            {% endif %}
+        {% endwith %}
         
         <h3 class="text-xl font-bold mt-6">What's Next?</h3>
         

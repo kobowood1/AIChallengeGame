@@ -37,8 +37,11 @@ def send_reflection_report(participant_info, report_content, participant_id):
     Returns:
         bool: True if all emails were sent successfully, False otherwise
     """
+    # Check if we have valid SMTP credentials - specifically require Google App Password for Gmail
     if not all([SMTP_SERVER, SMTP_PORT, SMTP_USER, SMTP_PASS]):
         logger.error("SMTP configuration is incomplete. Cannot send emails.")
+        logger.warning("Email requires a valid SMTP_SERVER, SMTP_PORT, SMTP_USER, and SMTP_PASS.")
+        logger.warning("For Gmail, you must use an App Password, not your regular password.")
         return False
     
     # Create a timestamp-based filename for the report
