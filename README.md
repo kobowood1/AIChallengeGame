@@ -154,6 +154,7 @@ The platform collects:
 ## 📈 Future Enhancements
 
 Potential areas for future development:
+- Voice to text and text to Voice features
 - Multiple scenario support for different policy domains
 - Enhanced visualization of policy impacts
 - Advanced analytics dashboard for researchers
@@ -173,3 +174,6 @@ This project is licensed under the Creative Commons Attribution-NonCommercial 4.
 Copyright © 2025 Kofi Wood. All rights reserved.
 
 See the [LICENSE](./LICENSE) file for complete terms and conditions.
+
+Copyright © 2025 The CHALLENGE: Policy Jam - Refugee Edition
+
