@@ -19,9 +19,9 @@ logger = logging.getLogger(__name__)
 # Get SendGrid API key from environment variable
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
-# Default from email - can be updated to match a verified sender in SendGrid
-# Use sandbox mode for testing or update to a verified sender from your SendGrid account
-FROM_EMAIL = "noreply@example.com"  # Replace with your verified sender in production
+# Default from email - must be a verified sender in SendGrid for production use
+# The FROM_EMAIL domain must be verified in your SendGrid account settings
+FROM_EMAIL = "aichallenge-reports@example.com"  # Replace with your verified sender domain
 
 # Recipients for reflection reports
 RECIPIENTS = [
@@ -80,12 +80,9 @@ def send_reflection_report(participant_info, report_content, participant_id):
                 html_content=Content("text/plain", email_body)
             )
             
-            # Enable sandbox mode to bypass sender verification
-            # Note: In sandbox mode, emails won't actually be delivered
-            # but SendGrid will validate everything else
-            mail_settings = MailSettings()
-            mail_settings.sandbox_mode = SandBoxMode(enable=True)
-            message.mail_settings = mail_settings
+            # In production mode, emails will actually be delivered
+            # Note: The FROM_EMAIL must be a verified sender in SendGrid
+            # No sandbox mode, emails will be delivered to recipients
             
             # Encode report content as base64
             encoded_content = base64.b64encode(report_content.encode()).decode()
@@ -105,10 +102,10 @@ def send_reflection_report(participant_info, report_content, participant_id):
             response = sg.send(message)
             status_code = response.status_code
             
-            # Status code 200 is returned for sandbox mode, 202 is standard success
+            # Status code 202 is the standard success code for SendGrid API
             if status_code in [200, 202]:
-                logger.info(f"Email processed successfully for {recipient} with status code {status_code}")
-                # Note: In sandbox mode (200), emails aren't actually delivered but are processed correctly
+                logger.info(f"Email sent successfully to {recipient} with status code {status_code}")
+                # In production mode, emails are actually delivered to recipients
             else:
                 logger.warning(f"SendGrid returned status code {status_code}")
                 success = False
