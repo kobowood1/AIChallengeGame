@@ -16,12 +16,26 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def index():
     """Route for the home page"""
+    # Display the welcome page with a 'Start' button
+    return render_template('index.html')
+
+@main.route('/start')
+def start():
+    """Route to start the game and check registration"""
     # Check if the user has already registered
     if 'participant_registered' in session and session['participant_registered']:
-        return render_template('index.html')
+        return redirect(url_for('main.scenario'))
     else:
         # Redirect to registration page
         return redirect(url_for('main.register'))
+
+@main.route('/reset')
+def reset():
+    """Reset the session and start over"""
+    # Clear the session
+    session.clear()
+    flash('Your session has been reset. You can start fresh.', 'info')
+    return redirect(url_for('main.index'))
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
