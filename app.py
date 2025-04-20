@@ -21,6 +21,9 @@ def create_app():
     app = Flask(__name__)
     app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
     
+    # Set debug mode explicitly
+    app.config['DEBUG'] = True
+    
     # Configure logging
     logging.basicConfig(level=logging.DEBUG)
     

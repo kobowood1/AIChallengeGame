@@ -64,7 +64,7 @@
     </div>
     
     <!-- Budget Depleted Modal -->
-    <div id="budget-depleted-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[1000] hidden">
+    <div id="budget-depleted-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999]" style="display: none;">
         <div class="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md border-2 border-red-500">
             <div class="flex items-center mb-4">
                 <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white mr-3 shadow-lg">
@@ -78,6 +78,16 @@
                     <i class="fas fa-check mr-1"></i> Got it!
                 </button>
             </div>
+            
+            <!-- Debug info - only visible during development -->
+            {% if config.DEBUG %}
+            <div class="mt-4 pt-4 border-t border-gray-700">
+                <p class="text-xs text-gray-400">Debug: If the modal is not appearing automatically, you can test it directly.</p>
+                <button id="test-modal-button" class="mt-2 bg-gray-600 hover:bg-gray-500 text-white text-xs py-1 px-3 rounded">
+                    Test Modal
+                </button>
+            </div>
+            {% endif %}
         </div>
     </div>
     
@@ -246,6 +256,16 @@
         // Initial budget calculation
         updateBudget();
         
+        // Test modal button (debug only)
+        const testModalButton = document.getElementById('test-modal-button');
+        if (testModalButton) {
+            testModalButton.addEventListener('click', function() {
+                console.log('Test modal button clicked');
+                budgetModal.style.display = 'flex';
+                document.body.classList.add('overflow-hidden');
+            });
+        }
+        
         // Add event listeners to all radio buttons
         policyOptions.forEach(option => {
             option.addEventListener('change', function() {
@@ -262,7 +282,7 @@
         
         // Handle modal close button
         closeModalButton.addEventListener('click', function() {
-            budgetModal.classList.add('hidden');
+            budgetModal.style.display = 'none';
             document.body.classList.remove('overflow-hidden');
             
             // Add some visual feedback on close
@@ -295,22 +315,29 @@
             
             // Check if budget has been depleted and show the modal
             if (currentBudget === 0 && previousBudget > 0) {
-                // Force repaint before showing modal
+                // Show the modal directly using style
+                budgetModal.style.display = 'flex';
+                document.body.classList.add('overflow-hidden');
+                
+                // Add a small animation to draw attention
+                const modalContent = budgetModal.querySelector('div');
+                modalContent.classList.add('animate-bounce-once');
+                
+                // Log for debugging
+                console.log('Showing budget depleted modal');
+                
+                // Remove animation class after animation completes
                 setTimeout(() => {
-                    budgetModal.classList.remove('hidden');
-                    
-                    // Add a small animation to draw attention
-                    const modalContent = budgetModal.querySelector('div');
-                    modalContent.classList.add('animate-bounce-once');
-                    
-                    // Add a class to ensure it's above everything
-                    document.body.classList.add('overflow-hidden');
-                    
-                    // Remove animation class after animation completes
-                    setTimeout(() => {
-                        modalContent.classList.remove('animate-bounce-once');
-                    }, 1000);
-                }, 10);
+                    modalContent.classList.remove('animate-bounce-once');
+                }, 1000);
+                
+                // Also force a global alert just in case modal doesn't show
+                setTimeout(() => {
+                    if (!modalShown) {
+                        alert('Budget depleted! You need to adjust your selections to free up budget.');
+                        modalShown = true;
+                    }
+                }, 100);
             }
             
             // Change color based on budget status
