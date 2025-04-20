@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
 # Default from email - must be a verified sender in SendGrid for production use
-# The FROM_EMAIL domain must be verified in your SendGrid account settings
-FROM_EMAIL = "aichallenge-reports@example.com"  # Replace with your verified sender domain
+# This must match exactly with your verified sender in SendGrid
+FROM_EMAIL = "YOUR_VERIFIED_EMAIL@DOMAIN.COM"  # Replace this with your actual verified sender email
 
 # Recipients for reflection reports
 RECIPIENTS = [
