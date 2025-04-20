@@ -105,8 +105,10 @@ def send_reflection_report(participant_info, report_content, participant_id):
             response = sg.send(message)
             status_code = response.status_code
             
-            if status_code == 202:
-                logger.info(f"Email sent successfully to {recipient} with status code {status_code}")
+            # Status code 200 is returned for sandbox mode, 202 is standard success
+            if status_code in [200, 202]:
+                logger.info(f"Email processed successfully for {recipient} with status code {status_code}")
+                # Note: In sandbox mode (200), emails aren't actually delivered but are processed correctly
             else:
                 logger.warning(f"SendGrid returned status code {status_code}")
                 success = False
