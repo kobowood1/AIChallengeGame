@@ -301,20 +301,19 @@ def submit_reflection():
     try:
         email_sent = send_reflection_report(participant_info, md_report, participant_id)
         if email_sent:
-            # Improved clarity about sandbox mode behavior
-            flash('Your report has been successfully generated and processed. ' +
-                  'The email system is in sandbox mode (testing mode), which means your report is validated ' +
-                  'but not physically delivered to recipient inboxes. ' +
-                  'Your data has been saved to the database and the research team can access it there.', 'success')
+            # Message for successful email delivery
+            flash('Your report has been successfully generated and sent to the research team via email. ' +
+                  'A copy has also been saved to the database for research purposes. ' +
+                  'You can download your personal copy using the button below.', 'success')
         else:
-            # More detailed error message that explains emails are optional
-            flash('There was an issue with the email service, but your report has been generated and saved. ' +
+            # Error message that explains emails may have failed but data is still saved
+            flash('There was an issue sending the report via email, but your report has been generated and saved. ' +
                   'The research team will still receive your submissions through the database.', 'warning')
             logging.warning("Email couldn't be sent, but report was generated and stored in database")
     except Exception as e:
-        # More reassuring message
+        # General error message
         flash('Your report has been successfully generated and saved in our system. ' +
-              'Email delivery is not available in this testing environment, but your data is securely stored.', 'info')
+              'There was an unexpected issue with email delivery, but your data is securely stored.', 'info')
         logging.error(f"Email error: {str(e)}", exc_info=True)
     
     # Store the report in the session so we can access it later
