@@ -1,5 +1,5 @@
 """
-Gunicorn configuration file for the AI Challenge Game application.
+Gunicorn configuration file for The CHALLENGE: Policy Jam - Refugee Edition application.
 """
 # Use eventlet worker for WebSocket support
 worker_class = 'eventlet'

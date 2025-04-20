@@ -1,4 +1,4 @@
-# Republic of Bean Policy Simulation Platform
+# The CHALLENGE: Policy Jam - Refugee Edition
 
 A dynamic, AI-powered collaborative policy-making simulation platform designed to transform complex decision-making into an engaging, interactive learning experience through advanced technological integrations.
 

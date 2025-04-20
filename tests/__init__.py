@@ -1,3 +1,3 @@
 """
-Test package for the AI Challenge Game application.
+Test package for The CHALLENGE: Policy Jam - Refugee Edition application.
 """
