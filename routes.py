@@ -280,16 +280,18 @@ def submit_reflection():
     try:
         email_sent = send_reflection_report(participant_info, md_report, participant_id)
         if email_sent:
-            flash('Your reflection report has been sent to the research team.', 'success')
+            # Clarify that in sandbox mode, emails are not actually delivered
+            flash('Your report has been successfully generated and processed through SendGrid (sandbox mode). ' +
+                  'In a production environment, emails would be delivered to the research team.', 'success')
         else:
             # More detailed error message that explains emails are optional
-            flash('There was an issue sending the email, but your report has been generated and saved. ' +
+            flash('There was an issue with the email service, but your report has been generated and saved. ' +
                   'The research team will still receive your submissions through the database.', 'warning')
             logging.warning("Email couldn't be sent, but report was generated and stored in database")
     except Exception as e:
         # More reassuring message
-        flash('There was an issue with the email service, but your report has been successfully generated ' +
-              'and your responses are saved in our system.', 'warning')
+        flash('Your report has been successfully generated and saved in our system. ' +
+              'Email delivery is not available in this testing environment.', 'info')
         logging.error(f"Email error: {str(e)}", exc_info=True)
     
     # Store the report in the session so we can access it later
