@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash, Response
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash, Response, current_app
 from game_data import POLICIES, validate_package, MAX_BUDGET
 from ai_agents import generate_agents, agent_justify
 import markdown
 import json
 import tempfile
 import uuid
+import logging
 from datetime import datetime
 from weasyprint import HTML, CSS
 from models import db, Participant
@@ -27,13 +28,18 @@ def register():
     if request.method == 'POST':
         try:
             # Extract form data
-            age = request.form.get('age')
+            age = int(request.form.get('age'))
             nationality = request.form.get('nationality')
             occupation = request.form.get('occupation')
             education_level = request.form.get('education_level')
-            displacement_experience = request.form.get('displacement_experience')
+            displacement_experience = request.form.get('displacement_experience', '')
             current_location_city = request.form.get('current_location_city')
             current_location_country = request.form.get('current_location_country')
+            
+            # Log the data for debugging
+            logger = logging.getLogger(__name__)
+            logger.debug(f"Registration data: age={age}, nationality={nationality}, occupation={occupation}")
+            logger.debug(f"education={education_level}, city={current_location_city}, country={current_location_country}")
             
             # Generate a unique session ID if not already present
             if 'session_id' not in session:
@@ -63,6 +69,10 @@ def register():
             return redirect(url_for('main.scenario'))
             
         except Exception as e:
+            logger = logging.getLogger(__name__)
+            logger.error(f'Registration error: {str(e)}')
+            import traceback
+            logger.error(traceback.format_exc())
             flash(f'Registration error: {str(e)}', 'error')
             return render_template('register.html')
     
