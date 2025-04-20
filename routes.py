@@ -12,6 +12,7 @@ from models import db, Participant
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect
 from email_utils import send_reflection_report
+from openai_utils import generate_policy_profile
 
 main = Blueprint('main', __name__)
 
@@ -216,12 +217,32 @@ def phase3():
                     break
         session['final_cost'] = total_cost
     
+    # Get participant information from the database for the OpenAI profile
+    participant_info = None
+    if 'session_id' in session:
+        participant = Participant.query.filter_by(session_id=session['session_id']).first()
+        if participant:
+            participant_info = {
+                'age': participant.age,
+                'nationality': participant.nationality,
+                'occupation': participant.occupation,
+                'education_level': participant.education_level
+            }
+    
+    # Generate a policy profile using OpenAI
+    policy_profile = generate_policy_profile(
+        session['player_package'], 
+        session['final_package'],
+        participant_info
+    )
+    
     return render_template('phase3.html',
                          final_package=session['final_package'],
                          final_cost=session['final_cost'],
                          player_package=session['player_package'],
                          max_budget=MAX_BUDGET,
-                         policies=POLICIES)
+                         policies=POLICIES,
+                         policy_profile=policy_profile)
 
 @main.route('/submit-reflection', methods=['GET', 'POST'])
 def submit_reflection():
