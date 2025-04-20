@@ -1,11 +1,10 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash, Response, current_app
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash, Response
 from game_data import POLICIES, validate_package, MAX_BUDGET
 from ai_agents import generate_agents, agent_justify
 import markdown
 import json
 import tempfile
 import uuid
-import logging
 from datetime import datetime
 from weasyprint import HTML, CSS
 from models import db, Participant
@@ -19,9 +18,8 @@ def index():
     if 'participant_registered' in session and session['participant_registered']:
         return render_template('index.html')
     else:
-        # Show the registration page directly instead of redirecting
-        # This fixes the "disappearing registration" issue
-        return render_template('register.html')
+        # Redirect to registration page
+        return redirect(url_for('main.register'))
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
@@ -29,36 +27,13 @@ def register():
     if request.method == 'POST':
         try:
             # Extract form data
-            try:
-                age = int(request.form.get('age', 0))
-            except (ValueError, TypeError) as e:
-                logger = logging.getLogger(__name__)
-                logger.error(f"Age conversion error: {str(e)}")
-                flash('Please enter a valid age (must be a number)', 'error')
-                return render_template('register.html')
+            age = request.form.get('age')
             nationality = request.form.get('nationality')
             occupation = request.form.get('occupation')
             education_level = request.form.get('education_level')
-            displacement_experience = request.form.get('displacement_experience', '')
+            displacement_experience = request.form.get('displacement_experience')
             current_location_city = request.form.get('current_location_city')
             current_location_country = request.form.get('current_location_country')
-            
-            # Log the data for debugging
-            logger = logging.getLogger(__name__)
-            logger.debug(f"Registration data: age={age}, nationality={nationality}, occupation={occupation}")
-            logger.debug(f"education={education_level}, city={current_location_city}, country={current_location_country}")
-            # Validate required fields
-            if not all([age, nationality, occupation, education_level, current_location_city, current_location_country]):
-                logger.error("Missing required fields in registration form")
-                missing = []
-                if not age: missing.append("age")
-                if not nationality: missing.append("nationality") 
-                if not occupation: missing.append("occupation")
-                if not education_level: missing.append("education level")
-                if not current_location_city: missing.append("current city")
-                if not current_location_country: missing.append("current country")
-                flash(f"Please fill in all required fields: {', '.join(missing)}", "error")
-                return render_template('register.html')
             
             # Generate a unique session ID if not already present
             if 'session_id' not in session:
@@ -77,14 +52,8 @@ def register():
             )
             
             # Add to database
-            try:
-                db.session.add(participant)
-                db.session.commit()
-                logger.debug("Successfully added participant to database")
-            except Exception as db_error:
-                logger.error(f"Database error: {str(db_error)}")
-                db.session.rollback()
-                raise Exception(f"Database error occurred: {str(db_error)}")
+            db.session.add(participant)
+            db.session.commit()
             
             # Mark as registered in session
             session['participant_registered'] = True
@@ -94,10 +63,6 @@ def register():
             return redirect(url_for('main.scenario'))
             
         except Exception as e:
-            logger = logging.getLogger(__name__)
-            logger.error(f'Registration error: {str(e)}')
-            import traceback
-            logger.error(traceback.format_exc())
             flash(f'Registration error: {str(e)}', 'error')
             return render_template('register.html')
     
