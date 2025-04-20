@@ -32,6 +32,27 @@
     </nav>
 
     <main class="container mx-auto px-4 py-6">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-6">
+                    {% for category, message in messages %}
+                        {% set alert_class = "bg-blue-100 border-blue-500 text-blue-700" %}
+                        {% if category == 'error' %}
+                            {% set alert_class = "bg-red-100 border-red-500 text-red-700" %}
+                        {% elif category == 'success' %}
+                            {% set alert_class = "bg-green-100 border-green-500 text-green-700" %}
+                        {% elif category == 'warning' %}
+                            {% set alert_class = "bg-yellow-100 border-yellow-500 text-yellow-700" %}
+                        {% endif %}
+                        <div class="border-l-4 p-4 mb-2 {{ alert_class }}">
+                            <p class="font-medium">{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
         {% block content %}{% endblock %}
     </main>
 

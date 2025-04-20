@@ -27,11 +27,11 @@ def register():
     if request.method == 'POST':
         try:
             # Extract form data
-            age = request.form.get('age')
+            age = int(request.form.get('age'))
             nationality = request.form.get('nationality')
             occupation = request.form.get('occupation')
             education_level = request.form.get('education_level')
-            displacement_experience = request.form.get('displacement_experience')
+            displacement_experience = request.form.get('displacement_experience', '')
             current_location_city = request.form.get('current_location_city')
             current_location_country = request.form.get('current_location_country')
             
@@ -63,6 +63,8 @@ def register():
             return redirect(url_for('main.scenario'))
             
         except Exception as e:
+            import logging
+            logging.error(f"Registration error: {str(e)}", exc_info=True)
             flash(f'Registration error: {str(e)}', 'error')
             return render_template('register.html')
     
