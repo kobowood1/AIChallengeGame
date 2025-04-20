@@ -79,15 +79,13 @@
                 </button>
             </div>
             
-            <!-- Debug info - only visible during development -->
-            {% if config.DEBUG %}
+            <!-- Debug info - always visible during this development phase -->
             <div class="mt-4 pt-4 border-t border-gray-700">
-                <p class="text-xs text-gray-400">Debug: If the modal is not appearing automatically, you can test it directly.</p>
-                <button id="test-modal-button" class="mt-2 bg-gray-600 hover:bg-gray-500 text-white text-xs py-1 px-3 rounded">
-                    Test Modal
+                <p class="text-xs text-gray-400">Debug: You can test the budget depleted alert directly with this button.</p>
+                <button id="test-modal-button" class="mt-2 bg-yellow-600 hover:bg-yellow-500 text-white text-sm py-2 px-4 rounded-lg">
+                    Test Budget Alert
                 </button>
             </div>
-            {% endif %}
         </div>
     </div>
     
@@ -256,13 +254,22 @@
         // Initial budget calculation
         updateBudget();
         
-        // Test modal button (debug only)
+        // Test budget depleted alert (debug only)
         const testModalButton = document.getElementById('test-modal-button');
         if (testModalButton) {
             testModalButton.addEventListener('click', function() {
-                console.log('Test modal button clicked');
-                budgetModal.style.display = 'flex';
-                document.body.classList.add('overflow-hidden');
+                console.log('Test budget alert button clicked');
+                
+                // Show the alert
+                alert('Budget Depleted! You have used all of your available budget units. To select more expensive options, you\'ll need to adjust your current selections to free up budget resources.');
+                
+                // Change background color of the budget display to provide visual feedback
+                remainingBudgetElement.classList.add('text-yellow-400');
+                remainingBudgetElement.classList.add('animate-pulse');
+                
+                setTimeout(() => {
+                    remainingBudgetElement.classList.remove('animate-pulse');
+                }, 2000);
             });
         }
         
@@ -313,31 +320,25 @@
             const percentage = (currentBudget / maxBudget) * 100;
             budgetBarElement.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
             
-            // Check if budget has been depleted and show the modal
+            // Check if budget has been depleted and show alert instead of modal
             if (currentBudget === 0 && previousBudget > 0) {
-                // Show the modal directly using style
-                budgetModal.style.display = 'flex';
-                document.body.classList.add('overflow-hidden');
-                
-                // Add a small animation to draw attention
-                const modalContent = budgetModal.querySelector('div');
-                modalContent.classList.add('animate-bounce-once');
-                
                 // Log for debugging
-                console.log('Showing budget depleted modal');
+                console.log('Budget depleted - showing alert');
                 
-                // Remove animation class after animation completes
-                setTimeout(() => {
-                    modalContent.classList.remove('animate-bounce-once');
-                }, 1000);
+                // Just use an alert instead of trying to show the modal
+                // This is a more reliable approach that will definitely work
+                alert('Budget Depleted! You have used all of your available budget units. To select more expensive options, you\'ll need to adjust your current selections to free up budget resources.');
                 
-                // Also force a global alert just in case modal doesn't show
+                // Change background color of the budget display to provide visual feedback
+                remainingBudgetElement.classList.add('text-yellow-400');
+                remainingBudgetElement.classList.add('animate-pulse');
+                
                 setTimeout(() => {
-                    if (!modalShown) {
-                        alert('Budget depleted! You need to adjust your selections to free up budget.');
-                        modalShown = true;
-                    }
-                }, 100);
+                    remainingBudgetElement.classList.remove('animate-pulse');
+                }, 2000);
+                
+                // Set flag to prevent showing the alert multiple times
+                modalShown = true;
             }
             
             // Change color based on budget status
