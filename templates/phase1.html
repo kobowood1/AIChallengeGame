@@ -3,9 +3,6 @@
 {% block title %}The CHALLENGE: Policy Jam - Education Policy Selection{% endblock %}
 
 {% block head %}
-<!-- Add animate.css for animations -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-
 <style>
     .text-gradient {
         background-clip: text;
@@ -27,21 +24,6 @@
     
     .animate-bounce-once {
         animation: bounce-once 1s;
-    }
-    
-    @keyframes pulse {
-        0%, 100% {
-            opacity: 1;
-            transform: scale(1);
-        }
-        50% {
-            opacity: 0.8;
-            transform: scale(1.1);
-        }
-    }
-    
-    .animate-pulse {
-        animation: pulse 0.75s;
     }
 </style>
 {% endblock %}
@@ -66,30 +48,21 @@
         <p>After completing your selections, you'll engage in deliberation with four other citizens who have diverse perspectives on education policy. Through discussion and voting, you'll collectively decide on the final policy package.</p>
     </div>
     
-    <!-- Budget Depleted Modal - Beautiful design version -->
-    <div id="budget-depleted-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[9999]" style="display: none;">
-        <div class="bg-gray-800 p-8 rounded-lg shadow-2xl max-w-md border-2 border-yellow-500 animate__animated animate__fadeIn">
-            <div class="flex items-center mb-6">
-                <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-red-500 rounded-full flex items-center justify-center text-white mr-4 shadow-lg transform -rotate-12">
+    <!-- Budget Depleted Modal -->
+    <div id="budget-depleted-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md border-2 border-red-500 animate-bounce-once">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white mr-3">
                     <i class="fas fa-coins text-2xl"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-gradient bg-gradient-to-r from-yellow-400 via-red-400 to-yellow-400">Budget Depleted!</h3>
+                <h3 class="text-xl font-bold text-red-400">Budget Depleted!</h3>
             </div>
-            
-            <div class="bg-gray-700/50 p-4 rounded-lg mb-6 border-l-4 border-yellow-500">
-                <p class="text-gray-200">You have used all of your available budget units. To select more expensive options, you'll need to adjust your current selections to free up budget resources.</p>
-            </div>
-            
+            <p class="text-gray-300 mb-4">You have used all of your available budget units. To select more expensive options, you'll need to adjust your current selections to free up budget resources.</p>
             <div class="flex justify-end">
-                <div class="relative inline-block group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-red-500 rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-200"></div>
-                    <button id="close-budget-modal" class="relative bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700 text-white py-3 px-6 rounded-lg transition transform hover:scale-105 shadow-lg font-bold">
-                        <i class="fas fa-check mr-2"></i> Got it!
-                    </button>
-                </div>
+                <button id="close-budget-modal" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition transform hover:scale-105">
+                    <i class="fas fa-check mr-1"></i> Got it!
+                </button>
             </div>
-            
-
         </div>
     </div>
     
@@ -105,11 +78,6 @@
                 <span class="text-gray-300 mr-2">Policy Points: </span>
                 <span id="remaining-budget" class="font-bold text-yellow-400 text-xl">{{ max_budget }}</span>
                 <span class="text-gray-400">/{{ max_budget }}</span>
-                {% if config.DEBUG %}
-                <button id="test-modal-button" class="ml-4 bg-yellow-600 hover:bg-yellow-500 text-white text-xs py-1 px-2 rounded">
-                    <i class="fas fa-flask text-xs"></i> Test
-                </button>
-                {% endif %}
             </div>
         </div>
         
@@ -263,15 +231,6 @@
         // Initial budget calculation
         updateBudget();
         
-        // Test budget depleted modal (debug only)
-        const testModalButton = document.getElementById('test-modal-button');
-        if (testModalButton) {
-            testModalButton.addEventListener('click', function() {
-                console.log('Test budget modal button clicked');
-                showBudgetModal();
-            });
-        }
-        
         // Add event listeners to all radio buttons
         policyOptions.forEach(option => {
             option.addEventListener('change', function() {
@@ -286,52 +245,9 @@
             });
         });
         
-        // Function to show the budget depleted modal
-        function showBudgetModal() {
-            // Show the beautifully designed UI modal with proper z-index
-            if (budgetModal) {
-                budgetModal.style.display = 'flex';
-                budgetModal.style.zIndex = '9999';
-                document.body.classList.add('overflow-hidden');
-                
-                // Add a small transition effect
-                const modalContent = budgetModal.querySelector('div');
-                
-                if (modalContent) {
-                    // Remove any existing classes first
-                    modalContent.classList.remove('animate__animated', 'animate__fadeIn');
-                    
-                    // Force a reflow (repaint) of the element
-                    void modalContent.offsetWidth;
-                    
-                    // Add the animation classes
-                    modalContent.classList.add('animate__animated', 'animate__fadeIn');
-                }
-                
-                // Change background color of the budget display to provide visual feedback
-                remainingBudgetElement.classList.add('text-yellow-400');
-                remainingBudgetElement.classList.add('animate-pulse');
-                
-                setTimeout(() => {
-                    remainingBudgetElement.classList.remove('animate-pulse');
-                }, 2000);
-            } else {
-                console.error('Budget modal element not found!');
-                // Fallback to alert if modal is not found
-                alert('Budget Depleted! You have used all of your available budget units.');
-            }
-        }
-        
         // Handle modal close button
         closeModalButton.addEventListener('click', function() {
-            budgetModal.style.display = 'none';
-            document.body.classList.remove('overflow-hidden');
-            
-            // Add some visual feedback on close
-            remainingBudgetElement.classList.add('animate-pulse');
-            setTimeout(() => {
-                remainingBudgetElement.classList.remove('animate-pulse');
-            }, 1000);
+            budgetModal.classList.add('hidden');
         });
         
         function updateBudget() {
@@ -355,15 +271,18 @@
             const percentage = (currentBudget / maxBudget) * 100;
             budgetBarElement.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
             
-            // Check if budget has been depleted and show the beautiful modal
+            // Check if budget has been depleted and show the modal
             if (currentBudget === 0 && previousBudget > 0) {
-                // Log for debugging
-                console.log('Budget depleted - showing beautiful modal');
+                budgetModal.classList.remove('hidden');
                 
-                showBudgetModal();
+                // Add animation class
+                const modalContent = budgetModal.querySelector('div');
+                modalContent.classList.add('animate-bounce-once');
                 
-                // Set flag to prevent showing the modal multiple times
-                modalShown = true;
+                // Remove animation class after animation completes
+                setTimeout(() => {
+                    modalContent.classList.remove('animate-bounce-once');
+                }, 1000);
             }
             
             // Change color based on budget status
