@@ -5,11 +5,13 @@ import markdown
 import json
 import tempfile
 import uuid
+import logging
 from datetime import datetime
 from weasyprint import HTML, CSS
 from models import db, Participant
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect
+from email_utils import send_reflection_report
 
 main = Blueprint('main', __name__)
 
@@ -221,7 +223,7 @@ def phase3():
                          max_budget=MAX_BUDGET,
                          policies=POLICIES)
 
-@main.route('/submit-reflection', methods=['POST'])
+@main.route('/submit-reflection', methods=['GET', 'POST'])
 def submit_reflection():
     """
     Process the reflection form submission and generate a report
@@ -236,17 +238,101 @@ def submit_reflection():
         flash('Please complete the policy process first', 'error')
         return redirect(url_for('main.phase1'))
     
-    # Extract form data
+    # Handle GET request from thank-you page for downloading report again
+    if request.method == 'GET' and request.args.get('download') == 'true':
+        # Build the markdown report using the stored session data
+        # This works if the user navigates back to thank-you page and downloads again
+        form_data = {}
+        md_report = generate_markdown_report(form_data)
+        html_content = markdown.markdown(md_report, extensions=['tables', 'fenced_code', 'nl2br'])
+        
+        # Return the styled HTML as a download
+        styled_html = create_styled_html(html_content)
+        response = Response(
+            styled_html,
+            mimetype='text/html',
+            headers={'Content-Disposition': 'attachment;filename=policy_reflection_report.html'}
+        )
+        return response
+    
+    # Extract form data for POST requests
     form_data = request.form
     
     # Build the markdown report
     md_report = generate_markdown_report(form_data)
     
+    # Get participant information from the database
+    participant_info = None
+    participant_id = session.get('session_id', str(uuid.uuid4()))
+    if 'session_id' in session:
+        participant = Participant.query.filter_by(session_id=session['session_id']).first()
+        if participant:
+            participant_info = {
+                'age': participant.age,
+                'nationality': participant.nationality,
+                'occupation': participant.occupation,
+                'education_level': participant.education_level,
+                'current_location_city': participant.current_location_city,
+                'current_location_country': participant.current_location_country
+            }
+    
+    # Send the reflection report via email
+    try:
+        email_sent = send_reflection_report(participant_info, md_report, participant_id)
+        if email_sent:
+            flash('Your reflection report has been sent to the research team.', 'success')
+        else:
+            flash('There was an issue sending the email, but your report has been generated.', 'warning')
+            logging.warning("Email couldn't be sent, but report was generated")
+    except Exception as e:
+        flash('There was an issue sending the email, but your report has been generated.', 'warning')
+        logging.error(f"Email error: {str(e)}", exc_info=True)
+    
+    # Store the report in the session so we can access it later
+    session['reflection_report'] = md_report
+    
     # Convert markdown to HTML
     html_content = markdown.markdown(md_report, extensions=['tables', 'fenced_code', 'nl2br'])
     
-    # Style the HTML for better readability
-    styled_html = f"""
+    # Style the HTML for better readability using the helper function
+    styled_html = create_styled_html(html_content)
+    
+    # Check if we should download immediately or redirect to thank you page
+    if request.form.get('action') == 'download':
+        # Return as HTML with print-friendly styling for immediate download
+        response = Response(
+            styled_html,
+            mimetype='text/html',
+            headers={'Content-Disposition': 'attachment;filename=policy_reflection_report.html'}
+        )
+        return response
+    else:
+        # Redirect to thank you page
+        return redirect(url_for('main.thank_you'))
+
+@main.route('/thank-you')
+def thank_you():
+    """
+    Thank you page after submission
+    """
+    # Check if user is registered
+    if 'participant_registered' not in session or not session['participant_registered']:
+        flash('Please register before accessing the simulation.', 'warning')
+        return redirect(url_for('main.register'))
+        
+    return render_template('thank_you.html')
+
+def create_styled_html(html_content):
+    """
+    Create a styled HTML document from HTML content
+    
+    Args:
+        html_content: HTML content to style
+        
+    Returns:
+        str: Styled HTML document
+    """
+    return f"""
     <!DOCTYPE html>
     <html>
     <head>
@@ -300,26 +386,6 @@ def submit_reflection():
     </body>
     </html>
     """
-    
-    # Return as HTML with print-friendly styling
-    response = Response(
-        styled_html,
-        mimetype='text/html',
-        headers={'Content-Disposition': 'attachment;filename=policy_reflection_report.html'}
-    )
-    return response
-
-@main.route('/thank-you')
-def thank_you():
-    """
-    Thank you page after submission
-    """
-    # Check if user is registered
-    if 'participant_registered' not in session or not session['participant_registered']:
-        flash('Please register before accessing the simulation.', 'warning')
-        return redirect(url_for('main.register'))
-        
-    return render_template('thank_you.html')
 
 def generate_markdown_report(form_data):
     """

@@ -13,10 +13,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Get SMTP settings from environment variables
-SMTP_SERVER = os.environ.get('SMTP_SERVER')
+SMTP_SERVER = os.environ.get('SMTP_SERVER', '')
 SMTP_PORT = int(os.environ.get('SMTP_PORT', 587))
-SMTP_USER = os.environ.get('SMTP_USER')
-SMTP_PASS = os.environ.get('SMTP_PASS')
+SMTP_USER = os.environ.get('SMTP_USER', '')
+SMTP_PASS = os.environ.get('SMTP_PASS', '')
 
 # Recipients for reflection reports
 RECIPIENTS = [
