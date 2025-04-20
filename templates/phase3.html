@@ -488,9 +488,14 @@
                         <i class="fas fa-arrow-left mr-2"></i>Back to Results
                     </button>
                     
-                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg transition">
-                        <i class="fas fa-paper-plane mr-2"></i>Submit & Generate Report
-                    </button>
+                    <div class="space-x-3">
+                        <button type="submit" name="action" value="download" class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg transition">
+                            <i class="fas fa-download mr-2"></i>Download Report
+                        </button>
+                        <button type="submit" name="action" value="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition">
+                            <i class="fas fa-paper-plane mr-2"></i>Submit & Continue
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -592,6 +597,11 @@
             e.preventDefault();
             
             const formData = new FormData(reflectionForm);
+            const submitButton = e.submitter;
+            const action = submitButton.value;
+            
+            // Add the action to the form data
+            formData.set('action', action);
             
             try {
                 const response = await fetch(reflectionForm.action, {
@@ -600,18 +610,26 @@
                 });
                 
                 if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = 'policy_reflection_report.md';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    
-                    // Redirect to thank you page
-                    window.location.href = '/thank-you';
+                    if (action === 'download') {
+                        // Handle download - get the blob and create a download link
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'policy_reflection_report.html';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        
+                        // Redirect to thank you page after download
+                        setTimeout(() => {
+                            window.location.href = '/thank-you';
+                        }, 1000);
+                    } else {
+                        // Handle submit action - redirect to thank you page
+                        window.location.href = '/thank-you';
+                    }
                 } else {
                     alert('There was an error submitting your reflection. Please try again.');
                 }
