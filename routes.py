@@ -8,6 +8,8 @@ import uuid
 from datetime import datetime
 from weasyprint import HTML, CSS
 from models import db, Participant
+from flask_wtf import FlaskForm
+from flask_wtf.csrf import CSRFProtect
 
 main = Blueprint('main', __name__)
 
@@ -24,7 +26,10 @@ def index():
 @main.route('/register', methods=['GET', 'POST'])
 def register():
     """Route for participant registration"""
-    if request.method == 'POST':
+    # Create a simple form for CSRF protection
+    form = FlaskForm()
+    
+    if request.method == 'POST' and form.validate_on_submit():
         try:
             # Extract form data
             age = int(request.form.get('age'))
@@ -38,6 +43,14 @@ def register():
             # Generate a unique session ID if not already present
             if 'session_id' not in session:
                 session['session_id'] = str(uuid.uuid4())
+            
+            # Check if participant with this session_id already exists
+            existing_participant = Participant.query.filter_by(session_id=session['session_id']).first()
+            if existing_participant:
+                # User already registered, just update the session flag
+                session['participant_registered'] = True
+                flash('Welcome back to the Republic of Bean policy simulation!', 'success')
+                return redirect(url_for('main.scenario'))
             
             # Create new participant
             participant = Participant(
@@ -66,10 +79,10 @@ def register():
             import logging
             logging.error(f"Registration error: {str(e)}", exc_info=True)
             flash(f'Registration error: {str(e)}', 'error')
-            return render_template('register.html')
+            return render_template('register.html', form=form)
     
     # GET request - show registration form
-    return render_template('register.html')
+    return render_template('register.html', form=form)
 
 @main.route('/scenario')
 def scenario():

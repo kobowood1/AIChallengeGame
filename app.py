@@ -6,9 +6,13 @@ eventlet.monkey_patch()
 from flask import Flask
 from flask_socketio import SocketIO
 import logging
+from flask_wtf.csrf import CSRFProtect
 
 # Initialize SocketIO without an app instance yet
 socketio = SocketIO(cors_allowed_origins="*", async_mode='eventlet')
+
+# Initialize CSRF protection
+csrf = CSRFProtect()
 
 def create_app():
     """
@@ -30,6 +34,7 @@ def create_app():
     
     # Initialize extensions with app
     socketio.init_app(app)
+    csrf.init_app(app)
     
     # Initialize database
     from models import db
