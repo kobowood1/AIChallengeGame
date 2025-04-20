@@ -163,4 +163,13 @@ Potential areas for future development:
 
 ## 📝 License
 
-Copyright © 2025 The CHALLENGE: Policy Jam - Refugee Edition
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).
+
+- **Personal Use**: Freely permitted
+- **Commercial Use**: Prohibited without explicit permission
+- **Attribution**: Required
+- **Modifications**: Permitted for non-commercial purposes
+
+Copyright © 2025 Kofi Wood. All rights reserved.
+
+See the [LICENSE](./LICENSE) file for complete terms and conditions.
