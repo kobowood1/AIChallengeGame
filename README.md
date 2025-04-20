@@ -154,6 +154,7 @@ The platform collects:
 ## 📈 Future Enhancements
 
 Potential areas for future development:
+- Voice to text and text to Voice features
 - Multiple scenario support for different policy domains
 - Enhanced visualization of policy impacts
 - Advanced analytics dashboard for researchers
