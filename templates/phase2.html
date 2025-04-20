@@ -156,13 +156,10 @@
                     {% endfor %}
                 </div>
                 
-                <div class="mt-6 flex justify-between">
+                <div class="mt-6 flex justify-start">
                     <a href="{{ url_for('main.phase1') }}" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition">
                         <i class="fas fa-arrow-left mr-2"></i>Edit
                     </a>
-                    <button id="call-vote-btn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition">
-                        <i class="fas fa-vote-yea mr-2"></i>Call Vote
-                    </button>
                 </div>
                 
                 <div class="mt-6 text-center">
@@ -224,6 +221,12 @@
                 
                 <div class="mt-4 text-sm text-gray-400">
                     <p>Tip: Click on any citizen to hear their perspective on a specific education policy. Consider how different ideologies affect views on refugee education.</p>
+                </div>
+                
+                <div class="mt-6 flex justify-center">
+                    <button id="call-vote-btn" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition shadow-lg transform hover:scale-105">
+                        <i class="fas fa-vote-yea mr-2"></i>Call Vote
+                    </button>
                 </div>
             </div>
             
