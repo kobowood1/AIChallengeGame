@@ -24,6 +24,11 @@ The simulation unfolds over three distinct phases:
 - **AI-Powered Agents**: Four ideologically diverse AI agents that provide realistic perspectives and debate policy options
 - **Dynamic Deliberation**: Live conversation interface for debating policies with AI agents
 - **Budget Constraints**: Limited resources force strategic trade-offs between competing worthy goals
+- **Gamified Interface**:
+  - Animated budget depletion notifications
+  - Color-coded policy options with intuitive icons
+  - Visual budget tracking with dynamic color changes
+  - Interactive UI elements with micro-animations
 - **Voting System**: Democratic majority-rule process with random tiebreaker
 - **Policy Profiling**: AI-generated analysis of user policy choices and reasoning
 - **Reflection Framework**: Guided questions for deep reflection on the simulation experience
@@ -43,7 +48,9 @@ The simulation unfolds over three distinct phases:
 ### Frontend
 - **HTML/CSS/JavaScript**: Core web technologies
 - **Tailwind CSS**: Responsive, modern design framework
+- **Font Awesome**: Comprehensive icon library for enhanced UI
 - **Socket.IO (client)**: Real-time communication
+- **CSS Animations**: Micro-interactions and visual feedback
 
 ### AI Integration
 - **OpenAI API**: Powers the AI agents and policy profile generation
@@ -95,10 +102,30 @@ The application follows a modular architecture with clear separation of concerns
 
 1. **Registration**: Participants provide demographic information
 2. **Scenario Introduction**: Background on the Republic of Bean's refugee situation
-3. **Phase 1 - Selection**: Choose policy options within budget constraints
-4. **Phase 2 - Deliberation**: Discussion with AI agents and voting
-5. **Phase 3 - Reflection**: Answer reflection questions and receive policy profile
+3. **Phase 1 - Selection**: 
+   - Choose policy options within budget constraints
+   - Interactive visual feedback for budget utilization
+   - Budget depletion notifications
+   - Color-coded options with clear cost indicators
+4. **Phase 2 - Deliberation**: 
+   - Real-time discussion with AI agents
+   - Spontaneous debates between AI agents
+   - Voting mechanism with visual results
+5. **Phase 3 - Reflection**: 
+   - Answer reflection questions
+   - Receive AI-generated policy profile
 6. **Thank You Page**: Download report and confirmation of email delivery
+
+## 🎲 Gamification Elements
+
+The application incorporates several gamification elements to enhance user engagement:
+- **Budget Management**: Resource allocation with dynamic visual feedback
+- **Interactive UI**: Animations, micro-interactions, and visual transitions
+- **Color Psychology**: Semantic colors for different option levels (blue for basic, purple for moderate, red for comprehensive)
+- **Feedback Mechanisms**: Pop-up notifications for important events like budget depletion
+- **Strategic Choices**: Decisions with meaningful trade-offs and clear visual representation
+- **Progress Indicators**: Visual feedback showing advancement through the simulation
+- **Engaging Terminology**: Using terms like "mission," "policy points," and "levels" to create a game-like experience
 
 ## 🤖 AI Agent Design
 
