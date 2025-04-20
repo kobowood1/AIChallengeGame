@@ -404,7 +404,7 @@
             <h1 class="text-3xl font-bold mb-2 text-center text-blue-400">Refugee Education Policy Reflection</h1>
             <p class="text-center text-gray-400 mb-6">Share your insights on refugee education policy-making and the deliberative process</p>
             
-            <form id="reflection-form" class="space-y-6" action="{{ url_for('main.submit_reflection') }}" method="POST">
+            <form id="reflection-form" class="space-y-6" action="{{ url_for('main.submit_reflection') }}" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="format" value="pdf">
                 <!-- Participant Information Section (Read-only) -->
@@ -591,53 +591,8 @@
             });
         });
         
-        // Form submission handler for AJAX
-        const reflectionForm = document.getElementById('reflection-form');
-        reflectionForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(reflectionForm);
-            const submitButton = e.submitter;
-            const action = submitButton.value;
-            
-            // Add the action to the form data
-            formData.set('action', action);
-            
-            try {
-                const response = await fetch(reflectionForm.action, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                if (response.ok) {
-                    if (action === 'download') {
-                        // Handle download - get the blob and create a download link
-                        const blob = await response.blob();
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.style.display = 'none';
-                        a.href = url;
-                        a.download = 'policy_reflection_report.html';
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-                        
-                        // Redirect to thank you page after download
-                        setTimeout(() => {
-                            window.location.href = '/thank-you';
-                        }, 1000);
-                    } else {
-                        // Handle submit action - redirect to thank you page
-                        window.location.href = '/thank-you';
-                    }
-                } else {
-                    alert('There was an error submitting your reflection. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('There was an error submitting your reflection. Please try again.');
-            }
-        });
+        // No need for custom form handling - using standard form submission
+        // This will allow the server to handle the form submission and redirect properly
     });
     
     // Function to create fireworks
