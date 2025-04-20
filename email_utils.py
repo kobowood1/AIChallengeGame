@@ -48,8 +48,12 @@ def send_reflection_report(participant_info, report_content, participant_id):
         logger.warning("Email requires a valid SENDGRID_API_KEY environment variable.")
         return False
     
-    # Create a timestamp-based filename for the report
-    filename = f"reflection_report_{participant_id}.txt"
+    # Create a meaningful filename for the report with participant info if available
+    if participant_info and participant_info.get('occupation'):
+        occupation = participant_info.get('occupation', '').replace(' ', '_').lower()
+        filename = f"refugee_policy_reflection_{occupation}_{participant_id}.md"
+    else:
+        filename = f"refugee_policy_reflection_{participant_id}.md"
     
     # Basic info about the participant for the email subject
     if participant_info:
@@ -57,13 +61,19 @@ def send_reflection_report(participant_info, report_content, participant_id):
     else:
         subject = f"Refugee Policy Reflection Report - {participant_id}"
     
-    # Email body
+    # Email body with HTML formatting
     email_body = """
-    A new reflection report has been submitted from the Republic of Bean policy simulation.
-    
-    The report is attached as a text file.
-    
-    This is an automated message from the AI CHALLENGE policy simulation platform.
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
+            <h2 style="color: #2a5885;">New Reflection Report Submission</h2>
+            <p>A new reflection report has been submitted from the Republic of Bean policy simulation.</p>
+            <p>The report is attached as a text file. It contains participant information, policy selections, and reflection responses.</p>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+            <p style="color: #777; font-size: 12px;">This is an automated message from the AI CHALLENGE policy simulation platform.</p>
+        </div>
+    </body>
+    </html>
     """
     
     success = True
@@ -77,7 +87,7 @@ def send_reflection_report(participant_info, report_content, participant_id):
                 from_email=Email(FROM_EMAIL),
                 to_emails=To(recipient),
                 subject=subject,
-                html_content=Content("text/plain", email_body)
+                html_content=Content("text/html", email_body)
             )
             
             # In production mode, emails will actually be delivered
@@ -91,7 +101,7 @@ def send_reflection_report(participant_info, report_content, participant_id):
             attachment = Attachment()
             attachment.file_content = FileContent(encoded_content)
             attachment.file_name = FileName(filename)
-            attachment.file_type = FileType('text/plain')
+            attachment.file_type = FileType('text/markdown')
             attachment.disposition = Disposition('attachment')
             attachment.content_id = ContentId('Report')
             
