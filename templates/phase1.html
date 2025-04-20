@@ -49,6 +49,11 @@
         
         <form id="policy-form" method="POST" action="{{ url_for('main.phase1') }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <!-- Instructions above the policy grid -->
+            <div class="bg-blue-900 bg-opacity-30 rounded-lg p-4 mb-6 border-l-4 border-blue-500">
+                <p class="m-0 text-center"><strong>Instructions:</strong> Click on the radio buttons by the options to select your policy choice then scroll down to submit your Policy Package.</p>
+            </div>
+            
             <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-6">
                 {% for policy in policies %}
                     <div class="bg-gray-700 rounded-lg p-4">
