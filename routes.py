@@ -19,8 +19,9 @@ def index():
     if 'participant_registered' in session and session['participant_registered']:
         return render_template('index.html')
     else:
-        # Redirect to registration page
-        return redirect(url_for('main.register'))
+        # Show the registration page directly instead of redirecting
+        # This fixes the "disappearing registration" issue
+        return render_template('register.html')
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
@@ -76,8 +77,14 @@ def register():
             )
             
             # Add to database
-            db.session.add(participant)
-            db.session.commit()
+            try:
+                db.session.add(participant)
+                db.session.commit()
+                logger.debug("Successfully added participant to database")
+            except Exception as db_error:
+                logger.error(f"Database error: {str(db_error)}")
+                db.session.rollback()
+                raise Exception(f"Database error occurred: {str(db_error)}")
             
             # Mark as registered in session
             session['participant_registered'] = True
