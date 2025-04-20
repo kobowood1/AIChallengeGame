@@ -7,6 +7,8 @@ from app import socketio
 from game import game_manager
 import uuid
 import logging
+import random
+import time
 
 @socketio.on('connect')
 def handle_connect():
