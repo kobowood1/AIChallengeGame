@@ -1,22 +1,27 @@
 """
-Email utility functions for sending reflection reports.
+Email utility functions for sending reflection reports using SendGrid.
 """
 import os
-import smtplib
+import sys
+import base64
 import logging
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import (
+    Mail, Attachment, FileContent, FileName, 
+    FileType, Disposition, ContentId, 
+    Email, To, Content
+)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Get SMTP settings from environment variables
-SMTP_SERVER = os.environ.get('SMTP_SERVER', '')
-SMTP_PORT = int(os.environ.get('SMTP_PORT', 587))
-SMTP_USER = os.environ.get('SMTP_USER', '')
-SMTP_PASS = os.environ.get('SMTP_PASS', '')
+# Get SendGrid API key from environment variable
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+
+# Default from email - can be updated to match a verified sender in SendGrid
+# Use sandbox mode for testing or update to a verified sender from your SendGrid account
+FROM_EMAIL = "noreply@example.com"  # Replace with your verified sender in production
 
 # Recipients for reflection reports
 RECIPIENTS = [
@@ -27,7 +32,7 @@ RECIPIENTS = [
 
 def send_reflection_report(participant_info, report_content, participant_id):
     """
-    Send the reflection report to all specified recipients.
+    Send the reflection report to all specified recipients using SendGrid.
     
     Args:
         participant_info (dict): Participant details
@@ -37,11 +42,10 @@ def send_reflection_report(participant_info, report_content, participant_id):
     Returns:
         bool: True if all emails were sent successfully, False otherwise
     """
-    # Check if we have valid SMTP credentials - specifically require Google App Password for Gmail
-    if not all([SMTP_SERVER, SMTP_PORT, SMTP_USER, SMTP_PASS]):
-        logger.error("SMTP configuration is incomplete. Cannot send emails.")
-        logger.warning("Email requires a valid SMTP_SERVER, SMTP_PORT, SMTP_USER, and SMTP_PASS.")
-        logger.warning("For Gmail, you must use an App Password, not your regular password.")
+    # Check if we have a valid SendGrid API key
+    if not SENDGRID_API_KEY:
+        logger.error("SendGrid API key is missing. Cannot send emails.")
+        logger.warning("Email requires a valid SENDGRID_API_KEY environment variable.")
         return False
     
     # Create a timestamp-based filename for the report
@@ -65,32 +69,43 @@ def send_reflection_report(participant_info, report_content, participant_id):
     success = True
     
     try:
-        for recipient in RECIPIENTS:
-            # Create message
-            message = MIMEMultipart()
-            message['From'] = SMTP_USER
-            message['To'] = recipient
-            message['Subject'] = subject
-            
-            # Attach the body text
-            message.attach(MIMEText(email_body, 'plain'))
-            
-            # Attach the report as a text file
-            attachment = MIMEApplication(report_content.encode('utf-8'))
-            attachment['Content-Disposition'] = f'attachment; filename="{filename}"'
-            message.attach(attachment)
-            
-            # Send the email
-            with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-                server.ehlo()
-                server.starttls()
-                server.login(SMTP_USER, SMTP_PASS)
-                server.send_message(message)
-                logger.info(f"Reflection report sent to {recipient}")
+        sg = SendGridAPIClient(SENDGRID_API_KEY)
         
-        return True
+        for recipient in RECIPIENTS:
+            # Create a Mail message
+            message = Mail(
+                from_email=Email(FROM_EMAIL),
+                to_emails=To(recipient),
+                subject=subject,
+                html_content=Content("text/plain", email_body)
+            )
+            
+            # Encode report content as base64
+            encoded_content = base64.b64encode(report_content.encode()).decode()
+            
+            # Create attachment
+            attachment = Attachment()
+            attachment.file_content = FileContent(encoded_content)
+            attachment.file_name = FileName(filename)
+            attachment.file_type = FileType('text/plain')
+            attachment.disposition = Disposition('attachment')
+            attachment.content_id = ContentId('Report')
+            
+            # Add attachment to message
+            message.attachment = attachment
+            
+            # Send message
+            response = sg.send(message)
+            status_code = response.status_code
+            
+            if status_code == 202:
+                logger.info(f"Email sent successfully to {recipient} with status code {status_code}")
+            else:
+                logger.warning(f"SendGrid returned status code {status_code}")
+                success = False
+        
+        return success
+        
     except Exception as e:
-        logger.error(f"Failed to send email: {str(e)}")
-        success = False
-    
-    return success
+        logger.error(f"Failed to send email via SendGrid: {str(e)}")
+        return False
