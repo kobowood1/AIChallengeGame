@@ -1,79 +1,224 @@
 {% extends "base.html" %}
 
-{% block title %}Republic of Bean - Scenario{% endblock %}
+{% block title %}The CHALLENGE: Policy Jam - Mission Briefing{% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto">
-    <h1 class="text-3xl font-bold mb-4 text-center text-blue-400">Republic of Bean: Education Reform Challenge</h1>
-    
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <h2 class="text-xl font-bold mb-4">Background</h2>
-        
-        <div class="prose prose-invert">
-            <p>Welcome to the Republic of Bean, a small democratic nation facing significant challenges after a period of economic and political stability. In recent years, Bean has experienced an influx of refugees from neighboring countries due to regional conflicts, creating unprecedented pressure on public services—particularly the education system.</p>
-            
-            <p>As a member of parliament, you have been tasked with reforming Bean's education system to better address the needs of both citizens and refugees. The parliament has allocated a limited budget for these reforms, and you must work collaboratively with other representatives (AI-generated agents) to determine the most effective and equitable allocation of resources.</p>
-            
-            <p>Your decisions will impact generations of students, both native-born citizens and refugees. How will you balance competing interests, navigate political differences, and create a just and inclusive education system under budget constraints?</p>
+    <div class="mb-8 relative">
+        <div class="absolute -top-4 right-4 z-10">
+            <span class="inline-block bg-blue-600 text-white px-4 py-1 rounded-lg font-bold shadow-md animate-pulse">
+                <i class="fas fa-scroll mr-1"></i> MISSION BRIEFING
+            </span>
+        </div>
+        <h1 class="text-3xl font-bold mb-4 text-center text-gradient bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400">Republic of Bean: Education Reform Challenge</h1>
+        <div class="w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 mb-6"></div>
+        <div class="flex justify-center mb-2">
+            <div class="px-3 py-1 bg-gray-700 rounded-full text-xs text-gray-300 inline-flex items-center">
+                <i class="fas fa-user-circle mr-1"></i> Level 1 Policy Advisor
+                <span class="mx-2">|</span>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star text-yellow-400"></i>
+                <i class="fas fa-star-half-alt text-yellow-400"></i>
+                <i class="fas fa-star text-gray-600"></i>
+                <i class="fas fa-star text-gray-600"></i>
+            </div>
         </div>
     </div>
     
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <h2 class="text-xl font-bold mb-4">The Challenge</h2>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 transform transition-all hover:shadow-blue-500/20 hover:shadow-xl border-l-4 border-blue-500">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white mr-4 shadow-lg">
+                <i class="fas fa-book-open text-xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-blue-400">Background Quest</h2>
+            <div class="ml-auto px-2 py-1 bg-blue-900/50 rounded text-xs text-blue-300">
+                <i class="fas fa-trophy mr-1"></i> +5 XP
+            </div>
+        </div>
         
         <div class="prose prose-invert">
-            <p>You will participate in a three-phase process:</p>
+            <p class="mb-3 leading-relaxed">Welcome to the Republic of Bean, a small democratic nation facing significant challenges after a period of economic and political stability. In recent years, Bean has experienced an influx of refugees from neighboring countries due to regional conflicts, creating unprecedented pressure on public services—particularly the education system.</p>
             
-            <ol>
-                <li><strong>Individual Policy Selection:</strong> Select one option from each of seven education policy areas within a 14-unit budget limit.</li>
-                <li><strong>Collaborative Dialogue:</strong> Engage in discussion with four AI-generated citizen representatives who have different perspectives. Justify your choices and listen to their arguments.</li>
-                <li><strong>Democratic Decision:</strong> Through majority voting, create a final education policy package that stays within budget.</li>
-            </ol>
+            <p class="mb-3 leading-relaxed">As a member of parliament, you have been tasked with reforming Bean's education system to better address the needs of both citizens and refugees. The parliament has allocated a limited budget for these reforms, and you must work collaboratively with other representatives (AI-generated agents) to determine the most effective and equitable allocation of resources.</p>
             
-            <p>After the process concludes, you'll reflect on the experience, examining how power, values, and constraints shaped your decisions and the group's outcome.</p>
+            <p class="mb-0 leading-relaxed">Your decisions will impact generations of students, both native-born citizens and refugees. How will you balance competing interests, navigate political differences, and create a just and inclusive education system under budget constraints?</p>
         </div>
     </div>
     
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <h2 class="text-xl font-bold mb-4">Policy Areas</h2>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 transform transition-all hover:shadow-green-500/20 hover:shadow-xl border-l-4 border-green-500">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white mr-4 shadow-lg">
+                <i class="fas fa-tasks text-xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-green-400">Mission Objectives</h2>
+            <div class="ml-auto px-2 py-1 bg-green-900/50 rounded text-xs text-green-300">
+                <i class="fas fa-medal mr-1"></i> 3 Challenges
+            </div>
+        </div>
         
         <div class="prose prose-invert">
-            <p>You will make decisions on these seven critical education policy areas:</p>
+            <p class="mb-3 leading-relaxed">You will participate in a three-phase policy adventure:</p>
             
-            <ol>
-                <li><strong>Access to Education:</strong> How will educational institutions accommodate refugee students?</li>
-                <li><strong>Language Instruction:</strong> What approach to language learning will best support integration?</li>
-                <li><strong>Teacher Training:</strong> How will educators be prepared to work with diverse students?</li>
-                <li><strong>Curriculum Adaptation:</strong> How should content be modified to be inclusive and relevant?</li>
-                <li><strong>Psychosocial Support:</strong> What mental health resources should be provided?</li>
-                <li><strong>Financial Support:</strong> What economic assistance will help refugee students succeed?</li>
-                <li><strong>Certification/Accreditation:</strong> How will prior education be recognized and validated?</li>
-            </ol>
+            <div class="space-y-4 ml-4">
+                <div class="flex items-start p-3 rounded bg-gray-700/50 transform transition-all hover:bg-gray-700/80 hover:translate-x-1">
+                    <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0 shadow-md">1</div>
+                    <div>
+                        <h3 class="font-bold text-blue-300 mb-1">Individual Policy Selection</h3>
+                        <p class="text-gray-300 mb-0">Select one option from each of the five education policy areas within a 14-unit budget limit.</p>
+                    </div>
+                    <div class="ml-auto text-xs text-blue-400 font-medium">PHASE 1</div>
+                </div>
+                <div class="flex items-start p-3 rounded bg-gray-700/50 transform transition-all hover:bg-gray-700/80 hover:translate-x-1">
+                    <div class="bg-yellow-500 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0 shadow-md">2</div>
+                    <div>
+                        <h3 class="font-bold text-yellow-300 mb-1">Collaborative Dialogue</h3>
+                        <p class="text-gray-300 mb-0">Engage in discussion with four AI-generated citizen representatives who have different perspectives. Justify your choices and listen to their arguments.</p>
+                    </div>
+                    <div class="ml-auto text-xs text-yellow-400 font-medium">PHASE 2</div>
+                </div>
+                <div class="flex items-start p-3 rounded bg-gray-700/50 transform transition-all hover:bg-gray-700/80 hover:translate-x-1">
+                    <div class="bg-purple-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0 shadow-md">3</div>
+                    <div>
+                        <h3 class="font-bold text-purple-300 mb-1">Democratic Decision</h3>
+                        <p class="text-gray-300 mb-0">Through majority voting, create a final education policy package that stays within budget.</p>
+                    </div>
+                    <div class="ml-auto text-xs text-purple-400 font-medium">PHASE 3</div>
+                </div>
+            </div>
             
-            <p>For each area, you'll choose from three options representing different approaches and resource investments.</p>
+            <div class="mt-4 p-3 border border-dashed border-yellow-500/50 rounded-lg bg-yellow-900/20">
+                <p class="text-yellow-300 mb-0 flex items-center text-sm">
+                    <i class="fas fa-lightbulb mr-2 text-yellow-400"></i>
+                    After the process concludes, you'll reflect on the experience, examining how power, values, and constraints shaped your decisions and the group's outcome.
+                </p>
+            </div>
         </div>
     </div>
     
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <h2 class="text-xl font-bold mb-4">Budget Constraints</h2>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 transform transition-all hover:shadow-purple-500/20 hover:shadow-xl border-l-4 border-purple-500">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white mr-4 shadow-lg">
+                <i class="fas fa-brain text-xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-purple-400">Policy Challenges</h2>
+            <div class="ml-auto px-2 py-1 bg-purple-900/50 rounded text-xs text-purple-300">
+                <i class="fas fa-puzzle-piece mr-1"></i> 5 Areas
+            </div>
+        </div>
         
         <div class="prose prose-invert">
-            <p>The parliamentary budget committee has allocated 14 resource units for education reform. Each policy option costs between 1-3 units, reflecting the relative investment required:</p>
+            <p class="mb-3 leading-relaxed">You will make decisions on these five critical education policy areas:</p>
             
-            <ul>
-                <li><strong>Level 1 (1 unit):</strong> Basic implementation with minimal resources</li>
-                <li><strong>Level 2 (2 units):</strong> Moderate implementation with average resources</li>
-                <li><strong>Level 3 (3 units):</strong> Comprehensive implementation with significant resources</li>
-            </ul>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <div class="p-3 rounded bg-gray-700/50 transform transition hover:bg-gray-700/80">
+                    <div class="flex items-center mb-1">
+                        <i class="fas fa-school text-blue-400 mr-2"></i>
+                        <h3 class="font-bold text-blue-400 mb-0">Language Support</h3>
+                    </div>
+                    <p class="text-gray-300 mb-0 text-sm">How will refugee students overcome language barriers?</p>
+                </div>
+                <div class="p-3 rounded bg-gray-700/50 transform transition hover:bg-gray-700/80">
+                    <div class="flex items-center mb-1">
+                        <i class="fas fa-chalkboard-teacher text-green-400 mr-2"></i>
+                        <h3 class="font-bold text-green-400 mb-0">Teacher Training</h3>
+                    </div>
+                    <p class="text-gray-300 mb-0 text-sm">How will educators be prepared to work with diverse students?</p>
+                </div>
+                <div class="p-3 rounded bg-gray-700/50 transform transition hover:bg-gray-700/80">
+                    <div class="flex items-center mb-1">
+                        <i class="fas fa-user-friends text-yellow-400 mr-2"></i>
+                        <h3 class="font-bold text-yellow-400 mb-0">School Integration</h3>
+                    </div>
+                    <p class="text-gray-300 mb-0 text-sm">How will educational institutions accommodate refugee students?</p>
+                </div>
+                <div class="p-3 rounded bg-gray-700/50 transform transition hover:bg-gray-700/80">
+                    <div class="flex items-center mb-1">
+                        <i class="fas fa-heart text-red-400 mr-2"></i>
+                        <h3 class="font-bold text-red-400 mb-0">Psychosocial Support</h3>
+                    </div>
+                    <p class="text-gray-300 mb-0 text-sm">What mental health resources should be provided?</p>
+                </div>
+                <div class="p-3 rounded bg-gray-700/50 transform transition hover:bg-gray-700/80 md:col-span-2">
+                    <div class="flex items-center mb-1">
+                        <i class="fas fa-book text-purple-400 mr-2"></i>
+                        <h3 class="font-bold text-purple-400 mb-0">Curriculum Adaptation</h3>
+                    </div>
+                    <p class="text-gray-300 mb-0 text-sm">How should content be modified to be inclusive and relevant?</p>
+                </div>
+            </div>
             
-            <p>You must carefully balance idealism with pragmatism. Your selections must not exceed the 14-unit limit.</p>
+            <p class="mb-0 leading-relaxed">For each area, you'll choose from three options representing different approaches and resource investments.</p>
+        </div>
+    </div>
+    
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 transform transition-all hover:shadow-red-500/20 hover:shadow-xl border-l-4 border-red-500">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white mr-4 shadow-lg">
+                <i class="fas fa-coins text-xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-red-400">Budget Constraints</h2>
+            <div class="ml-auto px-2 py-1 bg-red-900/50 rounded text-xs text-red-300">
+                <i class="fas fa-gem mr-1"></i> 14 Resource Units
+            </div>
+        </div>
+        
+        <div class="prose prose-invert">
+            <p class="mb-3 leading-relaxed">The parliamentary budget committee has allocated <span class="text-yellow-400 font-bold">14 resource units</span> for education reform. Each policy option costs between 1-3 units, reflecting the relative investment required:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                <div class="p-3 rounded bg-gray-700/50 transform transition hover:scale-105">
+                    <div class="flex justify-center mb-2">
+                        <div class="w-10 h-10 rounded-full bg-blue-900 border-2 border-blue-500 flex items-center justify-center text-white font-bold">1</div>
+                    </div>
+                    <h4 class="text-center font-bold text-blue-400 mb-1">Level 1</h4>
+                    <div class="text-center text-yellow-400 font-bold text-lg mb-1">1 Unit</div>
+                    <p class="text-center text-gray-300 text-sm mb-0">Basic implementation with minimal resources</p>
+                </div>
+                <div class="p-3 rounded bg-gray-700/50 transform transition hover:scale-105">
+                    <div class="flex justify-center mb-2">
+                        <div class="w-10 h-10 rounded-full bg-purple-900 border-2 border-purple-500 flex items-center justify-center text-white font-bold">2</div>
+                    </div>
+                    <h4 class="text-center font-bold text-purple-400 mb-1">Level 2</h4>
+                    <div class="text-center text-yellow-400 font-bold text-lg mb-1">2 Units</div>
+                    <p class="text-center text-gray-300 text-sm mb-0">Moderate implementation with average resources</p>
+                </div>
+                <div class="p-3 rounded bg-gray-700/50 transform transition hover:scale-105">
+                    <div class="flex justify-center mb-2">
+                        <div class="w-10 h-10 rounded-full bg-red-900 border-2 border-red-500 flex items-center justify-center text-white font-bold">3</div>
+                    </div>
+                    <h4 class="text-center font-bold text-red-400 mb-1">Level 3</h4>
+                    <div class="text-center text-yellow-400 font-bold text-lg mb-1">3 Units</div>
+                    <p class="text-center text-gray-300 text-sm mb-0">Comprehensive implementation with significant resources</p>
+                </div>
+            </div>
+            
+            <div class="mt-4 p-3 border border-dashed border-red-500/50 rounded-lg bg-red-900/20">
+                <p class="text-red-300 mb-0 flex items-center text-sm">
+                    <i class="fas fa-exclamation-triangle mr-2 text-red-400"></i>
+                    You must carefully balance idealism with pragmatism. Your selections must not exceed the 14-unit limit.
+                </p>
+            </div>
         </div>
     </div>
     
     <div class="text-center mb-8">
-        <a href="{{ url_for('main.phase1') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center">
-            <i class="fas fa-play-circle mr-2"></i>Begin Policy Selection
-        </a>
+        <div class="relative inline-block group">
+            <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-200"></div>
+            <a href="{{ url_for('main.phase1') }}" class="relative bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-10 rounded-lg text-lg transition transform hover:scale-105 inline-flex items-center shadow-lg">
+                <i class="fas fa-play-circle mr-2"></i>Begin Your Policy Adventure
+            </a>
+        </div>
+        <div class="mt-3 text-xs text-gray-400">
+            Estimated completion time: 30 minutes
+        </div>
     </div>
 </div>
+
+<style>
+.text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+</style>
 {% endblock %}

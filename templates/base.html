@@ -22,10 +22,14 @@
                     <i class="fas fa-robot mr-2"></i>The CHALLENGE: Policy Jam - Refugee Edition
                 </a>
                 <div class="flex space-x-4">
-                    <a href="{{ url_for('main.phase1') }}" class="text-white hover:text-blue-400 transition">Policy Selection</a>
-                    <a href="{{ url_for('main.phase2') }}" class="text-white hover:text-blue-400 transition">Impact Analysis</a>
-                    <a href="{{ url_for('main.reset') }}" class="text-white hover:text-red-400 transition">
-                        <i class="fas fa-redo mr-1"></i>Reset
+                    <a href="{{ url_for('main.phase1') }}" class="text-white hover:text-blue-400 transition">
+                        <i class="fas fa-clipboard-list mr-1"></i> Policy Selection
+                    </a>
+                    <a href="{{ url_for('main.phase2') }}" class="text-white hover:text-blue-400 transition">
+                        <i class="fas fa-comments mr-1"></i> Impact Analysis
+                    </a>
+                    <a href="{{ url_for('main.reset') }}" class="py-1 px-3 bg-red-600 hover:bg-red-700 text-white rounded-full transition-all transform hover:scale-105 flex items-center font-bold">
+                        <i class="fas fa-redo mr-1"></i> Reset Game
                     </a>
                     {% block nav_right %}{% endblock %}
                 </div>

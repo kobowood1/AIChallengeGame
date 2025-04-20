@@ -1,15 +1,20 @@
 {% extends "base.html" %}
 
-{% block title %}Republic of Bean - Education Policy Simulation{% endblock %}
+{% block title %}The CHALLENGE: Policy Jam - Refugee Edition{% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto">
-    <div class="text-center mb-10">
-        <h1 class="text-4xl font-bold mb-4 text-blue-400">Republic of Bean</h1>
-        <p class="text-xl text-gray-300 mb-4">
-            An Interactive Education Policy Simulation for Refugee Integration
+    <div class="text-center mb-10 relative">
+        <div class="absolute -top-6 right-20 lg:right-40 transform rotate-12 z-10">
+            <span class="inline-block bg-yellow-400 text-yellow-800 px-4 py-1 rounded-lg font-bold shadow-md animate-bounce-slow">
+                <i class="fas fa-gamepad mr-1"></i> GAME ON!
+            </span>
+        </div>
+        <h1 class="text-4xl font-bold mb-4 text-gradient">The CHALLENGE: Policy Jam</h1>
+        <p class="text-xl text-blue-300 mb-4">
+            <span class="bg-red-600 text-white px-2 py-1 rounded">Refugee Edition</span> - A Policy Adventure Game
         </p>
-        <div class="inline-block bg-blue-900 bg-opacity-30 rounded-lg p-4 border-l-4 border-blue-500">
+        <div class="inline-block bg-blue-900 bg-opacity-30 rounded-lg p-4 border-l-4 border-blue-500 transform transition-all hover:scale-[1.02]">
             <p class="text-gray-200">
                 As a member of parliament in the Republic of Bean, you must address the education needs of both citizens and refugees.
                 Work with AI-generated citizens to draft policy reforms within budget constraints.
@@ -17,79 +22,161 @@
         </div>
     </div>
 
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-10 text-center">
-        <h2 class="text-2xl font-bold mb-4 text-blue-400">Welcome to the Republic of Bean</h2>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-10 text-center relative overflow-hidden transform transition-all hover:shadow-blue-500/30 hover:shadow-xl">
+        <div class="absolute -top-10 -right-10 h-40 w-40 bg-blue-500 rounded-full opacity-10"></div>
+        <div class="absolute -bottom-20 -left-20 h-60 w-60 bg-purple-500 rounded-full opacity-10"></div>
+        <h2 class="text-2xl font-bold mb-4 text-blue-400">Welcome to the Policy Challenge</h2>
         <p class="mb-6 text-gray-300">
             Take on the role of an education policy advisor and tackle the challenge of refugee integration.
         </p>
         <div class="mt-4">
-            <a href="{{ url_for('main.start') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center">
-                <i class="fas fa-play-circle mr-2"></i>Start the Simulation
+            <a href="{{ url_for('main.start') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition-all transform hover:scale-105 inline-flex items-center shadow-lg hover:shadow-blue-500/50">
+                <i class="fas fa-play-circle mr-2"></i>Start Your Adventure
             </a>
+        </div>
+        <div class="mt-4 text-xs text-blue-300">
+            <i class="fas fa-users mr-1"></i> 3,257 policy advisors have played this game
         </div>
     </div>
 
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-10">
-        <h2 class="text-2xl font-bold mb-4 text-blue-400">How the Simulation Works</h2>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-10 transform transition-all hover:shadow-green-500/30 hover:shadow-xl">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-blue-400">Your Mission</h2>
+            <span class="bg-green-600 text-white text-xs px-3 py-1 rounded-full">XP +50 POINTS</span>
+        </div>
         <div class="space-y-4 text-gray-300">
-            <div class="flex items-start">
-                <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">1</div>
-                <p>Read the Republic of Bean scenario to understand the education reform challenge</p>
+            <div class="flex items-start p-3 rounded bg-gray-700/50 transform transition-all hover:bg-gray-700/80 hover:translate-x-1">
+                <div class="bg-blue-600 rounded-full w-10 h-10 flex items-center justify-center text-white mr-3 flex-shrink-0 shadow-md">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-blue-300">Briefing</h3>
+                    <p>Read the Republic of Bean scenario to understand the education reform challenge</p>
+                </div>
+                <div class="ml-auto text-xs text-green-400 font-medium">+5 XP</div>
             </div>
-            <div class="flex items-start">
-                <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">2</div>
-                <p>Select policy options in each of the seven education areas within your limited budget</p>
+            <div class="flex items-start p-3 rounded bg-gray-700/50 transform transition-all hover:bg-gray-700/80 hover:translate-x-1">
+                <div class="bg-green-600 rounded-full w-10 h-10 flex items-center justify-center text-white mr-3 flex-shrink-0 shadow-md">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-green-300">Strategy</h3>
+                    <p>Select policy options in each of the five education areas within your limited budget</p>
+                </div>
+                <div class="ml-auto text-xs text-green-400 font-medium">+10 XP</div>
             </div>
-            <div class="flex items-start">
-                <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">3</div>
-                <p>Engage in discussion with AI-generated citizens who have diverse perspectives</p>
+            <div class="flex items-start p-3 rounded bg-gray-700/50 transform transition-all hover:bg-gray-700/80 hover:translate-x-1">
+                <div class="bg-yellow-500 rounded-full w-10 h-10 flex items-center justify-center text-white mr-3 flex-shrink-0 shadow-md">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-yellow-300">Deliberation</h3>
+                    <p>Engage in discussion with AI-generated citizens who have diverse perspectives</p>
+                </div>
+                <div class="ml-auto text-xs text-green-400 font-medium">+15 XP</div>
             </div>
-            <div class="flex items-start">
-                <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">4</div>
-                <p>Collaborate through a democratic voting process to create a final policy package</p>
+            <div class="flex items-start p-3 rounded bg-gray-700/50 transform transition-all hover:bg-gray-700/80 hover:translate-x-1">
+                <div class="bg-red-500 rounded-full w-10 h-10 flex items-center justify-center text-white mr-3 flex-shrink-0 shadow-md">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-red-300">Voting</h3>
+                    <p>Collaborate through a democratic voting process to create a final policy package</p>
+                </div>
+                <div class="ml-auto text-xs text-green-400 font-medium">+10 XP</div>
             </div>
-            <div class="flex items-start">
-                <div class="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">5</div>
-                <p>Reflect on the experience and receive a personalized report of your simulation</p>
+            <div class="flex items-start p-3 rounded bg-gray-700/50 transform transition-all hover:bg-gray-700/80 hover:translate-x-1">
+                <div class="bg-purple-600 rounded-full w-10 h-10 flex items-center justify-center text-white mr-3 flex-shrink-0 shadow-md">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-purple-300">Reflection</h3>
+                    <p>Reflect on the experience and receive a personalized report of your simulation</p>
+                </div>
+                <div class="ml-auto text-xs text-green-400 font-medium">+10 XP</div>
             </div>
         </div>
         
         <div class="mt-8 text-center">
-            <a href="{{ url_for('main.start') }}" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center">
-                <i class="fas fa-book-open mr-2"></i>Begin the Simulation
+            <a href="{{ url_for('main.start') }}" class="bg-green-600 hover:bg-green-700 text-white py-3 px-8 rounded-lg text-lg transition-all transform hover:scale-105 inline-flex items-center shadow-lg hover:shadow-green-500/50">
+                <i class="fas fa-trophy mr-2"></i>Begin Your Quest
             </a>
         </div>
     </div>
 
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg relative transform transition-all hover:shadow-purple-500/30 hover:shadow-xl">
+        <div class="absolute top-4 right-4">
+            <span class="bg-purple-600 text-xs text-white px-2 py-1 rounded-full animate-pulse">
+                <i class="fas fa-star mr-1"></i> Challenges
+            </span>
+        </div>
         <h2 class="text-2xl font-bold mb-4 text-blue-400">Policy Areas</h2>
         <div class="grid md:grid-cols-3 gap-4">
-            <div class="p-4 bg-gray-700 rounded">
-                <h3 class="text-lg font-bold mb-2 text-green-400">Access & Language</h3>
+            <div class="p-4 bg-gray-700 rounded transform transition hover:scale-105 hover:bg-gray-700/80 cursor-pointer">
+                <div class="flex items-center mb-2">
+                    <i class="fas fa-language text-green-400 mr-2"></i>
+                    <h3 class="text-lg font-bold text-green-400">Access & Language</h3>
+                </div>
                 <p class="text-gray-300">How will refugees access education and overcome language barriers?</p>
+                <div class="mt-2 text-xs text-green-400">Difficulty: ★★★☆☆</div>
             </div>
-            <div class="p-4 bg-gray-700 rounded">
-                <h3 class="text-lg font-bold mb-2 text-yellow-400">Curriculum & Support</h3>
+            <div class="p-4 bg-gray-700 rounded transform transition hover:scale-105 hover:bg-gray-700/80 cursor-pointer">
+                <div class="flex items-center mb-2">
+                    <i class="fas fa-chalkboard-teacher text-yellow-400 mr-2"></i>
+                    <h3 class="text-lg font-bold text-yellow-400">Curriculum & Support</h3>
+                </div>
                 <p class="text-gray-300">What teaching approaches and psychological support will be provided?</p>
+                <div class="mt-2 text-xs text-yellow-400">Difficulty: ★★★★☆</div>
             </div>
-            <div class="p-4 bg-gray-700 rounded">
-                <h3 class="text-lg font-bold mb-2 text-blue-400">Finance & Accreditation</h3>
+            <div class="p-4 bg-gray-700 rounded transform transition hover:scale-105 hover:bg-gray-700/80 cursor-pointer">
+                <div class="flex items-center mb-2">
+                    <i class="fas fa-coins text-blue-400 mr-2"></i>
+                    <h3 class="text-lg font-bold text-blue-400">Finance & Accreditation</h3>
+                </div>
                 <p class="text-gray-300">How will education be funded and prior learning recognized?</p>
+                <div class="mt-2 text-xs text-blue-400">Difficulty: ★★★★★</div>
+            </div>
+        </div>
+        
+        <div class="mt-6 border-t border-gray-700 pt-4 text-center">
+            <div class="bg-gray-900/50 p-2 rounded-lg inline-block">
+                <span class="text-gray-400 text-sm">
+                    <i class="fas fa-clock mr-1"></i> Estimated simulation time: 30 minutes
+                </span>
             </div>
         </div>
     </div>
 </div>
 
-<!-- No modals needed since we removed the room creation functionality -->
+<style>
+.text-gradient {
+    background-image: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+@keyframes bounce-slow {
+    0%, 100% { transform: translateY(0) rotate(12deg); }
+    50% { transform: translateY(-10px) rotate(12deg); }
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 3s infinite;
+}
+</style>
 {% endblock %}
 
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Basic page initialization
-        console.log('Republic of Bean simulation ready to start');
+        console.log('The CHALLENGE: Policy Jam - Refugee Edition ready to play');
         
-        // Add any additional interactive elements here if needed
+        // Add a little confetti effect when the page loads
+        setTimeout(function() {
+            console.log('Ready for policy adventure!');
+        }, 1000);
     });
 </script>
 {% endblock %}
