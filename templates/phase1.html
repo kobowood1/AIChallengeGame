@@ -25,6 +25,21 @@
     .animate-bounce-once {
         animation: bounce-once 1s;
     }
+    
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+    }
+    
+    .animate-pulse {
+        animation: pulse 0.75s;
+    }
 </style>
 {% endblock %}
 
@@ -49,17 +64,17 @@
     </div>
     
     <!-- Budget Depleted Modal -->
-    <div id="budget-depleted-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md border-2 border-red-500 animate-bounce-once">
+    <div id="budget-depleted-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[1000] hidden">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md border-2 border-red-500">
             <div class="flex items-center mb-4">
-                <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white mr-3">
+                <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white mr-3 shadow-lg">
                     <i class="fas fa-coins text-2xl"></i>
                 </div>
                 <h3 class="text-xl font-bold text-red-400">Budget Depleted!</h3>
             </div>
             <p class="text-gray-300 mb-4">You have used all of your available budget units. To select more expensive options, you'll need to adjust your current selections to free up budget resources.</p>
             <div class="flex justify-end">
-                <button id="close-budget-modal" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition transform hover:scale-105">
+                <button id="close-budget-modal" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition transform hover:scale-105 shadow-lg">
                     <i class="fas fa-check mr-1"></i> Got it!
                 </button>
             </div>
@@ -248,6 +263,13 @@
         // Handle modal close button
         closeModalButton.addEventListener('click', function() {
             budgetModal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+            
+            // Add some visual feedback on close
+            remainingBudgetElement.classList.add('animate-pulse');
+            setTimeout(() => {
+                remainingBudgetElement.classList.remove('animate-pulse');
+            }, 1000);
         });
         
         function updateBudget() {
@@ -273,16 +295,22 @@
             
             // Check if budget has been depleted and show the modal
             if (currentBudget === 0 && previousBudget > 0) {
-                budgetModal.classList.remove('hidden');
-                
-                // Add animation class
-                const modalContent = budgetModal.querySelector('div');
-                modalContent.classList.add('animate-bounce-once');
-                
-                // Remove animation class after animation completes
+                // Force repaint before showing modal
                 setTimeout(() => {
-                    modalContent.classList.remove('animate-bounce-once');
-                }, 1000);
+                    budgetModal.classList.remove('hidden');
+                    
+                    // Add a small animation to draw attention
+                    const modalContent = budgetModal.querySelector('div');
+                    modalContent.classList.add('animate-bounce-once');
+                    
+                    // Add a class to ensure it's above everything
+                    document.body.classList.add('overflow-hidden');
+                    
+                    // Remove animation class after animation completes
+                    setTimeout(() => {
+                        modalContent.classList.remove('animate-bounce-once');
+                    }, 1000);
+                }, 10);
             }
             
             // Change color based on budget status
