@@ -28,7 +28,13 @@ def register():
     if request.method == 'POST':
         try:
             # Extract form data
-            age = int(request.form.get('age'))
+            try:
+                age = int(request.form.get('age', 0))
+            except (ValueError, TypeError) as e:
+                logger = logging.getLogger(__name__)
+                logger.error(f"Age conversion error: {str(e)}")
+                flash('Please enter a valid age (must be a number)', 'error')
+                return render_template('register.html')
             nationality = request.form.get('nationality')
             occupation = request.form.get('occupation')
             education_level = request.form.get('education_level')
@@ -40,6 +46,18 @@ def register():
             logger = logging.getLogger(__name__)
             logger.debug(f"Registration data: age={age}, nationality={nationality}, occupation={occupation}")
             logger.debug(f"education={education_level}, city={current_location_city}, country={current_location_country}")
+            # Validate required fields
+            if not all([age, nationality, occupation, education_level, current_location_city, current_location_country]):
+                logger.error("Missing required fields in registration form")
+                missing = []
+                if not age: missing.append("age")
+                if not nationality: missing.append("nationality") 
+                if not occupation: missing.append("occupation")
+                if not education_level: missing.append("education level")
+                if not current_location_city: missing.append("current city")
+                if not current_location_country: missing.append("current country")
+                flash(f"Please fill in all required fields: {', '.join(missing)}", "error")
+                return render_template('register.html')
             
             # Generate a unique session ID if not already present
             if 'session_id' not in session:
