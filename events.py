@@ -369,6 +369,49 @@ def handle_send_message(data):
         'policy': policy_name
     }, to=room_id)
 
+@socketio.on('update_conversation_history')
+def handle_update_conversation_history(data):
+    """
+    Update the conversation history with a new message (used by background tasks)
+    
+    Args:
+        data: Dictionary containing:
+            - sender: Name of the message sender
+            - message: The message content
+            - policy_name: Optional policy being discussed
+    """
+    from flask import session
+    import time
+    
+    room_id = session.get('policy_room')
+    if not room_id:
+        return
+    
+    sender = data.get('sender')
+    message = data.get('message')
+    policy_name = data.get('policy')
+    
+    if not sender or not message:
+        return
+    
+    # Get conversation history
+    conversation_history = session.get('conversation_history', [])
+    
+    # Limit history size
+    if len(conversation_history) >= 20:
+        conversation_history = conversation_history[1:]  # Remove oldest message
+    
+    # Add new message to history
+    conversation_history.append({
+        'sender': sender,
+        'message': message,
+        'timestamp': time.time(),
+        'policy': policy_name
+    })
+    
+    # Update session
+    session['conversation_history'] = conversation_history
+
 @socketio.on('agent_response')
 def handle_agent_response(data):
     """
@@ -436,8 +479,109 @@ def handle_agent_response(data):
             'timestamp': time.time(),
             'policy': policy_name
         }, to=room_id)
+        
+        # 25% chance for spontaneous debate between two random agents about this policy
+        if random.random() < 0.25:
+            # Schedule a follow-up debate between two random agents
+            socketio.start_background_task(
+                generate_agent_debate, 
+                room_id, 
+                agent, 
+                policy_name, 
+                option_level, 
+                agents, 
+                conversation_history
+            )
+            
     except Exception as e:
         logging.error(f"Error generating agent response: {e}")
+
+def generate_agent_debate(room_id, first_agent, policy_name, option_level, agents, conversation_history):
+    """
+    Generate a spontaneous debate between two AI agents about a policy area
+    
+    Args:
+        room_id: The room ID for emitting messages
+        first_agent: The agent who just spoke
+        policy_name: The policy being discussed
+        option_level: The first agent's option level for this policy
+        agents: List of all available agents
+        conversation_history: Recent conversation history
+    """
+    from ai_agents import agent_justify
+    import time
+    
+    # Don't debate if we have fewer than 2 agents
+    if len(agents) < 2:
+        return
+    
+    try:
+        # Get available agents (excluding first_agent)
+        available_agents = [a for a in agents if a['name'] != first_agent['name']]
+        
+        # Select a random agent to debate with the first agent
+        second_agent = random.choice(available_agents)
+        
+        # Determine a policy position (may be different from first agent's)
+        # Agents with different ideologies might prefer different options
+        ideology_option_preferences = {
+            "conservative": [1, 2],  # Conservative agents prefer lower-cost options
+            "moderate": [2, 1, 3],   # Moderate agents prefer middle-ground
+            "liberal": [2, 3],       # Liberal agents prefer moderate to comprehensive options
+            "socialist": [3, 2],     # Socialist agents prefer comprehensive options
+            "neoliberal": [1, 2]     # Neoliberal agents prefer market-based solutions (lower options)
+        }
+        
+        # Get preference list based on ideology, defaulting to all options if not found
+        preference_list = ideology_option_preferences.get(
+            second_agent.get('ideology', ''), 
+            [1, 2, 3]
+        )
+        
+        # Choose an option level with 60% chance of being different from first_agent's
+        if random.random() < 0.6 and len(preference_list) > 1:
+            # Filter out the first agent's option if possible
+            filtered_preferences = [p for p in preference_list if p != option_level]
+            if filtered_preferences:
+                second_option = random.choice(filtered_preferences)
+            else:
+                second_option = random.choice(preference_list)
+        else:
+            second_option = random.choice(preference_list)
+        
+        # Introduce a small delay to make the conversation feel natural
+        time.sleep(1.5)
+        
+        # Create a prompt specifically for continuing the conversation
+        second_agent_message = f"I've been listening to {first_agent['name']}'s perspective on {policy_name}..."
+        
+        # Generate a response from the second agent that references the first agent's position
+        second_response = agent_justify(
+            policy_name, 
+            second_option, 
+            second_agent, 
+            first_agent['name'] + ' said: ' + conversation_history[-1]['message'],
+            conversation_history[-5:] if conversation_history else []
+        )
+        
+        # Emit the response to the room
+        socketio.emit('chat_message', {
+            'sender': second_agent['name'],
+            'message': second_response,
+            'agent': second_agent,
+            'timestamp': time.time(),
+            'policy': policy_name
+        }, to=room_id)
+        
+        # Add to conversation history (needs to be done through socket event for thread safety)
+        socketio.emit('update_conversation_history', {
+            'sender': second_agent['name'],
+            'message': second_response,
+            'policy': policy_name
+        }, to=room_id)
+        
+    except Exception as e:
+        logging.error(f"Error generating agent debate: {e}")
 
 @socketio.on('call_vote')
 def handle_call_vote(data):

@@ -119,19 +119,46 @@ def agent_justify(policy_domain, option_chosen, agent, user_message='', recent_m
                     message = msg.get('message', '')
                     conversation_context += f"{sender}: {message}\n"
             
-            # Construct a prompt for the OpenAI API
+            # Get specific policy domain knowledge
+            policy_descriptions = {
+                "Language Support": "Programs to help refugee students learn the host country language",
+                "Teacher Training": "Preparing teachers to work effectively with refugee students",
+                "School Integration": "Measures to incorporate refugee students into mainstream schools",
+                "Psychosocial Support": "Mental health services for refugee students dealing with trauma",
+                "Curriculum Adaptation": "Modifying educational content to be accessible and relevant to refugee students",
+                "Access to Education": "Ensuring refugee students can physically attend and enroll in schools",
+                "Certification & Accreditation": "Recognizing refugees' prior education and helping them gain credentials",
+                "Financial Support": "Providing monetary assistance for refugee students' educational needs",
+                "Language Instruction": "Teaching host country language to refugee students"
+            }
+            
+            option_descriptions = {
+                1: "basic approach (lower cost, minimal intervention)",
+                2: "moderate approach (balanced cost and intervention)",
+                3: "comprehensive approach (higher cost, maximum intervention)"
+            }
+            
+            policy_description = policy_descriptions.get(policy_domain, "policy area related to refugee education")
+            option_description = option_descriptions.get(option_chosen, "approach")
+            
+            # Construct a prompt for the OpenAI API with more detail and context
             prompt = f"""
             You are {agent['name']}, a {agent['age']}-year-old {agent['occupation']} with a {agent['education_level']} education.
             You identify as {agent['socioeconomic_status']} and have {agent['ideology']} political views.
             
-            You've chosen option {option_chosen} for {policy_domain} policy.
+            You're discussing refugee education policy in the Republic of Bean, specifically about {policy_domain}, which involves {policy_description}.
+            
+            You've chosen option {option_chosen} for this policy area, which is a {option_description}.
             
             {conversation_context}
             
             The user just shared their perspective: "{user_message}"
             
-            Respond to the user's perspective while explaining your policy preference.
-            Your response should reflect your background, ideology, and address what the user said.
+            Respond to the user's message about {policy_domain}. If they asked a question or shared an opinion, address it directly.
+            Focus on why you believe option {option_chosen} is the right approach, drawing on your professional experience,
+            educational background, socioeconomic perspective, and political ideology.
+            
+            Be specific and realistic in your response, with concrete examples of how this policy affects your life or community.
             Keep your response concise (3-4 sentences) and conversational in tone.
             Don't mention race, ethnicity, gender, or sexuality. Focus on your occupation, education, economic status, and political views.
             """
@@ -139,7 +166,7 @@ def agent_justify(policy_domain, option_chosen, agent, user_message='', recent_m
             response = client.chat.completions.create(
                 model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
                 messages=[
-                    {"role": "system", "content": "You generate brief, realistic responses from simulated citizens who respond to others' perspectives while explaining their policy preferences."},
+                    {"role": "system", "content": "You generate brief, realistic responses from simulated citizens who respond to others' perspectives while explaining their policy preferences. You focus on creating believable dialogue that reflects how real people with diverse backgrounds discuss policy issues."},
                     {"role": "user", "content": prompt}
                 ],
                 max_tokens=200,
