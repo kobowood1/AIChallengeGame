@@ -439,7 +439,7 @@ def generate_markdown_report(form_data):
         participant = Participant.query.filter_by(session_id=session['session_id']).first()
     
     # Format the participant information
-    participant_info = f"""# Policy Simulation Reflection Report
+    participant_section = f"""# Policy Simulation Reflection Report
 
 ## Generated on: {current_time}
 
@@ -447,18 +447,18 @@ def generate_markdown_report(form_data):
 """
     
     if participant:
-        participant_info += f"""- **Age:** {participant.age}
+        participant_section += f"""- **Age:** {participant.age}
 - **Nationality:** {participant.nationality}
 - **Occupation:** {participant.occupation}
 - **Education Level:** {participant.education_level}
 - **Current Location:** {participant.current_location_city}, {participant.current_location_country}
 """
         if participant.displacement_experience:
-            participant_info += f"- **Displacement Experience:** {participant.displacement_experience}\n"
+            participant_section += f"- **Displacement Experience:** {participant.displacement_experience}\n"
     else:
-        participant_info += "- Participant information not available\n"
+        participant_section += "- Participant information not available\n"
     
-    participant_info += "\n"
+    participant_section += "\n"
     
     # Format the policy packages
     player_package = session.get('player_package', {})
@@ -539,6 +539,6 @@ def generate_markdown_report(form_data):
         reflection_section += f"### Q{question_num}: {question}\n\n{answer}\n\n"
     
     # Combine all sections
-    full_report = participant_info + policy_section + reflection_section
+    full_report = participant_section + policy_section + reflection_section
     
     return full_report
