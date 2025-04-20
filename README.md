@@ -136,4 +136,4 @@ Potential areas for future development:
 
 ## 📝 License
 
-Copyright © 2025 Republic of Bean Policy Simulation Platform
+Copyright © 2025 The CHALLENGE: Policy Jam - Refugee Edition
