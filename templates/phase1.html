@@ -44,6 +44,7 @@
         {% endwith %}
         
         <form id="policy-form" method="POST" action="{{ url_for('main.phase1') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-6">
                 {% for policy in policies %}
                     <div class="bg-gray-700 rounded-lg p-4">
