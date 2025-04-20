@@ -4,15 +4,8 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
-# Create the Flask application using the factory pattern with error handling
-try:
-    app = create_app()
-except Exception as e:
-    logging.error(f"Application startup error: {e}")
-    app = Flask(__name__)
-    @app.route('/')
-    def error_page():
-        return "Configuration error: Please check application logs"
+# Create the Flask application using the factory pattern
+app = create_app()
 
 if __name__ == "__main__":
     # Get port from environment variable for Replit compatibility
