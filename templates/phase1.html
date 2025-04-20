@@ -105,6 +105,11 @@
                 <span class="text-gray-300 mr-2">Policy Points: </span>
                 <span id="remaining-budget" class="font-bold text-yellow-400 text-xl">{{ max_budget }}</span>
                 <span class="text-gray-400">/{{ max_budget }}</span>
+                {% if config.DEBUG %}
+                <button id="test-modal-button" class="ml-4 bg-yellow-600 hover:bg-yellow-500 text-white text-xs py-1 px-2 rounded">
+                    <i class="fas fa-flask text-xs"></i> Test
+                </button>
+                {% endif %}
             </div>
         </div>
         
@@ -263,9 +268,30 @@
         if (testModalButton) {
             testModalButton.addEventListener('click', function() {
                 console.log('Test budget modal button clicked');
+                showBudgetModal();
+            });
+        }
+        
+        // Add event listeners to all radio buttons
+        policyOptions.forEach(option => {
+            option.addEventListener('change', function() {
+                const policyName = this.name;
+                const level = parseInt(this.value);
                 
-                // Show the beautifully designed UI modal
+                // Update selections
+                selections[policyName] = level;
+                
+                // Update the budget display
+                updateBudget();
+            });
+        });
+        
+        // Function to show the budget depleted modal
+        function showBudgetModal() {
+            // Show the beautifully designed UI modal with proper z-index
+            if (budgetModal) {
                 budgetModal.style.display = 'flex';
+                budgetModal.style.zIndex = '9999';
                 document.body.classList.add('overflow-hidden');
                 
                 // Add a small transition effect
@@ -289,22 +315,12 @@
                 setTimeout(() => {
                     remainingBudgetElement.classList.remove('animate-pulse');
                 }, 2000);
-            });
+            } else {
+                console.error('Budget modal element not found!');
+                // Fallback to alert if modal is not found
+                alert('Budget Depleted! You have used all of your available budget units.');
+            }
         }
-        
-        // Add event listeners to all radio buttons
-        policyOptions.forEach(option => {
-            option.addEventListener('change', function() {
-                const policyName = this.name;
-                const level = parseInt(this.value);
-                
-                // Update selections
-                selections[policyName] = level;
-                
-                // Update the budget display
-                updateBudget();
-            });
-        });
         
         // Handle modal close button
         closeModalButton.addEventListener('click', function() {
@@ -344,33 +360,9 @@
                 // Log for debugging
                 console.log('Budget depleted - showing beautiful modal');
                 
-                // Show the beautifully designed UI modal
-                budgetModal.style.display = 'flex';
-                document.body.classList.add('overflow-hidden');
+                showBudgetModal();
                 
-                // Add a small transition effect
-                const modalContent = budgetModal.querySelector('div');
-                
-                if (modalContent) {
-                    // Remove any existing classes first
-                    modalContent.classList.remove('animate__animated', 'animate__fadeIn');
-                    
-                    // Force a reflow (repaint) of the element
-                    void modalContent.offsetWidth;
-                    
-                    // Add the animation classes
-                    modalContent.classList.add('animate__animated', 'animate__fadeIn');
-                }
-                
-                // Change background color of the budget display to provide visual feedback
-                remainingBudgetElement.classList.add('text-yellow-400');
-                remainingBudgetElement.classList.add('animate-pulse');
-                
-                setTimeout(() => {
-                    remainingBudgetElement.classList.remove('animate-pulse');
-                }, 2000);
-                
-                // Set flag to prevent showing the alert multiple times
+                // Set flag to prevent showing the modal multiple times
                 modalShown = true;
             }
             
