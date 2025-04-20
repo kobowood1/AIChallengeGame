@@ -485,6 +485,34 @@ def generate_markdown_report(form_data):
         else:
             policy_section += f"- **{policy_name}:** Option {option_level}\n"
     
+    # Generate policy profile if not already in session
+    if 'policy_profile' not in session:
+        # Get participant information from the database for the OpenAI profile
+        participant_info = None
+        if participant:
+            participant_info = {
+                'age': participant.age,
+                'nationality': participant.nationality,
+                'occupation': participant.occupation,
+                'education_level': participant.education_level
+            }
+        
+        # Generate a policy profile using OpenAI
+        from openai_utils import generate_policy_profile
+        profile = generate_policy_profile(
+            player_package, 
+            final_package,
+            participant_info
+        )
+        session['policy_profile'] = profile
+    
+    # Add the policy profile section
+    policy_profile = session.get('policy_profile', 'Policy profile could not be generated.')
+    policy_section += f"""
+### Policy Profile Analysis
+{policy_profile}
+"""
+    
     # Format the reflection responses
     reflection_section = """
 ## Reflection Responses
