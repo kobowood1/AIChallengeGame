@@ -125,7 +125,6 @@ The application incorporates several gamification elements to enhance user engag
 - **Feedback Mechanisms**: Pop-up notifications for important events like budget depletion
 - **Strategic Choices**: Decisions with meaningful trade-offs and clear visual representation
 - **Progress Indicators**: Visual feedback showing advancement through the simulation
-- **Engaging Terminology**: Using terms like "mission," "policy points," and "levels" to create a game-like experience
 
 ## 🤖 AI Agent Design
 
