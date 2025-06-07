@@ -1,0 +1,847 @@
+{% extends "base.html" %}
+
+{% block title %}Policy Card Selection - AI Challenge{% endblock %}
+
+{% block head %}
+<style>
+    .card-game-container {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+    
+    .policy-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .policy-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .policy-card.selected {
+        transform: translateY(-15px) scale(1.05);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        border: 3px solid #10b981;
+    }
+    
+    .card-header {
+        padding: 1rem;
+        border-bottom: 2px solid #f3f4f6;
+        position: relative;
+    }
+    
+    .card-body {
+        padding: 2rem;
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .card-footer {
+        padding: 1rem;
+        background: #f9fafb;
+        text-align: center;
+    }
+    
+    .cost-badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .policy-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .budget-tracker {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 2rem;
+    }
+    
+    .budget-bar {
+        height: 20px;
+        background: #f3f4f6;
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .budget-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #10b981, #059669);
+        transition: width 0.3s ease;
+        border-radius: 10px;
+    }
+    
+    .budget-over {
+        background: linear-gradient(90deg, #ef4444, #dc2626);
+    }
+    
+    .play-button {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    }
+    
+    .play-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    }
+    
+    .play-button:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .card-deck {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        padding: 2rem 0;
+    }
+    
+    .policy-area-title {
+        background: rgba(255,255,255,0.9);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    }
+    
+    @keyframes cardPlay {
+        0% { transform: scale(1) rotate(0deg); }
+        50% { transform: scale(1.1) rotate(5deg); }
+        100% { transform: scale(0.9) rotate(0deg) translateY(-50px); opacity: 0; }
+    }
+    
+    .card-playing {
+        animation: cardPlay 0.8s ease-in-out;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card-game-container">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="policy-area-title">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-cards-blank mr-3"></i>
+                Select Your Policy Cards
+            </h1>
+            <p class="text-lg text-gray-600">Choose one option for each policy area to build your education strategy</p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Policy Cards Grid -->
+            <div class="lg:col-span-3">
+                <!-- Language Support Cards -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
+                        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-language text-white text-sm"></i>
+                        </div>
+                        Language Support
+                    </h2>
+                    <div class="card-deck">
+                        <div class="policy-card" data-policy="language_support" data-option="1" data-cost="1">
+                            <div class="cost-badge">1</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-blue-500">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Basic Language Classes</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Essential language instruction during regular school hours</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        2 hours weekly instruction
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Basic vocabulary building
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-card" data-policy="language_support" data-option="2" data-cost="2">
+                            <div class="cost-badge">2</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-blue-600">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Intensive Language Program</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Comprehensive language support with specialized teachers</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        5 hours weekly instruction
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Small group sessions
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Cultural integration activities
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-card" data-policy="language_support" data-option="3" data-cost="3">
+                            <div class="cost-badge">3</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-blue-700">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Immersive Language Academy</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Full immersion program with native speaker tutors</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        10 hours weekly instruction
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        One-on-one tutoring
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Digital learning tools
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Family language support
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Teacher Training Cards -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
+                        <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-chalkboard-teacher text-white text-sm"></i>
+                        </div>
+                        Teacher Training
+                    </h2>
+                    <div class="card-deck">
+                        <div class="policy-card" data-policy="teacher_training" data-option="1" data-cost="1">
+                            <div class="cost-badge">1</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-green-500">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Basic Orientation</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">One-day cultural sensitivity workshop for teachers</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Cultural awareness session
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Basic communication tips
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-card" data-policy="teacher_training" data-option="2" data-cost="2">
+                            <div class="cost-badge">2</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-green-600">
+                                    <i class="fas fa-users-cog"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Professional Development</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Monthly training on refugee education best practices</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Monthly workshops
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Trauma-informed teaching
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Peer mentoring network
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-card" data-policy="teacher_training" data-option="3" data-cost="3">
+                            <div class="cost-badge">3</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-green-700">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Specialist Certification</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Comprehensive certification program with ongoing support</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        6-month certification course
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Expert guest speakers
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Research partnerships
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Continuous coaching
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- School Integration Cards -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
+                        <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-user-friends text-white text-sm"></i>
+                        </div>
+                        School Integration
+                    </h2>
+                    <div class="card-deck">
+                        <div class="policy-card" data-policy="school_integration" data-option="1" data-cost="1">
+                            <div class="cost-badge">1</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-orange-500">
+                                    <i class="fas fa-door-open"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Open Enrollment</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Direct placement in existing mainstream classrooms</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Immediate school access
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Standard class sizes
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-card" data-policy="school_integration" data-option="2" data-cost="2">
+                            <div class="cost-badge">2</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-orange-600">
+                                    <i class="fas fa-puzzle-piece"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Gradual Integration</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Transition program with bridging classes and buddy systems</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        6-month transition period
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Student buddy system
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Family orientation programs
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-card" data-policy="school_integration" data-option="3" data-cost="3">
+                            <div class="cost-badge">3</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-orange-700">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Dedicated Welcome Centers</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Specialized schools with full support services</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Dedicated facilities
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Multilingual staff
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Community partnerships
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Extended learning hours
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Psychosocial Support Cards -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
+                        <div class="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-heart text-white text-sm"></i>
+                        </div>
+                        Psychosocial Support
+                    </h2>
+                    <div class="card-deck">
+                        <div class="policy-card" data-policy="psychosocial_support" data-option="1" data-cost="1">
+                            <div class="cost-badge">1</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-red-500">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Peer Support Groups</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Student-led support groups with basic counseling</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Weekly group sessions
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Volunteer coordinators
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-card" data-policy="psychosocial_support" data-option="2" data-cost="2">
+                            <div class="cost-badge">2</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-red-600">
+                                    <i class="fas fa-user-md"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">School Counselors</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Dedicated counselors with trauma-informed training</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Part-time counselors
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Individual sessions
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Crisis intervention
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-card" data-policy="psychosocial_support" data-option="3" data-cost="3">
+                            <div class="cost-badge">3</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-red-700">
+                                    <i class="fas fa-hospital"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Mental Health Clinic</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">On-site mental health clinic with specialized services</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Full-time psychologists
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Family therapy services
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Art and music therapy
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        24/7 crisis hotline
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Curriculum Adaptation Cards -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
+                        <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-book text-white text-sm"></i>
+                        </div>
+                        Curriculum Adaptation
+                    </h2>
+                    <div class="card-deck">
+                        <div class="policy-card" data-policy="curriculum_adaptation" data-option="1" data-cost="1">
+                            <div class="cost-badge">1</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-purple-500">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Translated Materials</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Basic translation of core curriculum materials</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Key textbook translations
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Digital dictionaries
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-card" data-policy="curriculum_adaptation" data-option="2" data-cost="2">
+                            <div class="cost-badge">2</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-purple-600">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Multicultural Content</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">Culturally responsive curriculum with diverse perspectives</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Cultural history modules
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Multilingual resources
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Community storytelling
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-card" data-policy="curriculum_adaptation" data-option="3" data-cost="3">
+                            <div class="cost-badge">3</div>
+                            <div class="card-header">
+                                <div class="policy-icon bg-purple-700">
+                                    <i class="fas fa-laptop"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-center text-gray-800">Adaptive Learning Platform</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-gray-600 text-center mb-4">AI-powered personalized learning with cultural integration</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Personalized AI tutoring
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Interactive cultural content
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Real-time translation
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class="fas fa-check text-green-500 mr-2"></i>
+                                        Progress analytics
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="play-button w-full">Select Policy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Budget Tracker Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="budget-tracker">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-coins text-yellow-500 mr-2"></i>
+                        Budget Tracker
+                    </h3>
+                    
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-600">Used</span>
+                            <span class="font-bold text-lg" id="budget-used">0</span>
+                        </div>
+                        <div class="budget-bar">
+                            <div class="budget-fill" id="budget-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-gray-600">Available</span>
+                            <span class="font-bold text-lg" id="budget-remaining">14</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3" id="selected-cards">
+                        <p class="text-gray-500 text-center">No cards selected yet</p>
+                    </div>
+                    
+                    <button class="play-button w-full mt-6" id="play-deck-button" disabled>
+                        <i class="fas fa-play mr-2"></i>
+                        Play Your Hand
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let selectedCards = {};
+let totalCost = 0;
+const maxBudget = 14;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.policy-card');
+    const budgetFill = document.getElementById('budget-fill');
+    const budgetUsed = document.getElementById('budget-used');
+    const budgetRemaining = document.getElementById('budget-remaining');
+    const selectedCardsContainer = document.getElementById('selected-cards');
+    const playButton = document.getElementById('play-deck-button');
+    
+    cards.forEach(card => {
+        card.addEventListener('click', function() {
+            const policy = this.dataset.policy;
+            const option = parseInt(this.dataset.option);
+            const cost = parseInt(this.dataset.cost);
+            
+            // Remove previous selection from same policy area
+            if (selectedCards[policy]) {
+                totalCost -= selectedCards[policy].cost;
+                document.querySelector(`[data-policy="${policy}"][data-option="${selectedCards[policy].option}"]`).classList.remove('selected');
+            }
+            
+            // Add new selection
+            selectedCards[policy] = { option, cost };
+            totalCost += cost;
+            this.classList.add('selected');
+            
+            updateBudgetDisplay();
+            updateSelectedCards();
+            checkPlayButton();
+        });
+    });
+    
+    function updateBudgetDisplay() {
+        const percentage = Math.min((totalCost / maxBudget) * 100, 100);
+        budgetFill.style.width = percentage + '%';
+        budgetUsed.textContent = totalCost;
+        budgetRemaining.textContent = maxBudget - totalCost;
+        
+        if (totalCost > maxBudget) {
+            budgetFill.classList.add('budget-over');
+        } else {
+            budgetFill.classList.remove('budget-over');
+        }
+    }
+    
+    function updateSelectedCards() {
+        if (Object.keys(selectedCards).length === 0) {
+            selectedCardsContainer.innerHTML = '<p class="text-gray-500 text-center">No cards selected yet</p>';
+            return;
+        }
+        
+        let html = '';
+        Object.entries(selectedCards).forEach(([policy, data]) => {
+            html += `
+                <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <span class="text-sm font-medium">${policy.replace('_', ' ').toUpperCase()}</span>
+                    <span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs">${data.cost}</span>
+                </div>
+            `;
+        });
+        selectedCardsContainer.innerHTML = html;
+    }
+    
+    function checkPlayButton() {
+        const requiredPolicies = ['language_support', 'teacher_training', 'school_integration', 'psychosocial_support', 'curriculum_adaptation'];
+        const hasAllSelections = requiredPolicies.every(policy => selectedCards[policy]);
+        const withinBudget = totalCost <= maxBudget;
+        
+        if (hasAllSelections && withinBudget) {
+            playButton.disabled = false;
+        } else {
+            playButton.disabled = true;
+        }
+    }
+    
+    playButton.addEventListener('click', function() {
+        // Disable button to prevent multiple submissions
+        playButton.disabled = true;
+        playButton.textContent = 'Playing Cards...';
+        
+        // Add card playing animation
+        Object.keys(selectedCards).forEach((policy, index) => {
+            setTimeout(() => {
+                const selectedCard = document.querySelector(`[data-policy="${policy}"].selected`);
+                if (selectedCard) {
+                    selectedCard.classList.add('card-playing');
+                }
+            }, index * 200);
+        });
+        
+        // Submit selections to backend
+        setTimeout(() => {
+            fetch('/card-selection', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    selections: selectedCards
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert('Error: ' + data.error);
+                    playButton.disabled = false;
+                    playButton.innerHTML = '<i class="fas fa-play mr-2"></i>Play Your Hand';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting your selections.');
+                playButton.disabled = false;
+                playButton.innerHTML = '<i class="fas fa-play mr-2"></i>Play Your Hand';
+            });
+        }, 1500);
+    });
+});
+</script>
+{% endblock %}

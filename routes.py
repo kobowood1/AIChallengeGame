@@ -35,7 +35,7 @@ def index():
             elif active_session.current_phase == 'scenario':
                 return redirect(url_for('main.scenario'))
             elif active_session.current_phase == 'phase1':
-                return redirect(url_for('main.phase1'))
+                return redirect(url_for('main.card_selection'))
             elif active_session.current_phase == 'phase2':
                 return redirect(url_for('main.phase2'))
             elif active_session.current_phase == 'phase3':
@@ -269,23 +269,24 @@ def game():
         
     return render_template('game.html')
 
-@main.route('/phase1', methods=['GET', 'POST'])
-def phase1():
+@main.route('/card-selection', methods=['GET', 'POST'])
+def card_selection():
     """
-    Policy selection phase where user selects policy options within a budget
+    Card-based policy selection phase where user selects policy options within a budget
     """
     # Check if user is registered
     if 'participant_registered' not in session or not session['participant_registered']:
         flash('Please register before accessing the simulation.', 'warning')
         return redirect(url_for('main.register'))
+    
     if request.method == 'POST':
-        # Extract the selected policy options from the form
+        # Handle card selection submission
+        card_data = request.get_json()
+        
+        # Extract the selected policy options from the card data
         selections = {}
-        for policy in POLICIES:
-            policy_name = policy['name']
-            option_level = request.form.get(policy_name)
-            if option_level:
-                selections[policy_name] = int(option_level)
+        for policy_area, selection in card_data.get('selections', {}).items():
+            selections[policy_area] = selection['option']
         
         # Validate the selections
         is_valid, total_cost, error_message = validate_package(selections)
@@ -299,14 +300,30 @@ def phase1():
             if 'agents' not in session:
                 agents = generate_agents()
                 session['agents'] = agents
-                
-            return redirect(url_for('main.phase2'))
+            
+            # Update game session phase
+            game_session = GameSession.query.filter_by(
+                user_id=current_user.id, 
+                is_active=True
+            ).first()
+            if game_session:
+                game_session.current_phase = 'phase2'
+                game_session.policy_selections = json.dumps(selections)
+                db.session.commit()
+            
+            return {'success': True, 'redirect': url_for('main.phase2')}
         else:
-            # Flash the error message
-            flash(error_message, 'error')
+            return {'success': False, 'error': error_message}, 400
     
-    # Render the phase1 template with policy data
-    return render_template('phase1.html', policies=POLICIES, max_budget=MAX_BUDGET)
+    # GET request - show card selection interface
+    return render_template('card_selection.html', policies=POLICIES, max_budget=MAX_BUDGET)
+
+@main.route('/phase1', methods=['GET', 'POST'])
+def phase1():
+    """
+    Legacy policy selection phase - redirects to card selection
+    """
+    return redirect(url_for('main.card_selection'))
 
 @main.route('/phase2')
 def phase2():
