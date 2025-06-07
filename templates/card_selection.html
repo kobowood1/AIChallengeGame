@@ -159,6 +159,30 @@
     .card-playing {
         animation: cardPlay 0.8s ease-in-out;
     }
+    
+    .language-card {
+        position: relative;
+        padding: 0;
+        overflow: hidden;
+        height: 400px;
+    }
+    
+    .language-card img {
+        width: 100%;
+        height: calc(100% - 60px);
+        object-fit: cover;
+        border-radius: 20px 20px 0 0;
+    }
+    
+    .language-card .card-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        border-radius: 0 0 20px 20px;
+    }
 </style>
 {% endblock %}
 
@@ -180,97 +204,31 @@
                 <!-- Language Support Cards -->
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
-                        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                        <div class="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center mr-3">
                             <i class="fas fa-language text-white text-sm"></i>
                         </div>
-                        Language Support
+                        Language Instruction
                     </h2>
                     <div class="card-deck">
-                        <div class="policy-card" data-policy="language_support" data-option="1" data-cost="1">
+                        <div class="policy-card language-card" data-policy="language_support" data-option="1" data-cost="1">
                             <div class="cost-badge">1</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-blue-500">
-                                    <i class="fas fa-book-open"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Basic Language Classes</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Essential language instruction during regular school hours</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        2 hours weekly instruction
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Basic vocabulary building
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='language_option1.jpg') }}" alt="Language Instruction Option 1" class="w-full h-full object-cover rounded-lg">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
                         </div>
                         
-                        <div class="policy-card" data-policy="language_support" data-option="2" data-cost="2">
+                        <div class="policy-card language-card" data-policy="language_support" data-option="2" data-cost="2">
                             <div class="cost-badge">2</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-blue-600">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Intensive Language Program</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Comprehensive language support with specialized teachers</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        5 hours weekly instruction
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Small group sessions
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Cultural integration activities
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='language_option2.jpg') }}" alt="Language Instruction Option 2" class="w-full h-full object-cover rounded-lg">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
                         </div>
                         
-                        <div class="policy-card" data-policy="language_support" data-option="3" data-cost="3">
+                        <div class="policy-card language-card" data-policy="language_support" data-option="3" data-cost="3">
                             <div class="cost-badge">3</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-blue-700">
-                                    <i class="fas fa-graduation-cap"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Immersive Language Academy</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Full immersion program with native speaker tutors</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        10 hours weekly instruction
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        One-on-one tutoring
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Digital learning tools
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Family language support
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='language_option3.jpg') }}" alt="Language Instruction Option 3" class="w-full h-full object-cover rounded-lg">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
