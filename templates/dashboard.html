@@ -3,142 +3,171 @@
 {% block title %}Dashboard - The CHALLENGE: Policy Jam{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <!-- Welcome Header -->
-            <div class="text-center mb-5">
-                <h1 class="display-4 text-gray-800 mb-3">
-                    <i class="fas fa-tachometer-alt me-3 text-challenge-blue"></i>Welcome, {{ current_user.first_name or current_user.username }}!
-                </h1>
-                <p class="lead text-gray-700">Ready to shape refugee policy in the Republic of Bean?</p>
-            </div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Welcome Header -->
+    <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-challenge-blue to-challenge-purple rounded-2xl shadow-lg mb-6">
+            <i class="fas fa-home text-white text-2xl"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+            Welcome back, {{ current_user.first_name or current_user.username }}!
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            Ready to shape refugee policy in the Republic of Bean? Continue your journey or start a new policy simulation.
+        </p>
+    </div>
 
-            <!-- Game Status Cards -->
-            <div class="row g-4 mb-5">
-                {% if active_session %}
-                    <!-- Continue Game Card -->
-                    <div class="col-md-6">
-                        <div class="card border-challenge-orange bg-white h-100 shadow">
-                            <div class="card-body text-center">
-                                <i class="fas fa-play-circle fa-3x text-challenge-orange mb-3"></i>
-                                <h5 class="card-title text-challenge-orange">Continue Your Journey</h5>
-                                <p class="card-text text-gray-700">
-                                    You have an active policy session in progress.
-                                    Phase: <span class="badge bg-challenge-orange text-white">{{ active_session.current_phase|title }}</span>
-                                </p>
-                                {% if active_session.current_phase == 'registration' %}
-                                    <a href="{{ url_for('main.register') }}" class="btn btn-challenge-orange text-white">
-                                        <i class="fas fa-arrow-right me-2"></i>Continue Registration
-                                    </a>
-                                {% elif active_session.current_phase == 'scenario' %}
-                                    <a href="{{ url_for('main.scenario') }}" class="btn btn-challenge-orange text-white">
-                                        <i class="fas fa-arrow-right me-2"></i>Continue to Scenario
-                                    </a>
-                                {% elif active_session.current_phase == 'phase1' %}
-                                    <a href="{{ url_for('main.phase1') }}" class="btn btn-challenge-orange text-white">
-                                        <i class="fas fa-arrow-right me-2"></i>Continue Phase 1
-                                    </a>
-                                {% elif active_session.current_phase == 'phase2' %}
-                                    <a href="{{ url_for('main.phase2') }}" class="btn btn-challenge-orange text-white">
-                                        <i class="fas fa-arrow-right me-2"></i>Continue Phase 2
-                                    </a>
-                                {% elif active_session.current_phase == 'phase3' %}
-                                    <a href="{{ url_for('main.phase3') }}" class="btn btn-challenge-orange text-white">
-                                        <i class="fas fa-arrow-right me-2"></i>Continue Phase 3
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
+    <!-- Game Status Cards -->
+    <div class="grid md:grid-cols-2 gap-8 mb-12">
+        {% if active_session %}
+            <!-- Continue Game Card -->
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-challenge-orange to-challenge-red rounded-xl flex items-center justify-center">
+                        <i class="fas fa-play text-white text-lg"></i>
                     </div>
-                    
-                    <!-- Statistics Card -->
-                    <div class="col-md-6">
-                        <div class="card border-info bg-dark h-100">
-                            <div class="card-body text-center">
-                                <i class="fas fa-chart-bar fa-3x text-info mb-3"></i>
-                                <h5 class="card-title text-info">Your Progress</h5>
-                                <p class="card-text text-light">
-                                    Sessions completed: <span class="badge bg-info">{{ completed_sessions }}</span>
-                                </p>
-                                <p class="text-muted small">
-                                    Started: {{ active_session.started_at.strftime('%B %d, %Y at %I:%M %p') if active_session.started_at }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
-                    <!-- Start New Game Card -->
-                    <div class="col-md-6">
-                        <div class="card border-success bg-dark h-100">
-                            <div class="card-body text-center">
-                                <i class="fas fa-rocket fa-3x text-success mb-3"></i>
-                                <h5 class="card-title text-success">Start New Challenge</h5>
-                                <p class="card-text text-light">
-                                    Begin a new policy-making adventure in the Republic of Bean.
-                                    Experience collaborative decision-making with AI agents.
-                                </p>
-                                <a href="{{ url_for('main.register') }}" class="btn btn-success">
-                                    <i class="fas fa-play me-2"></i>Start Challenge
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Past Experience Card -->
-                    <div class="col-md-6">
-                        <div class="card border-secondary bg-dark h-100">
-                            <div class="card-body text-center">
-                                <i class="fas fa-history fa-3x text-secondary mb-3"></i>
-                                <h5 class="card-title text-secondary">Experience Summary</h5>
-                                <p class="card-text text-light">
-                                    Challenges completed: <span class="badge bg-secondary">{{ completed_sessions }}</span>
-                                </p>
-                                {% if completed_sessions > 0 %}
-                                    <p class="text-success small">
-                                        <i class="fas fa-check-circle me-1"></i>Experienced Policy Advisor
-                                    </p>
-                                {% else %}
-                                    <p class="text-muted small">
-                                        Ready for your first policy challenge!
-                                    </p>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+                    <span class="px-3 py-1 bg-challenge-orange text-white text-sm font-medium rounded-full">
+                        {{ active_session.current_phase|title }}
+                    </span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Continue Your Journey</h3>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    Pick up where you left off in your policy simulation. Your progress has been saved automatically.
+                </p>
+                
+                {% if active_session.current_phase == 'registration' %}
+                    <a href="{{ url_for('main.register') }}" class="inline-flex items-center px-6 py-3 bg-challenge-orange hover:bg-orange-600 text-white font-medium rounded-xl transition-colors duration-200 shadow-sm hover:shadow-md">
+                        <i class="fas fa-arrow-right mr-2"></i>Continue Registration
+                    </a>
+                {% elif active_session.current_phase == 'scenario' %}
+                    <a href="{{ url_for('main.scenario') }}" class="inline-flex items-center px-6 py-3 bg-challenge-orange hover:bg-orange-600 text-white font-medium rounded-xl transition-colors duration-200 shadow-sm hover:shadow-md">
+                        <i class="fas fa-arrow-right mr-2"></i>Continue to Scenario
+                    </a>
+                {% elif active_session.current_phase == 'phase1' %}
+                    <a href="{{ url_for('main.phase1') }}" class="inline-flex items-center px-6 py-3 bg-challenge-orange hover:bg-orange-600 text-white font-medium rounded-xl transition-colors duration-200 shadow-sm hover:shadow-md">
+                        <i class="fas fa-arrow-right mr-2"></i>Continue Phase 1
+                    </a>
+                {% elif active_session.current_phase == 'phase2' %}
+                    <a href="{{ url_for('main.phase2') }}" class="inline-flex items-center px-6 py-3 bg-challenge-orange hover:bg-orange-600 text-white font-medium rounded-xl transition-colors duration-200 shadow-sm hover:shadow-md">
+                        <i class="fas fa-arrow-right mr-2"></i>Continue Phase 2
+                    </a>
+                {% elif active_session.current_phase == 'phase3' %}
+                    <a href="{{ url_for('main.phase3') }}" class="inline-flex items-center px-6 py-3 bg-challenge-orange hover:bg-orange-600 text-white font-medium rounded-xl transition-colors duration-200 shadow-sm hover:shadow-md">
+                        <i class="fas fa-arrow-right mr-2"></i>Continue Phase 3
+                    </a>
                 {% endif %}
             </div>
-
-            <!-- Game Information -->
-            <div class="card border-primary bg-dark mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-info-circle me-2"></i>About The Challenge
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <p class="text-light mb-3">
-                                The CHALLENGE: Policy Jam - Refugee Edition is an educational simulation that puts you 
-                                in the role of a policy advisor for the Republic of Bean. You'll work with AI agents 
-                                to develop comprehensive education policies for refugee integration.
-                            </p>
-                            <ul class="text-light">
-                                <li><strong>Phase 1:</strong> Individual policy selection with budget constraints</li>
-                                <li><strong>Phase 2:</strong> Collaborative deliberation with diverse AI agents</li>
-                                <li><strong>Phase 3:</strong> Reflection and final policy package creation</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-4 text-center">
-                            <i class="fas fa-users fa-4x text-primary mb-3"></i>
-                            <p class="text-light small">
-                                Collaborate with AI agents representing different perspectives and backgrounds
-                            </p>
-                        </div>
+            
+            <!-- Statistics Card -->
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-challenge-blue to-challenge-teal rounded-xl flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white text-lg"></i>
                     </div>
+                    <span class="px-3 py-1 bg-challenge-blue text-white text-sm font-medium rounded-full">
+                        Progress
+                    </span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Your Progress</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Sessions completed</span>
+                        <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">{{ completed_sessions }}</span>
+                    </div>
+                    {% if active_session and active_session.started_at %}
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Started</span>
+                        <span class="text-sm text-gray-500">{{ active_session.started_at.strftime('%B %d, %Y') }}</span>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
+        {% else %}
+            <!-- Start New Game Card -->
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-challenge-green to-challenge-teal rounded-xl flex items-center justify-center">
+                        <i class="fas fa-rocket text-white text-lg"></i>
+                    </div>
+                    <span class="px-3 py-1 bg-challenge-green text-white text-sm font-medium rounded-full">
+                        New
+                    </span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Start New Challenge</h3>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    Begin a new policy-making adventure in the Republic of Bean. Experience collaborative decision-making with AI agents.
+                </p>
+                <a href="{{ url_for('main.register') }}" class="inline-flex items-center px-6 py-3 bg-challenge-green hover:bg-green-600 text-white font-medium rounded-xl transition-colors duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-play mr-2"></i>Start Challenge
+                </a>
+            </div>
+            
+            <!-- Experience Summary Card -->
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-gray-400 to-gray-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-history text-white text-lg"></i>
+                    </div>
+                    <span class="px-3 py-1 bg-gray-500 text-white text-sm font-medium rounded-full">
+                        Summary
+                    </span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Experience Summary</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Challenges completed</span>
+                        <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">{{ completed_sessions }}</span>
+                    </div>
+                    {% if completed_sessions > 0 %}
+                        <div class="flex items-center text-challenge-green text-sm">
+                            <i class="fas fa-check-circle mr-2"></i>Experienced Policy Advisor
+                        </div>
+                    {% else %}
+                        <div class="text-gray-500 text-sm">
+                            Ready for your first policy challenge!
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Game Information Section -->
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8">
+        <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-gradient-to-br from-challenge-purple to-challenge-blue rounded-xl flex items-center justify-center mr-4">
+                <i class="fas fa-info-circle text-white text-lg"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900">About the Simulation</h3>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-challenge-green/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-users text-challenge-green text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-2">Collaborative Learning</h4>
+                <p class="text-gray-600 text-sm">Work with AI agents representing diverse perspectives in policy-making decisions.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-challenge-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-balance-scale text-challenge-blue text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-2">Real Policy Challenges</h4>
+                <p class="text-gray-600 text-sm">Navigate budget constraints and competing interests in refugee education policy.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-challenge-orange/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-lightbulb text-challenge-orange text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-2">Evidence-Based Decisions</h4>
+                <p class="text-gray-600 text-sm">Develop critical thinking skills through deliberative democracy processes.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
             <!-- Account Management -->
             <div class="text-center">

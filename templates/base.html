@@ -23,56 +23,92 @@
                         'challenge-purple': '#D946EF',
                         'challenge-brown': '#8B4513',
                         'challenge-teal': '#7DD3FC'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    spacing: {
+                        '18': '4.5rem',
+                        '88': '22rem',
+                    },
+                    borderRadius: {
+                        'xl': '1rem',
+                        '2xl': '1.5rem',
                     }
                 }
             }
         }
     </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     {% block head %}{% endblock %}
 </head>
 <body class="bg-challenge-yellow text-gray-800 min-h-screen">
-    <nav class="bg-white border-b border-gray-200 shadow-lg">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex justify-between items-center">
-                <a href="/" class="text-xl font-bold text-gray-800 hover:text-challenge-blue transition flex items-center">
-                    <i class="fas fa-graduation-cap mr-2 text-challenge-orange"></i>
-                    <span class="challenge-title">
-                        <span class="text-challenge-red">C</span><span class="text-yellow-500">H</span><span class="text-gray-800">A</span><span class="text-challenge-green">L</span><span class="text-challenge-blue">L</span><span class="text-challenge-orange">E</span><span class="text-challenge-brown">N</span><span class="text-challenge-teal">G</span><span class="text-challenge-purple">E</span>
-                    </span>
-                    <span class="ml-2 text-gray-700 text-base">Policy Jam - Refugee Edition</span>
+    <nav class="bg-white/90 backdrop-blur-sm border-b border-gray-200 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center space-x-3 text-xl font-semibold text-gray-800 hover:text-challenge-blue transition-colors duration-200">
+                    <div class="w-10 h-10 bg-gradient-to-br from-challenge-orange to-challenge-red rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="challenge-title leading-none">
+                            <span class="text-challenge-red">C</span><span class="text-yellow-500">H</span><span class="text-gray-800">A</span><span class="text-challenge-green">L</span><span class="text-challenge-blue">L</span><span class="text-challenge-orange">E</span><span class="text-challenge-brown">N</span><span class="text-challenge-teal">G</span><span class="text-challenge-purple">E</span>
+                        </span>
+                        <span class="text-xs text-gray-500 font-normal">Policy Jam - Refugee Edition</span>
+                    </div>
                 </a>
-                <div class="flex space-x-4 items-center">
-                    {% if current_user.is_authenticated %}
-                        <span class="text-gray-600 text-sm">Welcome, {{ current_user.first_name or current_user.username }}!</span>
-                        <a href="{{ url_for('main.reset') }}" class="py-1 px-3 bg-challenge-orange hover:bg-orange-600 text-white rounded-full transition-all transform hover:scale-105 flex items-center font-bold">
-                            <i class="fas fa-redo mr-1"></i> Reset Game
+                
+                {% if current_user.is_authenticated %}
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg">
+                        <div class="w-6 h-6 bg-challenge-blue rounded-full flex items-center justify-center">
+                            <span class="text-white text-xs font-medium">{{ (current_user.first_name or current_user.username)[0]|upper }}</span>
+                        </div>
+                        <span class="text-sm text-gray-700 font-medium">{{ current_user.first_name or current_user.username }}</span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-2">
+                        <button onclick="if(confirm('Are you sure you want to reset your progress?')) window.location.href='{{ url_for('main.reset') }}'" 
+                                class="px-4 py-2 bg-challenge-orange hover:bg-orange-600 text-white rounded-lg transition-all duration-200 flex items-center text-sm font-medium shadow-sm hover:shadow-md">
+                            <i class="fas fa-redo mr-2"></i>
+                            <span class="hidden sm:inline">Reset</span>
+                        </button>
+                        <a href="{{ url_for('main.logout') }}" 
+                           class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-200 flex items-center text-sm font-medium">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            <span class="hidden sm:inline">Sign Out</span>
                         </a>
-                        <a href="{{ url_for('main.logout') }}" class="py-1 px-3 bg-gray-600 hover:bg-gray-700 text-white rounded-full transition-all transform hover:scale-105 flex items-center font-bold">
-                            <i class="fas fa-sign-out-alt mr-1"></i> Sign Out
-                        </a>
-                    {% endif %}
-                    {% block nav_right %}{% endblock %}
+                    </div>
                 </div>
+                {% endif %}
+                {% block nav_right %}{% endblock %}
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto px-4 py-6">
+    <main class="min-h-screen">
         <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="mb-6">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
                     {% for category, message in messages %}
-                        {% set alert_class = "bg-blue-100 border-blue-500 text-blue-700" %}
-                        {% if category == 'error' %}
-                            {% set alert_class = "bg-red-100 border-red-500 text-red-700" %}
-                        {% elif category == 'success' %}
-                            {% set alert_class = "bg-green-100 border-green-500 text-green-700" %}
-                        {% elif category == 'warning' %}
-                            {% set alert_class = "bg-yellow-100 border-yellow-500 text-yellow-700" %}
-                        {% endif %}
-                        <div class="border-l-4 p-4 mb-2 {{ alert_class }}">
-                            <p class="font-medium">{{ message }}</p>
+                        <div class="mb-4 p-4 rounded-xl shadow-sm {% if category == 'error' %}bg-red-50 border border-red-200 text-red-800{% elif category == 'warning' %}bg-amber-50 border border-amber-200 text-amber-800{% elif category == 'info' %}bg-blue-50 border border-blue-200 text-blue-800{% else %}bg-green-50 border border-green-200 text-green-800{% endif %}">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    {% if category == 'error' %}
+                                        <i class="fas fa-exclamation-circle text-red-500"></i>
+                                    {% elif category == 'warning' %}
+                                        <i class="fas fa-exclamation-triangle text-amber-500"></i>
+                                    {% elif category == 'info' %}
+                                        <i class="fas fa-info-circle text-blue-500"></i>
+                                    {% else %}
+                                        <i class="fas fa-check-circle text-green-500"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="ml-3 flex-1">
+                                    <p class="text-sm font-medium">{{ message }}</p>
+                                </div>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
@@ -82,9 +118,18 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-gray-800 border-t border-gray-700 py-4 mt-8">
-        <div class="container mx-auto px-4 text-center text-gray-400">
-            <p>&copy; 2025 The CHALLENGE: Policy Jam - Refugee Edition | Built with Flask, SocketIO, and Tailwind CSS</p>
+    <footer class="bg-white border-t border-gray-200 py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-2 mb-3">
+                    <div class="w-6 h-6 bg-gradient-to-br from-challenge-orange to-challenge-red rounded-lg flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-xs"></i>
+                    </div>
+                    <span class="text-gray-600 font-medium">The CHALLENGE: Policy Jam</span>
+                </div>
+                <p class="text-sm text-gray-500">Educational simulation for policy-making and deliberative democracy</p>
+                <p class="text-xs text-gray-400 mt-2">&copy; 2025 Built with modern web technologies</p>
+            </div>
         </div>
     </footer>
 
