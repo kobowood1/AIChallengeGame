@@ -168,6 +168,12 @@ def reset():
             game_session.is_active = False
             db.session.commit()
     
+    # Clear participant data from database
+    existing_participant = Participant.query.filter_by(user_id=current_user.id).first()
+    if existing_participant:
+        db.session.delete(existing_participant)
+        db.session.commit()
+    
     # Clear the session
     session.clear()
     flash('Your game session has been reset. You can start fresh.', 'info')
@@ -178,6 +184,17 @@ def reset():
 def register():
     """Route for participant demographic registration"""
     form = ParticipantForm()
+    
+    # Pre-populate form with existing participant data if available
+    existing_participant = Participant.query.filter_by(user_id=current_user.id).first()
+    if existing_participant and not form.is_submitted():
+        form.age.data = existing_participant.age
+        form.nationality.data = existing_participant.nationality
+        form.occupation.data = existing_participant.occupation
+        form.education_level.data = existing_participant.education_level
+        form.displacement_experience.data = existing_participant.displacement_experience
+        form.current_location_city.data = existing_participant.current_location_city
+        form.current_location_country.data = existing_participant.current_location_country
     
     if form.validate_on_submit():
         try:
