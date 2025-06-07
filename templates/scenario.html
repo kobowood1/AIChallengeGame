@@ -103,111 +103,137 @@
 
         <!-- Step 3: Policy Challenges -->
         <div class="step-panel hidden" id="step-3">
-            <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 transform transition-all hover:shadow-purple-500/20 hover:shadow-xl border-l-4 border-purple-500">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white mr-4 shadow-lg">
+            <div class="bg-white p-8 rounded-2xl shadow-lg mb-6 transform transition-all hover:shadow-xl border-l-4 border-challenge-purple">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-challenge-purple rounded-xl flex items-center justify-center text-white mr-4 shadow-lg">
                         <i class="fas fa-brain text-xl"></i>
                     </div>
-                    <h2 class="text-xl font-bold text-purple-400">Policy Challenges</h2>
-                    <div class="ml-auto px-2 py-1 bg-purple-900/50 rounded text-xs text-purple-300">
+                    <h2 class="text-2xl font-bold text-challenge-purple">Policy Challenges</h2>
+                    <div class="ml-auto px-3 py-1 bg-challenge-purple text-white rounded-full text-sm font-medium">
                         <i class="fas fa-puzzle-piece mr-1"></i> 5 Areas
                     </div>
                 </div>
                 
-                <div class="prose prose-invert">
-                    <p class="mb-3 leading-relaxed !text-white">You will make decisions on these five critical education policy areas:</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                        <div class="p-3 rounded bg-gray-700/50 transform transition hover:bg-gray-700/80">
-                            <div class="flex items-center mb-1">
-                                <i class="fas fa-school text-blue-400 mr-2"></i>
-                                <h3 class="font-bold text-blue-400 mb-0">Language Support</h3>
+                <div class="mb-6">
+                    <p class="text-lg text-gray-700 leading-relaxed">You will make decisions on these five critical education policy areas:</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="p-4 rounded-xl bg-blue-50 border border-blue-200 transform transition-all hover:shadow-md hover:scale-102">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-challenge-blue rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-school text-white text-sm"></i>
                             </div>
-                            <p class="text-gray-300 mb-0 text-sm">How will refugee students overcome language barriers?</p>
+                            <h3 class="font-bold text-challenge-blue">Language Support</h3>
                         </div>
-                        <div class="p-3 rounded bg-gray-700/50 transform transition hover:bg-gray-700/80">
-                            <div class="flex items-center mb-1">
-                                <i class="fas fa-chalkboard-teacher text-green-400 mr-2"></i>
-                                <h3 class="font-bold text-green-400 mb-0">Teacher Training</h3>
-                            </div>
-                            <p class="text-gray-300 mb-0 text-sm">How will educators be prepared to work with diverse students?</p>
-                        </div>
-                        <div class="p-3 rounded bg-gray-700/50 transform transition hover:bg-gray-700/80">
-                            <div class="flex items-center mb-1">
-                                <i class="fas fa-user-friends text-yellow-400 mr-2"></i>
-                                <h3 class="font-bold text-yellow-400 mb-0">School Integration</h3>
-                            </div>
-                            <p class="text-gray-300 mb-0 text-sm">How will educational institutions accommodate refugee students?</p>
-                        </div>
-                        <div class="p-3 rounded bg-gray-700/50 transform transition hover:bg-gray-700/80">
-                            <div class="flex items-center mb-1">
-                                <i class="fas fa-heart text-red-400 mr-2"></i>
-                                <h3 class="font-bold text-red-400 mb-0">Psychosocial Support</h3>
-                            </div>
-                            <p class="text-gray-300 mb-0 text-sm">What mental health resources should be provided?</p>
-                        </div>
-                        <div class="p-3 rounded bg-gray-700/50 transform transition hover:bg-gray-700/80 md:col-span-2">
-                            <div class="flex items-center mb-1">
-                                <i class="fas fa-book text-purple-400 mr-2"></i>
-                                <h3 class="font-bold text-purple-400 mb-0">Curriculum Adaptation</h3>
-                            </div>
-                            <p class="text-gray-300 mb-0 text-sm">How should content be modified to be inclusive and relevant?</p>
-                        </div>
+                        <p class="text-gray-700 text-sm">How will refugee students overcome language barriers?</p>
                     </div>
                     
-                    <p class="mb-0 leading-relaxed !text-white">For each area, you'll choose from three options representing different approaches and resource investments.</p>
+                    <div class="p-4 rounded-xl bg-green-50 border border-green-200 transform transition-all hover:shadow-md hover:scale-102">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-challenge-green rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-chalkboard-teacher text-white text-sm"></i>
+                            </div>
+                            <h3 class="font-bold text-challenge-green">Teacher Training</h3>
+                        </div>
+                        <p class="text-gray-700 text-sm">How will educators be prepared to work with diverse students?</p>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-orange-50 border border-orange-200 transform transition-all hover:shadow-md hover:scale-102">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-challenge-orange rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-user-friends text-white text-sm"></i>
+                            </div>
+                            <h3 class="font-bold text-challenge-orange">School Integration</h3>
+                        </div>
+                        <p class="text-gray-700 text-sm">How will educational institutions accommodate refugee students?</p>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-red-50 border border-red-200 transform transition-all hover:shadow-md hover:scale-102">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-challenge-red rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-heart text-white text-sm"></i>
+                            </div>
+                            <h3 class="font-bold text-challenge-red">Psychosocial Support</h3>
+                        </div>
+                        <p class="text-gray-700 text-sm">What mental health resources should be provided?</p>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-purple-50 border border-purple-200 transform transition-all hover:shadow-md hover:scale-102 md:col-span-2">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-challenge-purple rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-book text-white text-sm"></i>
+                            </div>
+                            <h3 class="font-bold text-challenge-purple">Curriculum Adaptation</h3>
+                        </div>
+                        <p class="text-gray-700 text-sm">How should content be modified to be inclusive and relevant?</p>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 border border-purple-200 rounded-xl p-4">
+                    <p class="text-gray-700 leading-relaxed flex items-center">
+                        <i class="fas fa-info-circle mr-2 text-challenge-purple"></i>
+                        For each area, you'll choose from three options representing different approaches and resource investments.
+                    </p>
                 </div>
             </div>
         </div>
 
         <!-- Step 4: Budget Constraints -->
         <div class="step-panel hidden" id="step-4">
-            <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 transform transition-all hover:shadow-red-500/20 hover:shadow-xl border-l-4 border-red-500">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white mr-4 shadow-lg">
+            <div class="bg-white p-8 rounded-2xl shadow-lg mb-6 transform transition-all hover:shadow-xl border-l-4 border-challenge-red">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-challenge-red rounded-xl flex items-center justify-center text-white mr-4 shadow-lg">
                         <i class="fas fa-coins text-xl"></i>
                     </div>
-                    <h2 class="text-xl font-bold text-red-400">Budget Constraints</h2>
-                    <div class="ml-auto px-2 py-1 bg-red-900/50 rounded text-xs text-red-300">
+                    <h2 class="text-2xl font-bold text-challenge-red">Budget Constraints</h2>
+                    <div class="ml-auto px-3 py-1 bg-challenge-red text-white rounded-full text-sm font-medium">
                         <i class="fas fa-gem mr-1"></i> 14 Resource Units
                     </div>
                 </div>
                 
-                <div class="prose prose-invert">
-                    <p class="mb-3 leading-relaxed !text-white">The parliamentary budget committee has allocated <span class="text-yellow-400 font-bold">14 resource units</span> for education reform. Each policy option costs between 1-3 units, reflecting the relative investment required:</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                        <div class="p-3 rounded bg-gray-700/50 transform transition hover:scale-105">
-                            <div class="flex justify-center mb-2">
-                                <div class="w-10 h-10 rounded-full bg-blue-900 border-2 border-blue-500 flex items-center justify-center text-white font-bold">1</div>
-                            </div>
-                            <h4 class="text-center font-bold text-blue-400 mb-1">Level 1</h4>
-                            <div class="text-center text-yellow-400 font-bold text-lg mb-1">1 Unit</div>
-                            <p class="text-center text-gray-300 text-sm mb-0">Basic implementation with minimal resources</p>
+                <div class="mb-6">
+                    <p class="text-lg text-gray-700 leading-relaxed">The parliamentary budget committee has allocated <span class="text-challenge-orange font-bold bg-orange-100 px-2 py-1 rounded">14 resource units</span> for education reform. Each policy option costs between 1-3 units, reflecting the relative investment required:</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="p-6 rounded-2xl bg-blue-50 border-2 border-blue-200 transform transition-all hover:shadow-lg hover:scale-105 text-center">
+                        <div class="flex justify-center mb-4">
+                            <div class="w-16 h-16 rounded-2xl bg-challenge-blue border-2 border-blue-300 flex items-center justify-center text-white font-bold text-xl shadow-lg">1</div>
                         </div>
-                        <div class="p-3 rounded bg-gray-700/50 transform transition hover:scale-105">
-                            <div class="flex justify-center mb-2">
-                                <div class="w-10 h-10 rounded-full bg-purple-900 border-2 border-purple-500 flex items-center justify-center text-white font-bold">2</div>
-                            </div>
-                            <h4 class="text-center font-bold text-purple-400 mb-1">Level 2</h4>
-                            <div class="text-center text-yellow-400 font-bold text-lg mb-1">2 Units</div>
-                            <p class="text-center text-gray-300 text-sm mb-0">Moderate implementation with average resources</p>
-                        </div>
-                        <div class="p-3 rounded bg-gray-700/50 transform transition hover:scale-105">
-                            <div class="flex justify-center mb-2">
-                                <div class="w-10 h-10 rounded-full bg-red-900 border-2 border-red-500 flex items-center justify-center text-white font-bold">3</div>
-                            </div>
-                            <h4 class="text-center font-bold text-red-400 mb-1">Level 3</h4>
-                            <div class="text-center text-yellow-400 font-bold text-lg mb-1">3 Units</div>
-                            <p class="text-center text-gray-300 text-sm mb-0">Comprehensive implementation with significant resources</p>
-                        </div>
+                        <h4 class="text-xl font-bold text-challenge-blue mb-2">Level 1</h4>
+                        <div class="text-challenge-orange font-bold text-2xl mb-3 bg-orange-100 rounded-lg py-2">1 Unit</div>
+                        <p class="text-gray-700 text-sm leading-relaxed">Basic implementation with minimal resources</p>
                     </div>
                     
-                    <div class="mt-4 p-3 border border-dashed border-red-500/50 rounded-lg bg-red-900/20">
-                        <p class="text-red-300 mb-0 flex items-center text-sm">
-                            <i class="fas fa-exclamation-triangle mr-2 text-red-400"></i>
-                            You must carefully balance idealism with pragmatism. Your selections must not exceed the 14-unit limit.
-                        </p>
+                    <div class="p-6 rounded-2xl bg-purple-50 border-2 border-purple-200 transform transition-all hover:shadow-lg hover:scale-105 text-center">
+                        <div class="flex justify-center mb-4">
+                            <div class="w-16 h-16 rounded-2xl bg-challenge-purple border-2 border-purple-300 flex items-center justify-center text-white font-bold text-xl shadow-lg">2</div>
+                        </div>
+                        <h4 class="text-xl font-bold text-challenge-purple mb-2">Level 2</h4>
+                        <div class="text-challenge-orange font-bold text-2xl mb-3 bg-orange-100 rounded-lg py-2">2 Units</div>
+                        <p class="text-gray-700 text-sm leading-relaxed">Moderate implementation with average resources</p>
+                    </div>
+                    
+                    <div class="p-6 rounded-2xl bg-red-50 border-2 border-red-200 transform transition-all hover:shadow-lg hover:scale-105 text-center">
+                        <div class="flex justify-center mb-4">
+                            <div class="w-16 h-16 rounded-2xl bg-challenge-red border-2 border-red-300 flex items-center justify-center text-white font-bold text-xl shadow-lg">3</div>
+                        </div>
+                        <h4 class="text-xl font-bold text-challenge-red mb-2">Level 3</h4>
+                        <div class="text-challenge-orange font-bold text-2xl mb-3 bg-orange-100 rounded-lg py-2">3 Units</div>
+                        <p class="text-gray-700 text-sm leading-relaxed">Comprehensive implementation with significant resources</p>
+                    </div>
+                </div>
+                
+                <div class="bg-red-50 border-2 border-red-200 rounded-xl p-6">
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 bg-challenge-red rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-challenge-red mb-2">Important Budget Rule</h4>
+                            <p class="text-gray-700 leading-relaxed">You must carefully balance idealism with pragmatism. Your selections must not exceed the 14-unit limit and should include a mix of different option levels for a realistic policy approach.</p>
+                        </div>
                     </div>
                 </div>
             </div>
