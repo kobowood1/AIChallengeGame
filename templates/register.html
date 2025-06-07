@@ -67,108 +67,153 @@
                 </div>
             </div>
 
-                <!-- Occupation Field -->
-                <div>
-                    {{ form.occupation.label(class="block text-sm font-medium text-gray-300") }}
-                    <div class="mt-1">
-                        {{ form.occupation(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm") }}
+            <!-- Professional Information Section -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                    <div class="w-8 h-8 bg-challenge-green rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-briefcase text-white text-sm"></i>
+                    </div>
+                    Professional Background
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Occupation Field -->
+                    <div>
+                        {{ form.occupation.label(class="block text-sm font-semibold text-gray-700 mb-2") }}
+                        {{ form.occupation(class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-challenge-blue focus:border-challenge-blue transition-all duration-200 font-medium", placeholder="Enter your occupation") }}
                         {% if form.occupation.errors %}
-                            <div class="mt-1 text-red-400 text-sm">
-                                {% for error in form.occupation.errors %}
-                                    <div>{{ error }}</div>
-                                {% endfor %}
+                            <div class="mt-2 flex items-start text-red-600 text-sm">
+                                <i class="fas fa-exclamation-circle mt-0.5 mr-2 flex-shrink-0"></i>
+                                <div>
+                                    {% for error in form.occupation.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         {% endif %}
                     </div>
-                </div>
 
-                <!-- Education Level Field -->
-                <div>
-                    {{ form.education_level.label(class="block text-sm font-medium text-gray-300") }}
-                    <div class="mt-1">
-                        {{ form.education_level(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm") }}
+                    <!-- Education Level Field -->
+                    <div>
+                        {{ form.education_level.label(class="block text-sm font-semibold text-gray-700 mb-2") }}
+                        {{ form.education_level(class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-challenge-blue focus:border-challenge-blue transition-all duration-200 font-medium") }}
                         {% if form.education_level.errors %}
-                            <div class="mt-1 text-red-400 text-sm">
-                                {% for error in form.education_level.errors %}
-                                    <div>{{ error }}</div>
-                                {% endfor %}
+                            <div class="mt-2 flex items-start text-red-600 text-sm">
+                                <i class="fas fa-exclamation-circle mt-0.5 mr-2 flex-shrink-0"></i>
+                                <div>
+                                    {% for error in form.education_level.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         {% endif %}
                     </div>
                 </div>
+            </div>
 
+            <!-- Background Information Section -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                    <div class="w-8 h-8 bg-challenge-orange rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-heart text-white text-sm"></i>
+                    </div>
+                    Background Information
+                </h3>
+                
                 <!-- Displacement Experience Field -->
                 <div>
-                    {{ form.displacement_experience.label(class="block text-sm font-medium text-gray-300") }}
-                    <div class="mt-1">
-                        {{ form.displacement_experience(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm", rows="3") }}
-                        {% if form.displacement_experience.errors %}
-                            <div class="mt-1 text-red-400 text-sm">
+                    {{ form.displacement_experience.label(class="block text-sm font-semibold text-gray-700 mb-2") }}
+                    {{ form.displacement_experience(class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-challenge-blue focus:border-challenge-blue transition-all duration-200 font-medium", rows="4", placeholder="Share your experience if you feel comfortable (optional)") }}
+                    {% if form.displacement_experience.errors %}
+                        <div class="mt-2 flex items-start text-red-600 text-sm">
+                            <i class="fas fa-exclamation-circle mt-0.5 mr-2 flex-shrink-0"></i>
+                            <div>
                                 {% for error in form.displacement_experience.errors %}
                                     <div>{{ error }}</div>
                                 {% endfor %}
                             </div>
-                        {% endif %}
-                    </div>
-                    <p class="mt-1 text-xs text-gray-400">This field is optional</p>
+                        </div>
+                    {% endif %}
+                    <p class="mt-2 text-sm text-gray-600 flex items-center">
+                        <i class="fas fa-info-circle mr-2 text-gray-400"></i>
+                        This field is optional and helps us understand diverse perspectives
+                    </p>
                 </div>
+            </div>
 
-                <!-- Location Fields -->
-                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+            <!-- Location Information Section -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                    <div class="w-8 h-8 bg-challenge-purple rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-map-marker-alt text-white text-sm"></i>
+                    </div>
+                    Current Location
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        {{ form.current_location_city.label(class="block text-sm font-medium text-gray-300") }}
-                        <div class="mt-1">
-                            {{ form.current_location_city(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm") }}
-                            {% if form.current_location_city.errors %}
-                                <div class="mt-1 text-red-400 text-sm">
+                        {{ form.current_location_city.label(class="block text-sm font-semibold text-gray-700 mb-2") }}
+                        {{ form.current_location_city(class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-challenge-blue focus:border-challenge-blue transition-all duration-200 font-medium", placeholder="Enter your current city") }}
+                        {% if form.current_location_city.errors %}
+                            <div class="mt-2 flex items-start text-red-600 text-sm">
+                                <i class="fas fa-exclamation-circle mt-0.5 mr-2 flex-shrink-0"></i>
+                                <div>
                                     {% for error in form.current_location_city.errors %}
                                         <div>{{ error }}</div>
                                     {% endfor %}
                                 </div>
-                            {% endif %}
-                        </div>
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div>
-                        {{ form.current_location_country.label(class="block text-sm font-medium text-gray-300") }}
-                        <div class="mt-1">
-                            {{ form.current_location_country(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm") }}
-                            {% if form.current_location_country.errors %}
-                                <div class="mt-1 text-red-400 text-sm">
+                        {{ form.current_location_country.label(class="block text-sm font-semibold text-gray-700 mb-2") }}
+                        {{ form.current_location_country(class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-challenge-blue focus:border-challenge-blue transition-all duration-200 font-medium", placeholder="Enter your current country") }}
+                        {% if form.current_location_country.errors %}
+                            <div class="mt-2 flex items-start text-red-600 text-sm">
+                                <i class="fas fa-exclamation-circle mt-0.5 mr-2 flex-shrink-0"></i>
+                                <div>
                                     {% for error in form.current_location_country.errors %}
                                         <div>{{ error }}</div>
                                     {% endfor %}
                                 </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Privacy Notice -->
-                <div class="rounded-md bg-blue-900 bg-opacity-50 p-4">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div class="ml-3">
-                            <h3 class="text-sm font-medium text-blue-300">
-                                Privacy Notice
-                            </h3>
-                            <div class="mt-2 text-sm text-blue-200">
-                                <p>
-                                    Your data will be used solely for the purpose of this policy simulation. 
-                                    All information is stored securely and will not be shared with third parties.
-                                </p>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
+            </div>
 
-                <div>
-                    {{ form.submit(class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500") }}
+            <!-- Privacy Notice -->
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-shield-alt text-challenge-blue text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-semibold text-gray-900 mb-2">
+                            Privacy & Data Security
+                        </h3>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            Your information is used exclusively for this educational policy simulation. 
+                            All data is stored securely and will never be shared with third parties. 
+                            You can request data deletion at any time.
+                        </p>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-6">
+                {{ form.submit(class="w-full bg-gradient-to-r from-challenge-blue to-challenge-teal hover:from-blue-600 hover:to-teal-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-challenge-blue focus:ring-offset-2 text-lg") }}
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="mt-8 pt-6 border-t border-gray-200 text-center">
+                <a href="{{ url_for('main.dashboard') }}" class="text-gray-500 hover:text-gray-700 transition-colors duration-200 inline-flex items-center text-sm">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to dashboard
+                </a>
+            </div>
             </form>
         </div>
     </div>
