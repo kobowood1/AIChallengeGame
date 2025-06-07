@@ -34,55 +34,61 @@
 
                 <!-- Nationality Field -->
                 <div>
-                    <label for="nationality" class="block text-sm font-medium text-gray-300">
-                        Nationality
-                    </label>
+                    {{ form.nationality.label(class="block text-sm font-medium text-gray-300") }}
                     <div class="mt-1">
-                        <input id="nationality" name="nationality" type="text" required
-                            class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        {{ form.nationality(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm") }}
+                        {% if form.nationality.errors %}
+                            <div class="mt-1 text-red-400 text-sm">
+                                {% for error in form.nationality.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
                 <!-- Occupation Field -->
                 <div>
-                    <label for="occupation" class="block text-sm font-medium text-gray-300">
-                        Occupation
-                    </label>
+                    {{ form.occupation.label(class="block text-sm font-medium text-gray-300") }}
                     <div class="mt-1">
-                        <input id="occupation" name="occupation" type="text" required
-                            class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        {{ form.occupation(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm") }}
+                        {% if form.occupation.errors %}
+                            <div class="mt-1 text-red-400 text-sm">
+                                {% for error in form.occupation.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
                 <!-- Education Level Field -->
                 <div>
-                    <label for="education_level" class="block text-sm font-medium text-gray-300">
-                        Educational Level
-                    </label>
+                    {{ form.education_level.label(class="block text-sm font-medium text-gray-300") }}
                     <div class="mt-1">
-                        <select id="education_level" name="education_level" required
-                            class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            <option value="">Select education level</option>
-                            <option value="Primary">Primary education</option>
-                            <option value="Secondary">Secondary education</option>
-                            <option value="Vocational">Vocational training</option>
-                            <option value="Bachelor">Bachelor's degree</option>
-                            <option value="Master">Master's degree</option>
-                            <option value="Doctorate">Doctorate</option>
-                            <option value="Other">Other</option>
-                        </select>
+                        {{ form.education_level(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm") }}
+                        {% if form.education_level.errors %}
+                            <div class="mt-1 text-red-400 text-sm">
+                                {% for error in form.education_level.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
                 <!-- Displacement Experience Field -->
                 <div>
-                    <label for="displacement_experience" class="block text-sm font-medium text-gray-300">
-                        Displacement Experience
-                    </label>
+                    {{ form.displacement_experience.label(class="block text-sm font-medium text-gray-300") }}
                     <div class="mt-1">
-                        <textarea id="displacement_experience" name="displacement_experience" rows="3"
-                            placeholder="Have you ever experienced displacement or migration? If so, please briefly describe."
-                            class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                        {{ form.displacement_experience(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm", rows="3") }}
+                        {% if form.displacement_experience.errors %}
+                            <div class="mt-1 text-red-400 text-sm">
+                                {% for error in form.displacement_experience.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                     <p class="mt-1 text-xs text-gray-400">This field is optional</p>
                 </div>
@@ -90,22 +96,30 @@
                 <!-- Location Fields -->
                 <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
                     <div>
-                        <label for="current_location_city" class="block text-sm font-medium text-gray-300">
-                            Current City
-                        </label>
+                        {{ form.current_location_city.label(class="block text-sm font-medium text-gray-300") }}
                         <div class="mt-1">
-                            <input id="current_location_city" name="current_location_city" type="text" required
-                                class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            {{ form.current_location_city(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm") }}
+                            {% if form.current_location_city.errors %}
+                                <div class="mt-1 text-red-400 text-sm">
+                                    {% for error in form.current_location_city.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
 
                     <div>
-                        <label for="current_location_country" class="block text-sm font-medium text-gray-300">
-                            Current Country
-                        </label>
+                        {{ form.current_location_country.label(class="block text-sm font-medium text-gray-300") }}
                         <div class="mt-1">
-                            <input id="current_location_country" name="current_location_country" type="text" required
-                                class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            {{ form.current_location_country(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm") }}
+                            {% if form.current_location_country.errors %}
+                                <div class="mt-1 text-red-400 text-sm">
+                                    {% for error in form.current_location_country.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -133,10 +147,7 @@
                 </div>
 
                 <div>
-                    <button type="submit"
-                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Register and Continue to Simulation
-                    </button>
+                    {{ form.submit(class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500") }}
                 </div>
             </form>
         </div>
