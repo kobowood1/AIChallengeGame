@@ -19,14 +19,9 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(50), nullable=True)
     
     # Account management
-    active = db.Column(db.Boolean, default=True)
+    is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime, nullable=True)
-    
-    @property
-    def is_active(self):
-        """Required by Flask-Login"""
-        return self.active
     
     # Relationships
     participants = db.relationship('Participant', backref='user', lazy=True)
