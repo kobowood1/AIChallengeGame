@@ -3,49 +3,69 @@
 {% block title %}Republic of Bean - Participant Registration{% endblock %}
 
 {% block content %}
-<div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-800">
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-challenge-green to-challenge-teal rounded-2xl shadow-lg mb-6">
+            <i class="fas fa-user-edit text-white text-2xl"></i>
+        </div>
+        
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">
             Participant Registration
-        </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
-            Please provide your information to participate in the Republic of Bean policy simulation
+        </h1>
+        <p class="text-lg text-gray-600 max-w-lg mx-auto">
+            Help us personalize your experience in the Republic of Bean policy simulation
         </p>
     </div>
 
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div class="bg-white py-8 px-4 shadow-lg sm:rounded-lg sm:px-10 border border-gray-200">
-            <form class="space-y-6" action="/register" method="POST">
-                {{ form.hidden_tag() }}
-                <!-- Age Field -->
-                <div>
-                    {{ form.age.label(class="block text-sm font-medium text-gray-300") }}
-                    <div class="mt-1">
-                        {{ form.age(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm") }}
+    <!-- Registration Form Card -->
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+        <form class="space-y-8" action="/register" method="POST">
+            {{ form.hidden_tag() }}
+            
+            <!-- Personal Information Section -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                    <div class="w-8 h-8 bg-challenge-blue rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </div>
+                    Personal Information
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Age Field -->
+                    <div>
+                        {{ form.age.label(class="block text-sm font-semibold text-gray-700 mb-2") }}
+                        {{ form.age(class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-challenge-blue focus:border-challenge-blue transition-all duration-200 font-medium", placeholder="Enter your age") }}
                         {% if form.age.errors %}
-                            <div class="mt-1 text-red-400 text-sm">
-                                {% for error in form.age.errors %}
-                                    <div>{{ error }}</div>
-                                {% endfor %}
+                            <div class="mt-2 flex items-start text-red-600 text-sm">
+                                <i class="fas fa-exclamation-circle mt-0.5 mr-2 flex-shrink-0"></i>
+                                <div>
+                                    {% for error in form.age.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         {% endif %}
                     </div>
-                </div>
 
-                <!-- Nationality Field -->
-                <div>
-                    {{ form.nationality.label(class="block text-sm font-medium text-gray-300") }}
-                    <div class="mt-1">
-                        {{ form.nationality(class="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 bg-gray-700 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm") }}
+                    <!-- Nationality Field -->
+                    <div>
+                        {{ form.nationality.label(class="block text-sm font-semibold text-gray-700 mb-2") }}
+                        {{ form.nationality(class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-challenge-blue focus:border-challenge-blue transition-all duration-200 font-medium", placeholder="Enter your nationality") }}
                         {% if form.nationality.errors %}
-                            <div class="mt-1 text-red-400 text-sm">
-                                {% for error in form.nationality.errors %}
-                                    <div>{{ error }}</div>
-                                {% endfor %}
+                            <div class="mt-2 flex items-start text-red-600 text-sm">
+                                <i class="fas fa-exclamation-circle mt-0.5 mr-2 flex-shrink-0"></i>
+                                <div>
+                                    {% for error in form.nationality.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         {% endif %}
                     </div>
                 </div>
+            </div>
 
                 <!-- Occupation Field -->
                 <div>
