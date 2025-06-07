@@ -710,8 +710,8 @@
                     </div>
                     
                     <button class="play-button w-full mt-6" id="play-deck-button" disabled>
-                        <i class="fas fa-play mr-2"></i>
-                        Play Your Hand
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Submit Your Policy
                     </button>
                 </div>
             </div>
@@ -817,7 +817,7 @@ document.addEventListener('DOMContentLoaded', function() {
     playButton.addEventListener('click', function() {
         // Disable button to prevent multiple submissions
         playButton.disabled = true;
-        playButton.textContent = 'Playing Cards...';
+        playButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting Policy...';
         
         // Add card playing animation
         Object.keys(selectedCards).forEach((policy, index) => {
@@ -848,14 +848,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     alert('Error: ' + data.error);
                     playButton.disabled = false;
-                    playButton.innerHTML = '<i class="fas fa-play mr-2"></i>Play Your Hand';
+                    playButton.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Submit Your Policy';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('An error occurred while submitting your selections.');
                 playButton.disabled = false;
-                playButton.innerHTML = '<i class="fas fa-play mr-2"></i>Play Your Hand';
+                playButton.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Submit Your Policy';
             });
         }, 1500);
     });
