@@ -1,46 +1,58 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account - The CHALLENGE: Policy Jam</title>
-    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'challenge-yellow': '#F4D03F',
+                        'challenge-red': '#8B1538',
+                        'challenge-green': '#52C41A',
+                        'challenge-blue': '#40A9FF',
+                        'challenge-orange': '#FF7A00',
+                        'challenge-purple': '#D946EF',
+                        'challenge-brown': '#8B4513',
+                        'challenge-teal': '#7DD3FC'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: #F4D03F;
             min-height: 100vh;
         }
         .auth-card {
-            backdrop-filter: blur(10px);
-            background: rgba(31, 41, 55, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-        .logo-text {
-            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            background: white;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
-<body>
+<body class="bg-challenge-yellow">
     <div class="min-h-screen flex items-center justify-center px-4 py-12">
         <div class="max-w-md w-full space-y-8">
             <!-- Logo and Header -->
             <div class="text-center">
                 <div class="mb-8">
-                    <h1 class="text-4xl font-bold logo-text mb-2">
-                        <i class="fas fa-gamepad mr-2"></i>The CHALLENGE
+                    <h1 class="text-4xl font-bold mb-2 flex items-center justify-center">
+                        <i class="fas fa-graduation-cap mr-2 text-challenge-orange"></i>
+                        <span class="text-challenge-red">C</span><span class="text-yellow-500">H</span><span class="text-gray-800">A</span><span class="text-challenge-green">L</span><span class="text-challenge-blue">L</span><span class="text-challenge-orange">E</span><span class="text-challenge-brown">N</span><span class="text-challenge-teal">G</span><span class="text-challenge-purple">E</span>
                     </h1>
-                    <p class="text-lg text-blue-300">Policy Jam - Refugee Edition</p>
+                    <p class="text-lg text-gray-700">Policy Jam - Refugee Edition</p>
                 </div>
                 
-                <h2 class="text-3xl font-extrabold text-white mb-2">
+                <h2 class="text-3xl font-extrabold text-gray-800 mb-2">
                     Join the Adventure
                 </h2>
-                <p class="text-gray-400">
+                <p class="text-gray-600">
                     Create your account to start playing
                 </p>
             </div>

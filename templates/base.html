@@ -6,28 +6,48 @@
     <title>{% block title %}The CHALLENGE: Policy Jam - Refugee Edition{% endblock %}</title>
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Bootstrap CSS for Replit theme -->
-    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SocketIO Client -->
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'challenge-yellow': '#F4D03F',
+                        'challenge-red': '#8B1538',
+                        'challenge-green': '#52C41A',
+                        'challenge-blue': '#40A9FF',
+                        'challenge-orange': '#FF7A00',
+                        'challenge-purple': '#D946EF',
+                        'challenge-brown': '#8B4513',
+                        'challenge-teal': '#7DD3FC'
+                    }
+                }
+            }
+        }
+    </script>
     {% block head %}{% endblock %}
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
-    <nav class="bg-gray-800 border-b border-gray-700 shadow-lg">
+<body class="bg-challenge-yellow text-gray-800 min-h-screen">
+    <nav class="bg-white border-b border-gray-200 shadow-lg">
         <div class="container mx-auto px-4 py-3">
             <div class="flex justify-between items-center">
-                <a href="/" class="text-xl font-bold text-white hover:text-blue-400 transition">
-                    <i class="fas fa-robot mr-2"></i>The CHALLENGE: Policy Jam - Refugee Edition
+                <a href="/" class="text-xl font-bold text-gray-800 hover:text-challenge-blue transition flex items-center">
+                    <i class="fas fa-graduation-cap mr-2 text-challenge-orange"></i>
+                    <span class="challenge-title">
+                        <span class="text-challenge-red">C</span><span class="text-yellow-500">H</span><span class="text-gray-800">A</span><span class="text-challenge-green">L</span><span class="text-challenge-blue">L</span><span class="text-challenge-orange">E</span><span class="text-challenge-brown">N</span><span class="text-challenge-teal">G</span><span class="text-challenge-purple">E</span>
+                    </span>
+                    <span class="ml-2 text-gray-700 text-base">Policy Jam - Refugee Edition</span>
                 </a>
                 <div class="flex space-x-4 items-center">
                     {% if current_user.is_authenticated %}
-                        <span class="text-gray-300 text-sm">Welcome, {{ current_user.first_name or current_user.username }}!</span>
-                        <a href="{{ url_for('main.reset') }}" class="py-1 px-3 bg-red-600 hover:bg-red-700 text-white rounded-full transition-all transform hover:scale-105 flex items-center font-bold">
+                        <span class="text-gray-600 text-sm">Welcome, {{ current_user.first_name or current_user.username }}!</span>
+                        <a href="{{ url_for('main.reset') }}" class="py-1 px-3 bg-challenge-orange hover:bg-orange-600 text-white rounded-full transition-all transform hover:scale-105 flex items-center font-bold">
                             <i class="fas fa-redo mr-1"></i> Reset Game
                         </a>
-                        <a href="{{ url_for('main.logout') }}" class="py-1 px-3 bg-gray-600 hover:bg-gray-500 text-white rounded-full transition-all transform hover:scale-105 flex items-center font-bold">
+                        <a href="{{ url_for('main.logout') }}" class="py-1 px-3 bg-gray-600 hover:bg-gray-700 text-white rounded-full transition-all transform hover:scale-105 flex items-center font-bold">
                             <i class="fas fa-sign-out-alt mr-1"></i> Sign Out
                         </a>
                     {% endif %}
