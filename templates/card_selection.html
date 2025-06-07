@@ -741,7 +741,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Remove previous selection from same policy area
             if (selectedCards[policy]) {
                 totalCost -= selectedCards[policy].cost;
-                document.querySelector(`[data-policy="${policy}"][data-option="${selectedCards[policy].option}"]`).classList.remove('selected');
+                // Find and deselect the previously selected card for this policy
+                const previousCard = document.querySelector(`[data-policy="${policy}"][data-option="${selectedCards[policy].option}"]`);
+                if (previousCard) {
+                    previousCard.classList.remove('selected');
+                }
             }
             
             // Add new selection
@@ -770,16 +774,28 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function updateSelectedCards() {
         if (Object.keys(selectedCards).length === 0) {
-            selectedCardsContainer.innerHTML = '<p class="text-gray-500 text-center">No cards selected yet</p>';
+            selectedCardsContainer.innerHTML = '<p class="text-gray-500 text-center text-sm">No cards selected yet</p>';
             return;
         }
         
         let html = '';
+        const policyNames = {
+            'language_support': 'Language Support',
+            'teacher_training': 'Teacher Training', 
+            'school_integration': 'School Integration',
+            'psychosocial_support': 'Psychosocial Support',
+            'curriculum_adaptation': 'Curriculum Adaptation'
+        };
+        
         Object.entries(selectedCards).forEach(([policy, data]) => {
+            const displayName = policyNames[policy] || policy.replace('_', ' ');
             html += `
-                <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
-                    <span class="text-sm font-medium">${policy.replace('_', ' ').toUpperCase()}</span>
-                    <span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs">${data.cost}</span>
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border-l-4 border-blue-500 mb-2">
+                    <div>
+                        <span class="text-sm font-semibold text-gray-800">${displayName}</span>
+                        <div class="text-xs text-gray-600">Option ${data.option}</div>
+                    </div>
+                    <span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">${data.cost}</span>
                 </div>
             `;
         });
