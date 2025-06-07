@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account - The CHALLENGE: Policy Jam{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
+                Create your account
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-400">
+                Or
+                <a href="{{ url_for('main.login') }}" class="font-medium text-blue-400 hover:text-blue-300">
+                    sign in to existing account
+                </a>
+            </p>
+        </div>
+        
+        <form class="mt-8 space-y-6" method="POST">
+            {{ form.hidden_tag() }}
+            
+            <div class="space-y-4">
+                <div>
+                    {{ form.username.label(class="block text-sm font-medium text-gray-300") }}
+                    {{ form.username(class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500") }}
+                    {% if form.username.errors %}
+                        <div class="mt-1 text-red-400 text-sm">
+                            {% for error in form.username.errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    {{ form.email.label(class="block text-sm font-medium text-gray-300") }}
+                    {{ form.email(class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500") }}
+                    {% if form.email.errors %}
+                        <div class="mt-1 text-red-400 text-sm">
+                            {% for error in form.email.errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        {{ form.first_name.label(class="block text-sm font-medium text-gray-300") }}
+                        {{ form.first_name(class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500") }}
+                        {% if form.first_name.errors %}
+                            <div class="mt-1 text-red-400 text-sm">
+                                {% for error in form.first_name.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        {{ form.last_name.label(class="block text-sm font-medium text-gray-300") }}
+                        {{ form.last_name(class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500") }}
+                        {% if form.last_name.errors %}
+                            <div class="mt-1 text-red-400 text-sm">
+                                {% for error in form.last_name.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div>
+                    {{ form.password.label(class="block text-sm font-medium text-gray-300") }}
+                    {{ form.password(class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500") }}
+                    {% if form.password.errors %}
+                        <div class="mt-1 text-red-400 text-sm">
+                            {% for error in form.password.errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    {{ form.password2.label(class="block text-sm font-medium text-gray-300") }}
+                    {{ form.password2(class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500") }}
+                    {% if form.password2.errors %}
+                        <div class="mt-1 text-red-400 text-sm">
+                            {% for error in form.password2.errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div>
+                {{ form.submit(class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition") }}
+            </div>
+            
+            <div class="text-center">
+                <a href="{{ url_for('main.index') }}" class="text-blue-400 hover:text-blue-300">
+                    ← Back to Home
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

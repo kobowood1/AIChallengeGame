@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash, Response, get_flashed_messages
+from flask_login import login_user, logout_user, login_required, current_user
 from game_data import POLICIES, validate_package, MAX_BUDGET
 from ai_agents import generate_agents, agent_justify
 import markdown
@@ -8,7 +9,8 @@ import uuid
 import logging
 from datetime import datetime
 from weasyprint import HTML, CSS
-from models import db, Participant
+from models import db, Participant, User, GameSession
+from forms import LoginForm, RegistrationForm, ParticipantForm
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect
 from email_utils import send_reflection_report
@@ -19,67 +21,176 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def index():
     """Route for the home page"""
-    # Display the welcome page with a 'Start' button
+    if current_user.is_authenticated:
+        # Check if user has an active game session
+        active_session = GameSession.query.filter_by(
+            user_id=current_user.id, 
+            is_active=True
+        ).first()
+        
+        if active_session:
+            # Redirect to appropriate phase based on progress
+            if active_session.current_phase == 'registration':
+                return redirect(url_for('main.register'))
+            elif active_session.current_phase == 'scenario':
+                return redirect(url_for('main.scenario'))
+            elif active_session.current_phase == 'phase1':
+                return redirect(url_for('main.phase1'))
+            elif active_session.current_phase == 'phase2':
+                return redirect(url_for('main.phase2'))
+            elif active_session.current_phase == 'phase3':
+                return redirect(url_for('main.phase3'))
+            elif active_session.current_phase == 'completed':
+                return redirect(url_for('main.thank_you'))
+        
+        # No active session, show dashboard option to start new game
+        return render_template('index.html', show_dashboard=True)
+    
+    # Not authenticated, show login/register options
     return render_template('index.html')
 
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    """User login route"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            user.last_login = datetime.utcnow()
+            db.session.commit()
+            
+            next_page = request.args.get('next')
+            if not next_page or not next_page.startswith('/'):
+                next_page = url_for('main.index')
+            return redirect(next_page)
+        else:
+            flash('Invalid username or password', 'error')
+    
+    return render_template('auth/login.html', form=form)
+
+
+@main.route('/register_user', methods=['GET', 'POST'])
+def register_user():
+    """User registration route"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User()
+        user.username = form.username.data
+        user.email = form.email.data
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        
+        flash('Registration successful! Please log in.', 'success')
+        return redirect(url_for('main.login'))
+    
+    return render_template('auth/register.html', form=form)
+
+
+@main.route('/logout')
+@login_required
+def logout():
+    """User logout route"""
+    logout_user()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('main.index'))
+
+
 @main.route('/start')
+@login_required
 def start():
-    """Route to start the game and check registration"""
-    # Check if the user has already registered
-    if 'participant_registered' in session and session['participant_registered']:
+    """Route to start a new game session"""
+    # Create a new game session for the user
+    new_session = GameSession(user_id=current_user.id)
+    db.session.add(new_session)
+    db.session.commit()
+    
+    # Store session info for game mechanics
+    session['game_session_id'] = new_session.id
+    session['session_token'] = new_session.session_token
+    
+    # Check if user has participant info from previous sessions
+    existing_participant = Participant.query.filter_by(user_id=current_user.id).first()
+    if existing_participant:
+        # Copy participant info to session for game use
+        session['participant_registered'] = True
+        session['participant_info'] = {
+            'age': existing_participant.age,
+            'nationality': existing_participant.nationality,
+            'occupation': existing_participant.occupation,
+            'education_level': existing_participant.education_level,
+            'displacement_experience': existing_participant.displacement_experience,
+            'current_location_city': existing_participant.current_location_city,
+            'current_location_country': existing_participant.current_location_country
+        }
         return redirect(url_for('main.scenario'))
     else:
-        # Redirect to registration page
+        # Need to collect participant info
         return redirect(url_for('main.register'))
 
 @main.route('/reset')
+@login_required
 def reset():
-    """Reset the session and start over"""
+    """Reset the current game session and start over"""
+    # Mark current session as inactive
+    if 'game_session_id' in session:
+        game_session = GameSession.query.get(session['game_session_id'])
+        if game_session:
+            game_session.is_active = False
+            db.session.commit()
+    
     # Clear the session
     session.clear()
-    flash('Your session has been reset. You can start fresh.', 'info')
+    flash('Your game session has been reset. You can start fresh.', 'info')
     return redirect(url_for('main.index'))
 
 @main.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
-    """Route for participant registration"""
-    # Create a simple form for CSRF protection
-    form = FlaskForm()
+    """Route for participant demographic registration"""
+    form = ParticipantForm()
     
-    if request.method == 'POST' and form.validate_on_submit():
+    if form.validate_on_submit():
         try:
-            # Extract form data
-            age = int(request.form.get('age'))
-            nationality = request.form.get('nationality')
-            occupation = request.form.get('occupation')
-            education_level = request.form.get('education_level')
-            displacement_experience = request.form.get('displacement_experience', '')
-            current_location_city = request.form.get('current_location_city')
-            current_location_country = request.form.get('current_location_country')
-            
             # Generate a unique session ID if not already present
             if 'session_id' not in session:
                 session['session_id'] = str(uuid.uuid4())
             
-            # Check if participant with this session_id already exists
-            existing_participant = Participant.query.filter_by(session_id=session['session_id']).first()
+            # Check if participant for this user already exists
+            existing_participant = Participant.query.filter_by(user_id=current_user.id).first()
             if existing_participant:
-                # User already registered, just update the session flag
-                session['participant_registered'] = True
-                flash('Welcome back to the Republic of Bean policy simulation!', 'success')
-                return redirect(url_for('main.scenario'))
-            
-            # Create new participant
-            participant = Participant(
-                age=age,
-                nationality=nationality,
-                occupation=occupation,
-                education_level=education_level,
-                displacement_experience=displacement_experience,
-                current_location_city=current_location_city,
-                current_location_country=current_location_country,
-                session_id=session['session_id']
-            )
+                # Update existing participant
+                participant = existing_participant
+                participant.age = form.age.data
+                participant.nationality = form.nationality.data
+                participant.occupation = form.occupation.data
+                participant.education_level = form.education_level.data
+                participant.displacement_experience = form.displacement_experience.data
+                participant.current_location_city = form.current_location_city.data
+                participant.current_location_country = form.current_location_country.data
+                participant.session_id = session['session_id']
+            else:
+                # Create new participant
+                participant = Participant()
+                participant.user_id = current_user.id
+                participant.age = form.age.data
+                participant.nationality = form.nationality.data
+                participant.occupation = form.occupation.data
+                participant.education_level = form.education_level.data
+                participant.displacement_experience = form.displacement_experience.data
+                participant.current_location_city = form.current_location_city.data
+                participant.current_location_country = form.current_location_country.data
+                participant.session_id = session['session_id']
+                db.session.add(participant)
             
             # Add to database
             db.session.add(participant)

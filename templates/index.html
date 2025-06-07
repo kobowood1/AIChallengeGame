@@ -25,15 +25,50 @@
     <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-10 text-center relative overflow-hidden transform transition-all hover:shadow-blue-500/30 hover:shadow-xl">
         <div class="absolute -top-10 -right-10 h-40 w-40 bg-blue-500 rounded-full opacity-10"></div>
         <div class="absolute -bottom-20 -left-20 h-60 w-60 bg-purple-500 rounded-full opacity-10"></div>
-        <h2 class="text-2xl font-bold mb-4 text-blue-400">Welcome to the Policy Challenge</h2>
-        <p class="mb-6 text-gray-300">
-            Take on the role of an education policy advisor and tackle the challenge of refugee integration.
-        </p>
-        <div class="mt-4">
-            <a href="{{ url_for('main.start') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition-all transform hover:scale-105 inline-flex items-center shadow-lg hover:shadow-blue-500/50">
-                <i class="fas fa-play-circle mr-2"></i>Start Your Adventure
-            </a>
-        </div>
+        
+        {% if current_user.is_authenticated %}
+            <!-- Authenticated User View -->
+            <h2 class="text-2xl font-bold mb-4 text-blue-400">Welcome back, {{ current_user.full_name }}!</h2>
+            <p class="mb-6 text-gray-300">
+                Ready to continue your policy adventure or start a new challenge?
+            </p>
+            
+            {% if show_dashboard %}
+                <div class="space-y-4">
+                    <div>
+                        <a href="{{ url_for('main.start') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition-all transform hover:scale-105 inline-flex items-center shadow-lg hover:shadow-blue-500/50">
+                            <i class="fas fa-play-circle mr-2"></i>Start New Game
+                        </a>
+                    </div>
+                    <div class="text-sm">
+                        <a href="{{ url_for('main.logout') }}" class="text-gray-400 hover:text-white transition">
+                            <i class="fas fa-sign-out-alt mr-1"></i>Sign Out
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <!-- Guest User View -->
+            <h2 class="text-2xl font-bold mb-4 text-blue-400">Welcome to the Policy Challenge</h2>
+            <p class="mb-6 text-gray-300">
+                Take on the role of an education policy advisor and tackle the challenge of refugee integration.
+            </p>
+            
+            <div class="space-y-4">
+                <div class="space-x-4">
+                    <a href="{{ url_for('main.login') }}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg text-lg transition-all transform hover:scale-105 inline-flex items-center shadow-lg hover:shadow-blue-500/50">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                    </a>
+                    <a href="{{ url_for('main.register_user') }}" class="bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg text-lg transition-all transform hover:scale-105 inline-flex items-center shadow-lg hover:shadow-green-500/50">
+                        <i class="fas fa-user-plus mr-2"></i>Create Account
+                    </a>
+                </div>
+                <p class="text-sm text-gray-400">
+                    Create an account to save your progress and access previous game sessions
+                </p>
+            </div>
+        {% endif %}
+        
         <div class="mt-4 text-xs text-blue-300">
             <i class="fas fa-users mr-1"></i> 3,257 policy advisors have played this game
         </div>

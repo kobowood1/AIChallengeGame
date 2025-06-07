@@ -5,6 +5,7 @@ eventlet.monkey_patch()
 
 from flask import Flask
 from flask_socketio import SocketIO
+from flask_login import LoginManager
 import logging
 from flask_wtf.csrf import CSRFProtect
 
@@ -13,6 +14,9 @@ socketio = SocketIO(cors_allowed_origins="*", async_mode='eventlet')
 
 # Initialize CSRF protection
 csrf = CSRFProtect()
+
+# Initialize login manager
+login_manager = LoginManager()
 
 def create_app():
     """
@@ -35,10 +39,22 @@ def create_app():
     # Initialize extensions with app
     socketio.init_app(app)
     csrf.init_app(app)
+    login_manager.init_app(app)
+    
+    # Configure login manager
+    login_manager.login_view = 'main.login'
+    login_manager.login_message = 'Please log in to access this page.'
+    login_manager.login_message_category = 'info'
     
     # Initialize database
     from models import db
     db.init_app(app)
+    
+    # User loader callback for Flask-Login
+    @login_manager.user_loader
+    def load_user(user_id):
+        from models import User
+        return User.query.get(int(user_id))
     
     # Create all database tables
     with app.app_context():
