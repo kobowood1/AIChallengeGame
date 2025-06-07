@@ -20,7 +20,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    """Route for the home page"""
+    """Route for the home page - redirects to sign in"""
     if current_user.is_authenticated:
         # Check if user has an active game session
         active_session = GameSession.query.filter_by(
@@ -43,11 +43,31 @@ def index():
             elif active_session.current_phase == 'completed':
                 return redirect(url_for('main.thank_you'))
         
-        # No active session, show dashboard option to start new game
-        return render_template('index.html', show_dashboard=True)
+        # No active session, redirect to dashboard
+        return redirect(url_for('main.dashboard'))
     
-    # Not authenticated, show login/register options
-    return render_template('index.html')
+    # Not authenticated, redirect to sign in page
+    return redirect(url_for('main.login'))
+
+@main.route('/dashboard')
+@login_required
+def dashboard():
+    """Dashboard for authenticated users"""
+    # Check for any active game sessions
+    active_session = GameSession.query.filter_by(
+        user_id=current_user.id, 
+        is_active=True
+    ).first()
+    
+    # Get completed sessions count
+    completed_sessions = GameSession.query.filter_by(
+        user_id=current_user.id, 
+        is_active=False
+    ).count()
+    
+    return render_template('dashboard.html', 
+                         active_session=active_session,
+                         completed_sessions=completed_sessions)
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():

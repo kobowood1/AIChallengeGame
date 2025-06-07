@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - The CHALLENGE: Policy Jam{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Welcome Header -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 text-white mb-3">
+                    <i class="fas fa-tachometer-alt me-3"></i>Welcome, {{ current_user.first_name or current_user.username }}!
+                </h1>
+                <p class="lead text-light">Ready to shape policy in the Republic of Bean?</p>
+            </div>
+
+            <!-- Game Status Cards -->
+            <div class="row g-4 mb-5">
+                {% if active_session %}
+                    <!-- Continue Game Card -->
+                    <div class="col-md-6">
+                        <div class="card border-warning bg-dark h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-play-circle fa-3x text-warning mb-3"></i>
+                                <h5 class="card-title text-warning">Continue Your Journey</h5>
+                                <p class="card-text text-light">
+                                    You have an active policy session in progress.
+                                    Phase: <span class="badge bg-warning text-dark">{{ active_session.current_phase|title }}</span>
+                                </p>
+                                {% if active_session.current_phase == 'registration' %}
+                                    <a href="{{ url_for('main.register') }}" class="btn btn-warning">
+                                        <i class="fas fa-arrow-right me-2"></i>Continue Registration
+                                    </a>
+                                {% elif active_session.current_phase == 'scenario' %}
+                                    <a href="{{ url_for('main.scenario') }}" class="btn btn-warning">
+                                        <i class="fas fa-arrow-right me-2"></i>Continue to Scenario
+                                    </a>
+                                {% elif active_session.current_phase == 'phase1' %}
+                                    <a href="{{ url_for('main.phase1') }}" class="btn btn-warning">
+                                        <i class="fas fa-arrow-right me-2"></i>Continue Phase 1
+                                    </a>
+                                {% elif active_session.current_phase == 'phase2' %}
+                                    <a href="{{ url_for('main.phase2') }}" class="btn btn-warning">
+                                        <i class="fas fa-arrow-right me-2"></i>Continue Phase 2
+                                    </a>
+                                {% elif active_session.current_phase == 'phase3' %}
+                                    <a href="{{ url_for('main.phase3') }}" class="btn btn-warning">
+                                        <i class="fas fa-arrow-right me-2"></i>Continue Phase 3
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistics Card -->
+                    <div class="col-md-6">
+                        <div class="card border-info bg-dark h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chart-bar fa-3x text-info mb-3"></i>
+                                <h5 class="card-title text-info">Your Progress</h5>
+                                <p class="card-text text-light">
+                                    Sessions completed: <span class="badge bg-info">{{ completed_sessions }}</span>
+                                </p>
+                                <p class="text-muted small">
+                                    Started: {{ active_session.started_at.strftime('%B %d, %Y at %I:%M %p') if active_session.started_at }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Start New Game Card -->
+                    <div class="col-md-6">
+                        <div class="card border-success bg-dark h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-rocket fa-3x text-success mb-3"></i>
+                                <h5 class="card-title text-success">Start New Challenge</h5>
+                                <p class="card-text text-light">
+                                    Begin a new policy-making adventure in the Republic of Bean.
+                                    Experience collaborative decision-making with AI agents.
+                                </p>
+                                <a href="{{ url_for('main.register') }}" class="btn btn-success">
+                                    <i class="fas fa-play me-2"></i>Start Challenge
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Past Experience Card -->
+                    <div class="col-md-6">
+                        <div class="card border-secondary bg-dark h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-history fa-3x text-secondary mb-3"></i>
+                                <h5 class="card-title text-secondary">Experience Summary</h5>
+                                <p class="card-text text-light">
+                                    Challenges completed: <span class="badge bg-secondary">{{ completed_sessions }}</span>
+                                </p>
+                                {% if completed_sessions > 0 %}
+                                    <p class="text-success small">
+                                        <i class="fas fa-check-circle me-1"></i>Experienced Policy Advisor
+                                    </p>
+                                {% else %}
+                                    <p class="text-muted small">
+                                        Ready for your first policy challenge!
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Game Information -->
+            <div class="card border-primary bg-dark mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>About The Challenge
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p class="text-light mb-3">
+                                The CHALLENGE: Policy Jam - Refugee Edition is an educational simulation that puts you 
+                                in the role of a policy advisor for the Republic of Bean. You'll work with AI agents 
+                                to develop comprehensive education policies for refugee integration.
+                            </p>
+                            <ul class="text-light">
+                                <li><strong>Phase 1:</strong> Individual policy selection with budget constraints</li>
+                                <li><strong>Phase 2:</strong> Collaborative deliberation with diverse AI agents</li>
+                                <li><strong>Phase 3:</strong> Reflection and final policy package creation</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-users fa-4x text-primary mb-3"></i>
+                            <p class="text-light small">
+                                Collaborate with AI agents representing different perspectives and backgrounds
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Management -->
+            <div class="text-center">
+                <a href="{{ url_for('main.logout') }}" class="btn btn-outline-light">
+                    <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
