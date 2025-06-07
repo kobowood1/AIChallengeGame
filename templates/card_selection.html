@@ -183,6 +183,30 @@
         padding: 1rem;
         border-radius: 0 0 20px 20px;
     }
+    
+    .curriculum-card {
+        position: relative;
+        padding: 0;
+        overflow: hidden;
+        height: 400px;
+    }
+    
+    .curriculum-card img {
+        width: 100%;
+        height: calc(100% - 60px);
+        object-fit: cover;
+        border-radius: 20px 20px 0 0;
+    }
+    
+    .curriculum-card .card-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        border-radius: 0 0 20px 20px;
+    }
 </style>
 {% endblock %}
 
@@ -542,97 +566,31 @@
                 <!-- Curriculum Adaptation Cards -->
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
-                        <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center mr-3">
+                        <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center mr-3">
                             <i class="fas fa-book text-white text-sm"></i>
                         </div>
                         Curriculum Adaptation
                     </h2>
                     <div class="card-deck">
-                        <div class="policy-card" data-policy="curriculum_adaptation" data-option="1" data-cost="1">
+                        <div class="policy-card curriculum-card" data-policy="curriculum_adaptation" data-option="1" data-cost="1">
                             <div class="cost-badge">1</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-purple-500">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Translated Materials</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Basic translation of core curriculum materials</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Key textbook translations
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Digital dictionaries
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='curriculum_option1.jpg') }}" alt="Curriculum Adaptation Option 1" class="w-full h-full object-cover rounded-lg">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
                         </div>
                         
-                        <div class="policy-card" data-policy="curriculum_adaptation" data-option="2" data-cost="2">
+                        <div class="policy-card curriculum-card" data-policy="curriculum_adaptation" data-option="2" data-cost="2">
                             <div class="cost-badge">2</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-purple-600">
-                                    <i class="fas fa-globe"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Multicultural Content</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Culturally responsive curriculum with diverse perspectives</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Cultural history modules
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Multilingual resources
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Community storytelling
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='curriculum_option2.jpg') }}" alt="Curriculum Adaptation Option 2" class="w-full h-full object-cover rounded-lg">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
                         </div>
                         
-                        <div class="policy-card" data-policy="curriculum_adaptation" data-option="3" data-cost="3">
+                        <div class="policy-card curriculum-card" data-policy="curriculum_adaptation" data-option="3" data-cost="3">
                             <div class="cost-badge">3</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-purple-700">
-                                    <i class="fas fa-laptop"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Adaptive Learning Platform</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">AI-powered personalized learning with cultural integration</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Personalized AI tutoring
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Interactive cultural content
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Real-time translation
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Progress analytics
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='curriculum_option3.jpg') }}" alt="Curriculum Adaptation Option 3" class="w-full h-full object-cover rounded-lg">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
