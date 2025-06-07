@@ -3,6 +3,7 @@
 {% block title %}Policy Card Selection - AI Challenge{% endblock %}
 
 {% block head %}
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
     .card-game-container {
         background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
