@@ -130,10 +130,10 @@ This is a Flask-based web application that simulates policy-making processes for
 ## Recent Changes
 
 ✓ Implemented card-playing simulation interface with 15 interactive policy cards
-✓ Added authentic custom card images for Language Instruction, Teacher Training, and Curriculum Adaptation
-✓ Optimized card sizing to 320px width for perfect three-column desktop layout
-✓ Applied full-resolution image display without container constraints using CSS Grid
-✓ Added responsive breakpoints for tablet (2 columns) and mobile (1 column) layouts
+✓ Added authentic custom card images for Language Instruction, Teacher Training, Curriculum Adaptation, and Psychosocial Support
+✓ Optimized card sizing to 240px width for perfect three-column desktop layout
+✓ Applied consistent image display using CSS Grid with responsive breakpoints
+✓ Four policy areas now use authentic card designs (yellow, pink, cyan, green themes)
 
 ## Changelog
 - June 21, 2025. Initial setup and card interface implementation

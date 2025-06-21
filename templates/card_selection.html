@@ -23,7 +23,8 @@
     
     .policy-card.language-card,
     .policy-card.curriculum-card,
-    .policy-card.teacher-training-card {
+    .policy-card.teacher-training-card,
+    .policy-card.psychosocial-card {
         background: transparent;
         border-radius: 0;
         box-shadow: none;
@@ -199,7 +200,8 @@
     
     .language-card img,
     .curriculum-card img,
-    .teacher-training-card img {
+    .teacher-training-card img,
+    .psychosocial-card img {
         width: 240px;
         height: auto;
         max-width: 240px;
@@ -237,7 +239,8 @@
     
     .language-card .card-footer button:hover,
     .curriculum-card .card-footer button:hover,
-    .teacher-training-card .card-footer button:hover {
+    .teacher-training-card .card-footer button:hover,
+    .psychosocial-card .card-footer button:hover {
         background: #f8fafc;
         transform: translateY(-2px);
     }
@@ -476,92 +479,26 @@
                         </div>
                         Psychosocial Support
                     </h2>
-                    <div class="card-deck">
-                        <div class="policy-card" data-policy="psychosocial_support" data-option="1" data-cost="1">
+                    <div class="image-card-container">
+                        <div class="policy-card psychosocial-card" data-policy="psychosocial_support" data-option="1" data-cost="1">
                             <div class="cost-badge">1</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-red-500">
-                                    <i class="fas fa-handshake"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Peer Support Groups</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Student-led support groups with basic counseling</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Weekly group sessions
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Volunteer coordinators
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='psychosocial_option1.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Psychosocial Support Option 1">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
                         </div>
                         
-                        <div class="policy-card" data-policy="psychosocial_support" data-option="2" data-cost="2">
+                        <div class="policy-card psychosocial-card" data-policy="psychosocial_support" data-option="2" data-cost="2">
                             <div class="cost-badge">2</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-red-600">
-                                    <i class="fas fa-user-md"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">School Counselors</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Dedicated counselors with trauma-informed training</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Part-time counselors
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Individual sessions
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Crisis intervention
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='psychosocial_option2.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Psychosocial Support Option 2">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
                         </div>
                         
-                        <div class="policy-card" data-policy="psychosocial_support" data-option="3" data-cost="3">
+                        <div class="policy-card psychosocial-card" data-policy="psychosocial_support" data-option="3" data-cost="3">
                             <div class="cost-badge">3</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-red-700">
-                                    <i class="fas fa-hospital"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Mental Health Clinic</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">On-site mental health clinic with specialized services</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Full-time psychologists
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Family therapy services
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Art and music therapy
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        24/7 crisis hotline
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='psychosocial_option3.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Psychosocial Support Option 3">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
