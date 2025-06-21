@@ -22,7 +22,8 @@
     }
     
     .policy-card.language-card,
-    .policy-card.curriculum-card {
+    .policy-card.curriculum-card,
+    .policy-card.teacher-training-card {
         background: transparent;
         border-radius: 0;
         box-shadow: none;
@@ -197,7 +198,8 @@
     }
     
     .language-card img,
-    .curriculum-card img {
+    .curriculum-card img,
+    .teacher-training-card img {
         width: auto;
         height: auto;
         max-width: none;
@@ -234,7 +236,8 @@
     }
     
     .language-card .card-footer button:hover,
-    .curriculum-card .card-footer button:hover {
+    .curriculum-card .card-footer button:hover,
+    .teacher-training-card .card-footer button:hover {
         background: #f8fafc;
         transform: translateY(-2px);
     }
@@ -321,92 +324,26 @@
                         </div>
                         Teacher Training
                     </h2>
-                    <div class="card-deck">
-                        <div class="policy-card" data-policy="teacher_training" data-option="1" data-cost="1">
+                    <div class="image-card-container">
+                        <div class="policy-card teacher-training-card" data-policy="teacher_training" data-option="1" data-cost="1">
                             <div class="cost-badge">1</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-green-500">
-                                    <i class="fas fa-book"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Basic Orientation</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">One-day cultural sensitivity workshop for teachers</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Cultural awareness session
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Basic communication tips
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='teacher_training_option1.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Teacher Training Option 1" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
                         </div>
                         
-                        <div class="policy-card" data-policy="teacher_training" data-option="2" data-cost="2">
+                        <div class="policy-card teacher-training-card" data-policy="teacher_training" data-option="2" data-cost="2">
                             <div class="cost-badge">2</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-green-600">
-                                    <i class="fas fa-users-cog"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Professional Development</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Monthly training on refugee education best practices</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Monthly workshops
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Trauma-informed teaching
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Peer mentoring network
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='teacher_training_option2.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Teacher Training Option 2" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
                         </div>
                         
-                        <div class="policy-card" data-policy="teacher_training" data-option="3" data-cost="3">
+                        <div class="policy-card teacher-training-card" data-policy="teacher_training" data-option="3" data-cost="3">
                             <div class="cost-badge">3</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-green-700">
-                                    <i class="fas fa-award"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Specialist Certification</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Comprehensive certification program with ongoing support</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        6-month certification course
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Expert guest speakers
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Research partnerships
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Continuous coaching
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='teacher_training_option3.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Teacher Training Option 3" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
