@@ -1,0 +1,65 @@
+edesign the existing phase2.html template so that it matches the new yellow, card-based aesthetic and places the user’s selected policy cards at the very top of the page.
+
+Tasks:
+
+Move User Cards to Top:
+
+Above everything else, render the user’s seven selected policy cards in a horizontal scroll container.
+
+Each card uses the same yellow/teal style as on the “Select Your Policy Cards” screen: bold numbered header, summary, pros/cons icons, rounded corners, soft shadow.
+
+Use Tailwind classes: bg-yellow-200, rounded-xl, p-4, shadow-md, w-48, mx-2, overflow-x-auto.
+
+Restyle Main Panel:
+
+Wrap the existing “Education Policy Deliberation” header and instructions in a div with bg-white bg-opacity-10 rounded-lg p-6 mb-6.
+
+Change the page background to bg-yellow-100 (replace the dark blue theme).
+
+Style the H1 title with text-3xl font-bold text-center text-gray-800 mb-4.
+
+Agent List & Proposal Sidebar:
+
+Render the “Your Proposal” sidebar as a card: bg-white rounded-xl shadow-lg p-4 w-72.
+
+Show the 14/14 budget tracker with a yellow progress bar: bg-yellow-500 h-2 rounded.
+
+List agents below in a card group: each agent box uses bg-white rounded-lg p-3 mb-2 flex items-center.
+
+Agent name in font-medium text-gray-700, ideology label as text-xs bg-blue-200 text-blue-800 rounded-full px-2 ml-auto.
+
+Chat Panel:
+
+Position the chat container on the right: flex-1 bg-white rounded-xl p-4 h-[600px] overflow-y-auto.
+
+Each message bubble uses max-w-lg mb-4 p-3 rounded-lg with system messages in bg-gray-200 text-gray-800 and agent/user messages in bg-yellow-300 text-gray-900.
+
+Customize the scroll bar with Tailwind’s scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-yellow-100.
+
+Responsive Layout:
+
+Use a flex flex-col lg:flex-row gap-6 wrapper so on desktop the cards, sidebar, and chat are side by side, but stack on mobile.
+
+Ensure all containers have mx-auto and px-4 for mobile padding.
+
+Deliverable:
+
+Updated templates/phase2.html with the new structure and Tailwind classes.
+
+If needed, minimal edits to static/script.js to adjust the user-card carousel.
+
+No changes to Python routes—this is purely template/CSS work.
+
+Acceptance Criteria:
+
+On page load, the user’s selected policy cards appear at the top in a scrollable row.
+
+The background is light yellow, and all cards and panels use the yellow/teal accent palette.
+
+The header, instructions, sidebar, agent list, and chat match the provided design aesthetic.
+
+Layout is fully responsive.
+
+Reference Aesthetic:
+
+See “Select Your Policy Cards” screen in the attached screenshot for card styles.

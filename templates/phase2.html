@@ -5,219 +5,117 @@
 {% block head %}
 <style>
     body {
-        background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+        background: #fef3c7; /* bg-yellow-100 */
         min-height: 100vh;
-        color: #f8fafc;
+        color: #374151;
+    }
+    
+    .policy-card-header {
+        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+        color: white;
+        border-radius: 0.75rem 0.75rem 0 0;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .policy-card-number {
+        background: white;
+        color: #0d9488;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.125rem;
+    }
+    
+    .selected-card {
+        background: #fef9c3; /* bg-yellow-200 */
+        border: 2px solid #eab308;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        width: 12rem; /* w-48 */
+        margin: 0 0.5rem; /* mx-2 */
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .selected-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
     
     .chat-container {
-        height: 50vh;
+        height: 600px;
         overflow-y: auto;
-        background: rgba(15, 23, 42, 0.8);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 20px;
-        padding: 1.5rem;
     }
     
     .message {
         margin-bottom: 1rem;
-        padding: 1rem;
-        border-radius: 15px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        max-width: 32rem;
     }
     
     .system-message {
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.2) 100%);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #dbeafe;
+        background: #f3f4f6; /* bg-gray-200 */
+        color: #1f2937; /* text-gray-800 */
     }
     
     .player-message {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.2) 100%);
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        margin-left: 2rem;
-        color: #d1fae5;
+        background: #fde047; /* bg-yellow-300 */
+        color: #1f2937; /* text-gray-900 */
+        margin-left: auto;
+        margin-right: 0;
     }
     
     .agent-message {
-        background: linear-gradient(135deg, rgba(107, 114, 128, 0.3) 0%, rgba(75, 85, 99, 0.2) 100%);
-        border: 1px solid rgba(107, 114, 128, 0.3);
-        color: #e5e7eb;
+        background: #fde047; /* bg-yellow-300 */
+        color: #1f2937; /* text-gray-900 */
     }
     
     .vote-message {
-        background: linear-gradient(135deg, rgba(236, 72, 153, 0.3) 0%, rgba(219, 39, 119, 0.2) 100%);
-        border: 1px solid rgba(236, 72, 153, 0.3);
-        color: #fce7f3;
-    }
-    
-    .policy-section {
-        background: rgba(15, 23, 42, 0.8);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    }
-    
-    .policy-card {
-        position: relative;
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.6) 100%);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 15px;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-    
-    .policy-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        border-color: rgba(59, 130, 246, 0.4);
+        background: #ddd6fe; /* bg-purple-200 */
+        color: #581c87; /* text-purple-900 */
     }
     
     .agent-card {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(51, 65, 85, 0.7) 100%);
-        border: 1px solid rgba(148, 163, 184, 0.3);
-        border-radius: 20px;
-        padding: 1.5rem;
-        backdrop-filter: blur(15px);
+        background: white;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
         transition: all 0.3s ease;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         cursor: pointer;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     }
     
     .agent-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-        border-color: rgba(59, 130, 246, 0.5);
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(30, 41, 59, 0.9) 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
     
-    .timer {
-        font-family: 'Courier New', monospace;
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        color: #fecaca;
-        font-weight: bold;
-        font-size: 1.1rem;
+    /* Custom scrollbar */
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
     }
     
-    .vote-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        padding: 0.5rem 1rem;
-        border-radius: 25px;
-        font-size: 0.875rem;
-        font-weight: bold;
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: white;
-        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: #fef3c7; /* scrollbar-track-yellow-100 */
     }
     
-    .section-header {
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        border-radius: 15px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        backdrop-filter: blur(10px);
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #eab308; /* scrollbar-thumb-yellow-500 */
+        border-radius: 3px;
     }
     
-    .intro-section {
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
-        border: 1px solid rgba(148, 163, 184, 0.3);
-        border-radius: 20px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        backdrop-filter: blur(15px);
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    }
-    
-    .button-primary {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        border: none;
-        border-radius: 12px;
-        padding: 0.875rem 2rem;
-        color: white;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-    }
-    
-    .button-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    }
-    
-    .button-primary:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
-    }
-    
-    .input-field {
-        background: rgba(15, 23, 42, 0.8);
-        border: 1px solid rgba(148, 163, 184, 0.3);
-        border-radius: 12px;
-        padding: 1rem;
-        color: #f8fafc;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-    }
-    
-    .input-field:focus {
-        outline: none;
-        border-color: rgba(59, 130, 246, 0.5);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        background: rgba(15, 23, 42, 0.9);
-    }
-    
-    .input-field::placeholder {
-        color: rgba(148, 163, 184, 0.7);
-    }
-    
-    /* Dropdown styling */
-    .dropdown-menu {
-        width: 250px;
-        z-index: 50;
-        max-height: 250px;
-        overflow-y: auto;
-        background: rgba(15, 23, 42, 0.95);
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(148, 163, 184, 0.3);
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-    
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
-    
-    .dropdown-active .dropdown-menu {
-        display: block;
-    }
-    
-    .page-title {
-        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-align: center;
-        margin-bottom: 2rem;
-        font-size: 2.5rem;
-        font-weight: 800;
-        text-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+        background: #d97706;
     }
 </style>
 {% endblock %}
@@ -419,7 +317,7 @@
     // DOM elements
     const messagesContainer = document.getElementById('messages');
     const messageInput = document.getElementById('message-input');
-    const sendButton = document.getElementById('send-message-btn');
+    const sendButton = document.getElementById('send-btn');
     const callVoteButton = document.getElementById('call-vote-btn');
     const timerElement = document.getElementById('timer');
     const votingResults = document.getElementById('voting-results');
