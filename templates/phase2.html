@@ -4,20 +4,186 @@
 
 {% block head %}
 <style>
+    body {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+        min-height: 100vh;
+        color: #f8fafc;
+    }
+    
     .chat-container {
         height: 50vh;
         overflow-y: auto;
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 20px;
+        padding: 1.5rem;
     }
     
     .message {
-        margin-bottom: 10px;
-        padding: 10px;
-        border-radius: 8px;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
     
     .system-message {
-        background-color: rgba(59, 130, 246, 0.2);
-        border-left: 3px solid #3b82f6;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.2) 100%);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        color: #dbeafe;
+    }
+    
+    .player-message {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.2) 100%);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        margin-left: 2rem;
+        color: #d1fae5;
+    }
+    
+    .agent-message {
+        background: linear-gradient(135deg, rgba(107, 114, 128, 0.3) 0%, rgba(75, 85, 99, 0.2) 100%);
+        border: 1px solid rgba(107, 114, 128, 0.3);
+        color: #e5e7eb;
+    }
+    
+    .vote-message {
+        background: linear-gradient(135deg, rgba(236, 72, 153, 0.3) 0%, rgba(219, 39, 119, 0.2) 100%);
+        border: 1px solid rgba(236, 72, 153, 0.3);
+        color: #fce7f3;
+    }
+    
+    .policy-section {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+    
+    .policy-card {
+        position: relative;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.6) 100%);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .policy-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border-color: rgba(59, 130, 246, 0.4);
+    }
+    
+    .agent-card {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(51, 65, 85, 0.7) 100%);
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        border-radius: 20px;
+        padding: 1.5rem;
+        backdrop-filter: blur(15px);
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+    }
+    
+    .agent-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        border-color: rgba(59, 130, 246, 0.5);
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(30, 41, 59, 0.9) 100%);
+    }
+    
+    .timer {
+        font-family: 'Courier New', monospace;
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        color: #fecaca;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+    
+    .vote-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.875rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+    
+    .section-header {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .intro-section {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+    
+    .button-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.875rem 2rem;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+    
+    .button-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    }
+    
+    .button-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    }
+    
+    .input-field {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        border-radius: 12px;
+        padding: 1rem;
+        color: #f8fafc;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+    
+    .input-field:focus {
+        outline: none;
+        border-color: rgba(59, 130, 246, 0.5);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        background: rgba(15, 23, 42, 0.9);
+    }
+    
+    .input-field::placeholder {
+        color: rgba(148, 163, 184, 0.7);
     }
     
     /* Dropdown styling */
@@ -26,6 +192,11 @@
         z-index: 50;
         max-height: 250px;
         overflow-y: auto;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
     
     .dropdown {
@@ -37,67 +208,46 @@
         display: block;
     }
     
-    .player-message {
-        background-color: rgba(16, 185, 129, 0.2);
-        border-left: 3px solid #10b981;
-        margin-left: 20px;
-    }
-    
-    .agent-message {
-        background-color: rgba(107, 114, 128, 0.2);
-        border-left: 3px solid #6b7280;
-    }
-    
-    .vote-message {
-        background-color: rgba(236, 72, 153, 0.2);
-        border-left: 3px solid #ec4899;
-    }
-    
-    .agent-card {
-        transition: all 0.3s ease;
-    }
-    
-    .agent-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    }
-    
-    .timer {
-        font-family: monospace;
-    }
-    
-    .policy-card {
-        position: relative;
-    }
-    
-    .vote-badge {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        padding: 2px 8px;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: bold;
+    .page-title {
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto">
-    <h1 class="text-3xl font-bold mb-4 text-center text-blue-400">Education Policy Deliberation</h1>
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <h1 class="page-title">Education Policy Deliberation</h1>
     
-    <div class="bg-gray-800 p-4 rounded-lg shadow-lg mb-6 prose prose-invert max-w-none">
-        <p class="m-0">
-            Now your education policy proposals will be discussed by the Citizen Panel. These representatives have diverse backgrounds and ideological perspectives on refugee education. Engage with them to explain your choices and understand their concerns. After discussion, everyone will vote on the final education policy package.
+    <div class="intro-section">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-users text-white text-xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-white">Citizen Panel Discussion</h2>
+        </div>
+        <p class="text-slate-200 leading-relaxed text-lg">
+            Your education policy proposals will now be discussed by the Citizen Panel. These representatives have diverse backgrounds and ideological perspectives on refugee education. Engage with them to explain your choices, understand their concerns, and work together to build consensus. After discussion, everyone will vote on the final education policy package.
         </p>
     </div>
     
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Left Column: Policies and Votes -->
         <div class="lg:col-span-1">
-            <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-                <h2 class="text-xl font-bold mb-4 flex items-center">
-                    <i class="fas fa-scroll mr-2"></i>Your Proposal
+            <div class="policy-section mb-8">
+                <div class="section-header">
+                    <h2 class="text-xl font-bold flex items-center text-white">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-scroll text-white text-sm"></i>
+                        </div>
+                        Your Proposal
                     <span class="ml-auto text-sm font-normal">
                         <span class="text-blue-400">{{ cost }}</span> / {{ max_budget }}
                     </span>
