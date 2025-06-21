@@ -201,7 +201,8 @@
     .language-card img,
     .curriculum-card img,
     .teacher-training-card img,
-    .psychosocial-card img {
+    .psychosocial-card img,
+    .access-card img {
         width: 240px;
         height: auto;
         max-width: 240px;
@@ -212,16 +213,54 @@
         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     
+    .teacher-training-card .card-footer,
+    .psychosocial-card .card-footer,
+    .access-card .card-footer {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+        background: rgba(34, 197, 94, 0.9);
+        padding: 0.5rem;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        z-index: 10;
+    }
+    
+    .teacher-training-card .card-footer button,
+    .psychosocial-card .card-footer button,
+    .access-card .card-footer button {
+        background: white;
+        color: #15803d;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 0.875rem;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .access-card .card-footer {
+        background: rgba(139, 69, 19, 0.9);
+    }
+    
+    .access-card .card-footer button {
+        color: #8b4513;
+    }
+    
     .language-card .card-footer,
     .curriculum-card .card-footer {
         position: absolute;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
         background: rgba(59, 130, 246, 0.9);
-        padding: 1rem;
-        border-radius: 15px;
+        padding: 0.5rem;
+        border-radius: 12px;
         backdrop-filter: blur(10px);
+        z-index: 10;
     }
     
     .language-card .card-footer button,
@@ -229,9 +268,10 @@
         background: white;
         color: #1e40af;
         border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
         font-weight: bold;
+        font-size: 0.875rem;
         width: 100%;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -240,7 +280,8 @@
     .language-card .card-footer button:hover,
     .curriculum-card .card-footer button:hover,
     .teacher-training-card .card-footer button:hover,
-    .psychosocial-card .card-footer button:hover {
+    .psychosocial-card .card-footer button:hover,
+    .access-card .card-footer button:hover {
         background: #f8fafc;
         transform: translateY(-2px);
     }
