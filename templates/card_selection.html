@@ -200,9 +200,9 @@
     .language-card img,
     .curriculum-card img,
     .teacher-training-card img {
-        width: 320px;
+        width: 240px;
         height: auto;
-        max-width: 320px;
+        max-width: 240px;
         object-fit: contain;
         border-radius: 20px;
         flex: none;
@@ -245,11 +245,11 @@
     .image-card-container {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
+        gap: 1rem;
         justify-items: center;
         align-items: start;
-        padding: 2rem 0;
-        max-width: 1200px;
+        padding: 1.5rem 0;
+        max-width: 900px;
         margin: 0 auto;
     }
     
@@ -308,7 +308,7 @@
                     <div class="image-card-container">
                         <div class="policy-card language-card" data-policy="language_support" data-option="1" data-cost="1">
                             <div class="cost-badge">1</div>
-                            <img src="{{ url_for('static', filename='language_option1.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Language Instruction Option 1" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
+                            <img src="{{ url_for('static', filename='language_option1.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Language Instruction Option 1">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
@@ -316,7 +316,7 @@
                         
                         <div class="policy-card language-card" data-policy="language_support" data-option="2" data-cost="2">
                             <div class="cost-badge">2</div>
-                            <img src="{{ url_for('static', filename='language_option2.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Language Instruction Option 2" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
+                            <img src="{{ url_for('static', filename='language_option2.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Language Instruction Option 2">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
@@ -324,7 +324,7 @@
                         
                         <div class="policy-card language-card" data-policy="language_support" data-option="3" data-cost="3">
                             <div class="cost-badge">3</div>
-                            <img src="{{ url_for('static', filename='language_option3.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Language Instruction Option 3" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
+                            <img src="{{ url_for('static', filename='language_option3.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Language Instruction Option 3">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
@@ -343,7 +343,7 @@
                     <div class="image-card-container">
                         <div class="policy-card teacher-training-card" data-policy="teacher_training" data-option="1" data-cost="1">
                             <div class="cost-badge">1</div>
-                            <img src="{{ url_for('static', filename='teacher_training_option1.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Teacher Training Option 1" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
+                            <img src="{{ url_for('static', filename='teacher_training_option1.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Teacher Training Option 1">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
@@ -351,7 +351,7 @@
                         
                         <div class="policy-card teacher-training-card" data-policy="teacher_training" data-option="2" data-cost="2">
                             <div class="cost-badge">2</div>
-                            <img src="{{ url_for('static', filename='teacher_training_option2.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Teacher Training Option 2" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
+                            <img src="{{ url_for('static', filename='teacher_training_option2.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Teacher Training Option 2">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
@@ -359,7 +359,7 @@
                         
                         <div class="policy-card teacher-training-card" data-policy="teacher_training" data-option="3" data-cost="3">
                             <div class="cost-badge">3</div>
-                            <img src="{{ url_for('static', filename='teacher_training_option3.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Teacher Training Option 3" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
+                            <img src="{{ url_for('static', filename='teacher_training_option3.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Teacher Training Option 3">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
@@ -580,7 +580,7 @@
                     <div class="image-card-container">
                         <div class="policy-card curriculum-card" data-policy="curriculum_adaptation" data-option="1" data-cost="1">
                             <div class="cost-badge">1</div>
-                            <img src="{{ url_for('static', filename='curriculum_option1.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Curriculum Adaptation Option 1" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
+                            <img src="{{ url_for('static', filename='curriculum_option1.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Curriculum Adaptation Option 1">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
@@ -588,7 +588,7 @@
                         
                         <div class="policy-card curriculum-card" data-policy="curriculum_adaptation" data-option="2" data-cost="2">
                             <div class="cost-badge">2</div>
-                            <img src="{{ url_for('static', filename='curriculum_option2.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Curriculum Adaptation Option 2" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
+                            <img src="{{ url_for('static', filename='curriculum_option2.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Curriculum Adaptation Option 2">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
@@ -596,7 +596,7 @@
                         
                         <div class="policy-card curriculum-card" data-policy="curriculum_adaptation" data-option="3" data-cost="3">
                             <div class="cost-badge">3</div>
-                            <img src="{{ url_for('static', filename='curriculum_option3.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Curriculum Adaptation Option 3" style="display: block; width: auto !important; height: auto !important; max-width: none !important; max-height: none !important;">
+                            <img src="{{ url_for('static', filename='curriculum_option3.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Curriculum Adaptation Option 3">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
