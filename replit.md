@@ -131,9 +131,9 @@ This is a Flask-based web application that simulates policy-making processes for
 
 ✓ Implemented complete card-playing simulation with all 21 policy cards (7 areas × 3 options)
 ✓ Corrected to match original seven policy areas from the game specification
-✓ Added authentic custom card images for Language Instruction, Teacher Training, Curriculum Adaptation, and Psychosocial Support
+✓ Added authentic custom card images for Access to Education, Language Instruction, Teacher Training, Curriculum Adaptation, and Psychosocial Support
 ✓ Optimized card sizing to 240px width for perfect three-column desktop layout
-✓ Applied consistent styling with structured placeholder cards for remaining areas
+✓ Applied consistent styling with structured placeholder cards for remaining two areas (Financial Support, Certification/Accreditation)
 
 ## Changelog
 - June 21, 2025. Initial setup and card interface implementation
