@@ -203,7 +203,8 @@
     .teacher-training-card img,
     .psychosocial-card img,
     .access-card img,
-    .financial-card img {
+    .financial-card img,
+    .certification-card img {
         width: 240px;
         height: auto;
         max-width: 240px;
@@ -219,7 +220,8 @@
     .access-card .card-footer,
     .language-card .card-footer,
     .curriculum-card .card-footer,
-    .financial-card .card-footer {
+    .financial-card .card-footer,
+    .certification-card .card-footer {
         position: relative;
         margin-top: 1rem;
         background: transparent;
@@ -231,7 +233,8 @@
     .access-card .card-footer button,
     .language-card .card-footer button,
     .curriculum-card .card-footer button,
-    .financial-card .card-footer button {
+    .financial-card .card-footer button,
+    .certification-card .card-footer button {
         background: white;
         color: #2563eb;
         border: 2px solid #2563eb;
@@ -250,7 +253,8 @@
     .teacher-training-card .card-footer button:hover,
     .psychosocial-card .card-footer button:hover,
     .access-card .card-footer button:hover,
-    .financial-card .card-footer button:hover {
+    .financial-card .card-footer button:hover,
+    .certification-card .card-footer button:hover {
         background: #2563eb;
         color: white;
         transform: translateY(-2px);
@@ -455,97 +459,31 @@
                 <!-- Certification/Accreditation Cards -->
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
-                        <div class="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center mr-3">
+                        <div class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center mr-3">
                             <i class="fas fa-certificate text-white text-sm"></i>
                         </div>
                         Certification/Accreditation of Previous Education
                     </h2>
-                    <div class="card-deck">
-                        <div class="policy-card" data-policy="certification_accreditation" data-option="1" data-cost="1">
+                    <div class="image-card-container">
+                        <div class="policy-card certification-card" data-policy="certification_accreditation" data-option="1" data-cost="1">
                             <div class="cost-badge">1</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-indigo-500">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Document Review</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Basic review and acceptance of available educational documents</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Document verification
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Grade level placement
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='certification_option1.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Certification/Accreditation Option 1">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
                         </div>
                         
-                        <div class="policy-card" data-policy="certification_accreditation" data-option="2" data-cost="2">
+                        <div class="policy-card certification-card" data-policy="certification_accreditation" data-option="2" data-cost="2">
                             <div class="cost-badge">2</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-indigo-600">
-                                    <i class="fas fa-clipboard-check"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Skills Assessment</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Comprehensive testing and evaluation of academic competencies</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Academic testing
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Skills portfolio development
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Credit recovery programs
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='certification_option2.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Certification/Accreditation Option 2">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
                         </div>
                         
-                        <div class="policy-card" data-policy="certification_accreditation" data-option="3" data-cost="3">
+                        <div class="policy-card certification-card" data-policy="certification_accreditation" data-option="3" data-cost="3">
                             <div class="cost-badge">3</div>
-                            <div class="card-header">
-                                <div class="policy-icon bg-indigo-700">
-                                    <i class="fas fa-award"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-center text-gray-800">Full Accreditation</h3>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-gray-600 text-center mb-4">Complete credential evaluation and pathway programs</p>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        International credential evaluation
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Accelerated programs
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        University pathway support
-                                    </div>
-                                    <div class="flex items-center text-sm text-gray-700">
-                                        <i class="fas fa-check text-green-500 mr-2"></i>
-                                        Professional certification assistance
-                                    </div>
-                                </div>
-                            </div>
+                            <img src="{{ url_for('static', filename='certification_option3.jpg') }}?v={{ range(1000, 9999) | random }}" alt="Certification/Accreditation Option 3">
                             <div class="card-footer">
                                 <button class="play-button w-full">Select Policy</button>
                             </div>
