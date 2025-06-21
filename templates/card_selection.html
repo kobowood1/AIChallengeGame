@@ -160,52 +160,34 @@
         animation: cardPlay 0.8s ease-in-out;
     }
     
-    .language-card {
-        position: relative;
-        padding: 0;
-        overflow: hidden;
-        height: 400px;
-    }
-    
-    .language-card img {
-        width: 100%;
-        height: calc(100% - 60px);
-        object-fit: cover;
-        border-radius: 20px 20px 0 0;
-    }
-    
-    .language-card .card-footer {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 1rem;
-        border-radius: 0 0 20px 20px;
-    }
-    
+    .language-card,
     .curriculum-card {
         position: relative;
         padding: 0;
         overflow: hidden;
-        height: 400px;
+        height: auto;
+        min-height: 450px;
+        display: flex;
+        flex-direction: column;
     }
     
+    .language-card img,
     .curriculum-card img {
         width: 100%;
-        height: calc(100% - 60px);
-        object-fit: cover;
+        height: auto;
+        object-fit: contain;
         border-radius: 20px 20px 0 0;
+        flex: 1;
+        display: block;
     }
     
+    .language-card .card-footer,
     .curriculum-card .card-footer {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        position: relative;
         background: white;
         padding: 1rem;
         border-radius: 0 0 20px 20px;
+        margin-top: auto;
     }
 </style>
 {% endblock %}
