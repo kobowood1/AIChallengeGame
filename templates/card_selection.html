@@ -659,11 +659,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         let html = '';
         const policyNames = {
-            'language_support': 'Language Support',
-            'teacher_training': 'Teacher Training', 
-            'school_integration': 'School Integration',
+            'access_education': 'Access to Education',
+            'language_instruction': 'Language Instruction',
+            'teacher_training': 'Teacher Training',
+            'curriculum_adaptation': 'Curriculum Adaptation',
             'psychosocial_support': 'Psychosocial Support',
-            'curriculum_adaptation': 'Curriculum Adaptation'
+            'financial_support': 'Financial Support',
+            'certification_accreditation': 'Certification/Accreditation'
         };
         
         Object.entries(selectedCards).forEach(([policy, data]) => {
@@ -682,7 +684,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function checkPlayButton() {
-        const requiredPolicies = ['language_support', 'teacher_training', 'school_integration', 'psychosocial_support', 'curriculum_adaptation'];
+        const requiredPolicies = ['access_education', 'language_instruction', 'teacher_training', 'curriculum_adaptation', 'psychosocial_support', 'financial_support', 'certification_accreditation'];
         const hasAllSelections = requiredPolicies.every(policy => selectedCards[policy]);
         const withinBudget = totalCost <= maxBudget;
         
