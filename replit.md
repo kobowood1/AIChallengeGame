@@ -127,8 +127,16 @@ This is a Flask-based web application that simulates policy-making processes for
 - Graceful degradation when external services unavailable
 - Comprehensive error logging and monitoring
 
+## Recent Changes
+
+✓ Implemented card-playing simulation interface with 15 interactive policy cards
+✓ Added authentic custom card images for Language Instruction, Teacher Training, and Curriculum Adaptation
+✓ Optimized card sizing to 320px width for perfect three-column desktop layout
+✓ Applied full-resolution image display without container constraints using CSS Grid
+✓ Added responsive breakpoints for tablet (2 columns) and mobile (1 column) layouts
+
 ## Changelog
-- June 21, 2025. Initial setup
+- June 21, 2025. Initial setup and card interface implementation
 
 ## User Preferences
 

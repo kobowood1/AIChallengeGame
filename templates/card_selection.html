@@ -200,10 +200,10 @@
     .language-card img,
     .curriculum-card img,
     .teacher-training-card img {
-        width: auto;
+        width: 320px;
         height: auto;
-        max-width: none;
-        object-fit: none;
+        max-width: 320px;
+        object-fit: contain;
         border-radius: 20px;
         flex: none;
         display: block;
@@ -243,12 +243,28 @@
     }
     
     .image-card-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
-        justify-content: center;
-        align-items: flex-start;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        justify-items: center;
+        align-items: start;
         padding: 2rem 0;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    @media (max-width: 1024px) {
+        .image-card-container {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+    }
+    
+    @media (max-width: 640px) {
+        .image-card-container {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
     }
     
     .image-card-container .policy-card {
