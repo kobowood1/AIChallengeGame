@@ -270,6 +270,7 @@ def game():
     return render_template('game.html')
 
 @main.route('/card-selection', methods=['GET', 'POST'])
+@main.route('/cards', methods=['GET', 'POST'])
 def card_selection():
     """
     Card-based policy selection phase where user selects policy options within a budget
