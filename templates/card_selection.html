@@ -54,8 +54,8 @@
     
     .cost-badge {
         position: absolute;
-        top: -10px;
-        right: -10px;
+        top: 10px;
+        right: 10px;
         width: 50px;
         height: 50px;
         border-radius: 50%;
@@ -67,6 +67,13 @@
         font-weight: bold;
         font-size: 1.2rem;
         box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        z-index: 10;
+    }
+    
+    .language-card .cost-badge,
+    .curriculum-card .cost-badge {
+        top: 20px;
+        right: 20px;
     }
     
     .policy-icon {
@@ -135,10 +142,17 @@
     }
     
     .card-deck {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        display: flex;
+        flex-wrap: wrap;
         gap: 2rem;
         padding: 2rem 0;
+        justify-content: center;
+    }
+    
+    .card-deck .policy-card:not(.language-card):not(.curriculum-card) {
+        flex: 1;
+        min-width: 280px;
+        max-width: 400px;
     }
     
     .policy-area-title {
@@ -164,30 +178,57 @@
     .curriculum-card {
         position: relative;
         padding: 0;
-        overflow: hidden;
+        overflow: visible;
         height: auto;
-        min-height: 450px;
+        width: auto;
+        max-width: none;
         display: flex;
         flex-direction: column;
+        background: transparent;
+        box-shadow: none;
     }
     
     .language-card img,
     .curriculum-card img {
-        width: 100%;
+        width: auto;
         height: auto;
-        object-fit: contain;
-        border-radius: 20px 20px 0 0;
-        flex: 1;
+        max-width: 100%;
+        object-fit: none;
+        border-radius: 20px;
+        flex: none;
         display: block;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     
     .language-card .card-footer,
     .curriculum-card .card-footer {
-        position: relative;
-        background: white;
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        background: rgba(59, 130, 246, 0.9);
         padding: 1rem;
-        border-radius: 0 0 20px 20px;
-        margin-top: auto;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+    
+    .language-card .card-footer button,
+    .curriculum-card .card-footer button {
+        background: white;
+        color: #1e40af;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: bold;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .language-card .card-footer button:hover,
+    .curriculum-card .card-footer button:hover {
+        background: #f8fafc;
+        transform: translateY(-2px);
     }
 </style>
 {% endblock %}
