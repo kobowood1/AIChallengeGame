@@ -147,6 +147,7 @@ def submit_final_decision():
     reasoning = data.get('reasoning', '')
     
     # Store the final decision
+    import time
     session['final_group_decision'] = {
         'choice': final_choice,
         'reasoning': reasoning,
