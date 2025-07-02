@@ -329,7 +329,7 @@ def phase1():
 @main.route('/phase2')
 def phase2():
     """
-    Policy discussion and voting phase
+    Policy discussion and voting phase - now using multi-agent system
     """
     # Check if user is registered
     if 'participant_registered' not in session or not session['participant_registered']:
@@ -339,21 +339,10 @@ def phase2():
     # Check if user has completed phase1
     if 'player_package' not in session:
         flash('Please complete the policy selections first', 'error')
-        return redirect(url_for('main.phase1'))
+        return redirect(url_for('main.card_selection'))
     
-    # Clear any existing agent votes (in case of returning to this page)
-    if 'agent_votes' in session:
-        session.pop('agent_votes')
-    
-    # Clear any existing final package (in case of returning to this page)
-    if 'final_package' in session:
-        session.pop('final_package')
-    
-    return render_template('phase2.html',
-                         selections=session['player_package'], 
-                         cost=session['package_cost'],
-                         max_budget=MAX_BUDGET,
-                         policies=POLICIES)
+    # Redirect to multi-agent discussion (this replaces the old Phase 2)
+    return redirect(url_for('multi_agent.phase2_multi_agent'))
 
 @main.route('/phase3')
 def phase3():
