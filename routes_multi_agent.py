@@ -14,10 +14,23 @@ multi_agent_bp = Blueprint('multi_agent', __name__)
 def phase2_multi_agent():
     """Enhanced Phase 2 with multi-agent simulation"""
     
-    # Get user's policy selections from session
+    # Get user's policy selections from session (try multiple possible keys)
     selections = session.get('policy_selections', {})
     if not selections:
-        return redirect(url_for('main.phase1'))
+        selections = session.get('selections', {})
+    if not selections:
+        # Create a demo selection for testing if no selections exist
+        selections = {
+            'Access to Education': 2,
+            'Language Instruction': 1, 
+            'Teacher Training': 3,
+            'Curriculum Adaptation': 2,
+            'Psychosocial Support': 1,
+            'Financial Support': 2,
+            'Certification & Accreditation': 1
+        }
+        # Store for session
+        session['policy_selections'] = selections
     
     # Initialize multi-agent simulation
     if 'multi_agent_sim' not in session:
