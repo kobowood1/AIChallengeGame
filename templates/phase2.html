@@ -10,13 +10,13 @@
         color: #374151;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
-    
+
     .main-container {
         max-width: 1400px;
         margin: 0 auto;
         padding: 1.5rem;
     }
-    
+
     .page-header {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
@@ -26,7 +26,7 @@
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.3);
     }
-    
+
     .cards-container {
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(10px);
@@ -36,7 +36,7 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.3);
     }
-    
+
     .policy-card-small {
         background: white;
         border: 2px solid #f59e0b;
@@ -48,13 +48,13 @@
         transition: all 0.3s ease;
         overflow: hidden;
     }
-    
+
     .policy-card-small:hover {
         transform: translateY(-4px);
         box-shadow: 0 12px 35px rgba(245, 158, 11, 0.3);
         border-color: #d97706;
     }
-    
+
     .card-header {
         background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
         color: white;
@@ -63,7 +63,7 @@
         align-items: center;
         justify-content: space-between;
     }
-    
+
     .card-number {
         background: white;
         color: #0d9488;
@@ -76,25 +76,25 @@
         font-weight: bold;
         font-size: 1.125rem;
     }
-    
+
     .card-content {
         padding: 1rem;
         background: #fffbeb;
     }
-    
+
     .main-content {
         display: grid;
         grid-template-columns: 320px 1fr;
         gap: 2rem;
         align-items: start;
     }
-    
+
     @media (max-width: 1024px) {
         .main-content {
             grid-template-columns: 1fr;
         }
     }
-    
+
     .sidebar {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
@@ -106,7 +106,7 @@
         position: sticky;
         top: 2rem;
     }
-    
+
     .chat-panel {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
@@ -118,7 +118,7 @@
         display: flex;
         flex-direction: column;
     }
-    
+
     .chat-header {
         display: flex;
         justify-content: space-between;
@@ -127,7 +127,7 @@
         border-bottom: 2px solid #f3f4f6;
         margin-bottom: 1rem;
     }
-    
+
     .chat-messages {
         flex: 1;
         overflow-y: auto;
@@ -137,7 +137,7 @@
         border-radius: 12px;
         border: 1px solid #e5e7eb;
     }
-    
+
     .message {
         margin-bottom: 1rem;
         padding: 0.875rem 1rem;
@@ -145,14 +145,14 @@
         max-width: 85%;
         word-wrap: break-word;
     }
-    
+
     .system-message {
         background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
         border: 1px solid #81d4fa;
         color: #0277bd;
         max-width: 100%;
     }
-    
+
     .player-message {
         background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
         border: 1px solid #f59e0b;
@@ -160,27 +160,27 @@
         margin-left: auto;
         margin-right: 0;
     }
-    
+
     .agent-message {
         background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
         border: 1px solid #a855f7;
         color: #7c2d12;
     }
-    
+
     .vote-message {
         background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
         border: 1px solid #22c55e;
         color: #166534;
         max-width: 100%;
     }
-    
+
     .message-input-container {
         display: flex;
         gap: 0.75rem;
         padding-top: 1rem;
         border-top: 2px solid #f3f4f6;
     }
-    
+
     .message-input {
         flex: 1;
         padding: 0.875rem 1rem;
@@ -190,13 +190,13 @@
         font-size: 0.875rem;
         transition: all 0.3s ease;
     }
-    
+
     .message-input:focus {
         outline: none;
         border-color: #f59e0b;
         box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
     }
-    
+
     .send-button {
         background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
         color: white;
@@ -207,12 +207,12 @@
         transition: all 0.3s ease;
         cursor: pointer;
     }
-    
+
     .send-button:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(13, 148, 136, 0.3);
     }
-    
+
     .vote-button {
         background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         color: white;
@@ -226,12 +226,12 @@
         cursor: pointer;
         width: 100%;
     }
-    
+
     .vote-button:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
     }
-    
+
     .agent-card {
         background: white;
         border: 1px solid #e5e7eb;
@@ -244,13 +244,13 @@
         cursor: pointer;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
-    
+
     .agent-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         border-color: #f59e0b;
     }
-    
+
     .agent-avatar {
         width: 2.5rem;
         height: 2.5rem;
@@ -263,7 +263,7 @@
         font-weight: bold;
         margin-right: 0.75rem;
     }
-    
+
     .timer-display {
         background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
         border: 2px solid #ef4444;
@@ -274,7 +274,7 @@
         font-weight: bold;
         font-size: 0.875rem;
     }
-    
+
     .budget-bar {
         background: #f3f4f6;
         height: 8px;
@@ -282,14 +282,14 @@
         overflow: hidden;
         margin: 0.75rem 0;
     }
-    
+
     .budget-fill {
         background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         height: 100%;
         border-radius: 4px;
         transition: width 0.3s ease;
     }
-    
+
     .section-title {
         font-size: 1.125rem;
         font-weight: 700;
@@ -299,7 +299,7 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
+
     .section-icon {
         width: 1.5rem;
         height: 1.5rem;
@@ -311,26 +311,26 @@
         color: white;
         font-size: 0.75rem;
     }
-    
+
     /* Custom scrollbar */
     .scrollbar-thin::-webkit-scrollbar {
         width: 6px;
     }
-    
+
     .scrollbar-thin::-webkit-scrollbar-track {
         background: #f3f4f6;
         border-radius: 3px;
     }
-    
+
     .scrollbar-thin::-webkit-scrollbar-thumb {
         background: #f59e0b;
         border-radius: 3px;
     }
-    
+
     .scrollbar-thin::-webkit-scrollbar-thumb:hover {
         background: #d97706;
     }
-    
+
     .policy-summary-item {
         display: flex;
         justify-content: space-between;
@@ -339,11 +339,11 @@
         border-bottom: 1px solid #f3f4f6;
         font-size: 0.875rem;
     }
-    
+
     .policy-summary-item:last-child {
         border-bottom: none;
     }
-    
+
     .status-pending {
         color: #f59e0b;
         font-weight: 600;
@@ -417,11 +417,11 @@
                     Your Proposal
                     <span class="ml-auto text-sm font-normal text-gray-500">{{ cost }}/{{ max_budget }}</span>
                 </div>
-                
+
                 <div class="budget-bar">
                     <div class="budget-fill" style="width: {{ (cost / max_budget) * 100 }}%"></div>
                 </div>
-                
+
                 <div class="space-y-1">
                     {% for policy_name, level in selections.items() %}
                         <div class="policy-summary-item">
@@ -433,7 +433,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                
+
                 <div class="mt-4 pt-4 border-t border-gray-200">
                     <a href="{{ url_for('main.phase1') }}" class="text-amber-600 hover:text-amber-700 text-sm font-medium transition-colors">
                         <i class="fas fa-arrow-left mr-1"></i>Edit Proposal
@@ -479,7 +479,7 @@
                 </div>
                 <div class="timer-display" id="timer">30:00</div>
             </div>
-            
+
             <div class="chat-messages scrollbar-thin" id="chat-container">
                 <div id="messages">
                     <div class="message system-message">
@@ -493,7 +493,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="message-input-container">
                 <input type="text" id="message-input" placeholder="Share your thoughts on refugee education policy..." 
                        class="message-input">
@@ -501,7 +501,7 @@
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
-            
+
             <button id="call-vote-btn" class="vote-button">
                 <i class="fas fa-vote-yea mr-2"></i>Call for Vote
             </button>
@@ -527,15 +527,15 @@
             </div>
             Final Education Policy Package
         </div>
-        
+
         <p class="text-gray-600 mb-6 leading-relaxed">
             The citizens of Bean have voted and reached a collective decision on education policies for refugees. This democratically approved package will now be implemented across the republic.
         </p>
-        
+
         <div class="space-y-4" id="final-results-container">
             <!-- Results will be filled by JavaScript -->
         </div>
-        
+
         <div class="mt-6 text-center">
             <a href="/phase3" id="continue-btn" class="inline-block bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3 px-8 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
                 Continue to Reflection
@@ -549,13 +549,13 @@
 <script>
     // Get the session ID to use as room ID
     const sessionId = "{{ request.cookies.get('session', '') }}";
-    
+
     // Connect to Socket.IO
     const socket = io();
     let isVoting = false;
     let discussionTimer;
     let timeLeft = 30 * 60; // 30 minutes in seconds
-    
+
     // DOM elements
     const messagesContainer = document.getElementById('messages');
     const messageInput = document.getElementById('message-input');
@@ -564,32 +564,32 @@
     const timerElement = document.getElementById('timer');
     const votingResults = document.getElementById('voting-results');
     const finalResultsContainer = document.getElementById('final-results-container');
-    
+
     // Agent cards
     const agentCards = document.querySelectorAll('.agent-card');
-    
+
     // Policy selections from server
     const selections = {{ selections|tojson }};
-    
+
     // Connect to the server and join the policy room
     socket.on('connect', () => {
         console.log('Connected to server');
         // Join the policy discussion room
         socket.emit('join_policy_room', { room_id: sessionId });
-        
+
         // Start the timer
         startTimer();
     });
-    
+
     // Handle incoming chat messages
     socket.on('chat_message', (data) => {
         addMessage(data);
-        
+
         // If this is a vote message, update the vote progress
         if (data.is_vote) {
             updateVoteProgress(data.policy, data.vote);
         }
-        
+
         // If this is the final message, show voting results
         if (data.is_final) {
             setTimeout(() => {
@@ -600,25 +600,25 @@
             }, 1000);
         }
     });
-    
+
     // Handle voting complete
     socket.on('voting_complete', (data) => {
         displayFinalResults(data.final_package, data.total_cost, data.is_valid);
     });
-    
+
     // Handle errors
     socket.on('error', (data) => {
         console.error('Socket.IO error:', data.message);
         addSystemMessage('Error: ' + data.message);
     });
-    
+
     // Send message
     if (sendButton) {
         sendButton.addEventListener('click', () => {
             sendMessage();
         });
     }
-    
+
     // Send message on Enter key
     if (messageInput) {
         messageInput.addEventListener('keypress', (e) => {
@@ -627,7 +627,7 @@
             }
         });
     }
-    
+
     // Call vote button
     if (callVoteButton) {
         callVoteButton.addEventListener('click', () => {
@@ -635,42 +635,42 @@
                 isVoting = true;
                 callVoteButton.disabled = true;
                 callVoteButton.style.opacity = '0.5';
-                
+
                 if (messageInput) messageInput.disabled = true;
                 if (sendButton) sendButton.disabled = true;
-                
+
                 // Stop the timer
                 clearInterval(discussionTimer);
                 timerElement.textContent = 'Voting...';
-                
+
                 // Emit call_vote event
                 socket.emit('call_vote', {});
-                
+
                 // Add system message
                 addSystemMessage('You called for a vote. The citizens are now voting...');
             }
         });
     }
-    
+
     // Agent card click event - trigger a response from the agent
     agentCards.forEach(card => {
         card.addEventListener('click', () => {
             if (isVoting) return;
-            
+
             const agentIndex = parseInt(card.dataset.agentIndex);
-            
+
             // Get the user's latest message for context
             const userMessage = window.latestUserMessage || '';
-            
+
             // Try to determine which policy the agent should discuss
             let policyToDiscuss = null;
             const policies = Object.keys(selections);
-            
+
             // Randomly select a policy for the agent to discuss
             if (policies.length > 0) {
                 policyToDiscuss = policies[Math.floor(Math.random() * policies.length)];
             }
-            
+
             // Emit agent response event
             socket.emit('agent_response', {
                 agent_index: agentIndex,
@@ -679,7 +679,7 @@
             });
         });
     });
-    
+
     // Start the discussion timer
     function startTimer() {
         discussionTimer = setInterval(() => {
@@ -687,7 +687,7 @@
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
             timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            
+
             if (timeLeft <= 0) {
                 clearInterval(discussionTimer);
                 timerElement.textContent = 'Time Up!';
@@ -698,17 +698,17 @@
             }
         }, 1000);
     }
-    
+
     // Send a message to the chat
     function sendMessage() {
         if (!messageInput || isVoting) return;
-        
+
         const message = messageInput.value.trim();
         if (!message) return;
-        
+
         // Store the latest user message for context
         window.latestUserMessage = message;
-        
+
         // Add the message to the chat locally
         addMessage({
             sender: 'You',
@@ -716,24 +716,24 @@
             timestamp: Date.now() / 1000,
             is_player: true
         });
-        
+
         // Send to server
         socket.emit('send_message', {
             message: message,
             sender: 'You'
         });
-        
+
         // Clear the input
         messageInput.value = '';
     }
-    
+
     // Add a message to the chat
     function addMessage(data) {
         if (!messagesContainer) return;
-        
+
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message');
-        
+
         if (data.sender === 'System') {
             messageDiv.classList.add('system-message');
             messageDiv.innerHTML = `
@@ -779,11 +779,11 @@
                 <p>${data.message}</p>
             `;
         }
-        
+
         messagesContainer.appendChild(messageDiv);
         document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
     }
-    
+
     // Add a system message
     function addSystemMessage(message) {
         addMessage({
@@ -792,7 +792,7 @@
             timestamp: Date.now() / 1000
         });
     }
-    
+
     // Update vote progress for a policy
     function updateVoteProgress(policyName, vote) {
         const statusElement = document.getElementById(`vote-status-${policyName.replace(' ', '_')}`);
@@ -801,13 +801,13 @@
             statusElement.className = 'text-green-600 font-bold text-xs';
         }
     }
-    
+
     // Display final voting results
     function displayFinalResults(finalPackage, totalCost, isValid) {
         if (!finalResultsContainer) return;
-        
+
         finalResultsContainer.innerHTML = '';
-        
+
         // Show the final policy package
         Object.entries(finalPackage).forEach(([policy, option]) => {
             const policyDiv = document.createElement('div');
@@ -818,7 +818,7 @@
             `;
             finalResultsContainer.appendChild(policyDiv);
         });
-        
+
         // Show cost and validity
         const summaryDiv = document.createElement('div');
         summaryDiv.className = 'bg-gray-50 p-4 rounded-lg mt-4';
@@ -829,10 +829,208 @@
             </p>
         `;
         finalResultsContainer.appendChild(summaryDiv);
-        
+
         // Show the voting results
         votingResults.style.display = 'block';
         votingResults.scrollIntoView({ behavior: 'smooth' });
     }
+
+    // Enhanced agent interaction button
+    function triggerAgentResponse(agentIndex, policyName) {
+        const userMessage = document.getElementById('message-input').value.trim();
+
+        if (!userMessage) {
+            alert('Please enter a message first');
+            return;
+        }
+
+        socket.emit('agent_response', {
+            agent_index: agentIndex,
+            policy_name: policyName,
+            user_message: userMessage
+        });
+
+        // Clear the input
+        document.getElementById('message-input').value = '';
+    }
+
+    // Direct agent query function
+    function queryAgent(agentIndex, agentName) {
+        const question = prompt(`What would you like to ask ${agentName}?`);
+
+        if (!question || !question.trim()) {
+            return;
+        }
+
+        socket.emit('query_agent', {
+            agent_index: agentIndex,
+                            question: question.trim(),
+                policy_name: 'general policy discussion'
+            });
+        }
+
+        // Agent-to-agent response trigger
+        function triggerAgentToAgentResponse(respondingAgentIndex, targetAgentIndex, policyName) {
+            socket.emit('agent_response', {
+                agent_index: respondingAgentIndex,
+                policy_name: policyName,
+                user_message: `Responding to agent discussion`,
+                responding_to_agent_index: targetAgentIndex
+            });
+        }
+
+    // Add a system message
+    function addSystemMessage(message) {
+        addMessage({
+            sender: 'System',
+            message: message,
+            timestamp: Date.now() / 1000
+        });
+    }
+
+    // Update vote progress for a policy
+    function updateVoteProgress(policyName, vote) {
+        const statusElement = document.getElementById(`vote-status-${policyName.replace(' ', '_')}`);
+        if (statusElement) {
+            statusElement.textContent = vote;
+            statusElement.className = 'text-green-600 font-bold text-xs';
+        }
+    }
+
+    // Display final voting results
+    function displayFinalResults(finalPackage, totalCost, isValid) {
+        if (!finalResultsContainer) return;
+
+        finalResultsContainer.innerHTML = '';
+
+        // Show the final policy package
+        Object.entries(finalPackage).forEach(([policy, option]) => {
+            const policyDiv = document.createElement('div');
+            policyDiv.className = 'bg-white p-4 rounded-lg border border-gray-200';
+            policyDiv.innerHTML = `
+                <h4 class="font-bold text-gray-800">${policy}</h4>
+                <p class="text-gray-600">Option ${option}</p>
+            `;
+            finalResultsContainer.appendChild(policyDiv);
+        });
+
+        // Show cost and validity
+        const summaryDiv = document.createElement('div');
+        summaryDiv.className = 'bg-gray-50 p-4 rounded-lg mt-4';
+        summaryDiv.innerHTML = `
+            <p class="font-bold">Total Cost: ${totalCost}/14</p>
+            <p class="text-sm ${isValid ? 'text-green-600' : 'text-red-600'}">
+                ${isValid ? 'Valid policy package' : 'Invalid policy package (over budget)'}
+            </p>
+        `;
+        finalResultsContainer.appendChild(summaryDiv);
+
+        // Show the voting results
+        votingResults.style.display = 'block';
+        votingResults.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Function to determine agent color based on ideology
+    function getAgentColor(ideology) {
+        switch (ideology) {
+            case 'Liberal':
+                return 'bg-blue-500';
+            case 'Conservative':
+                return 'bg-red-500';
+            case 'Moderate':
+                return 'bg-gray-500';
+            default:
+                return 'bg-purple-500';
+        }
+    }
+
+    // Enhanced Socket.IO event for chat messages with LLM model info, interaction type, and direct query
+    socket.on('chat_message', function(data) {
+            const messagesDiv = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+
+            // Determine message type and styling
+            if (data.sender === 'System') {
+                messageElement.className = 'message system-message';
+            } else if (data.is_player) {
+                messageElement.className = 'message player-message';
+            } else {
+                messageElement.className = 'message agent-message';
+            }
+
+            const timestamp = new Date(data.timestamp * 1000).toLocaleTimeString();
+
+            let messageHTML = '';
+
+            if (data.sender === 'System') {
+                messageHTML = `
+                    <div class="flex items-center mb-2">
+                        <div class="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center mr-3">
+                            <i class="fas fa-cog text-white text-xs"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">System</div>
+                            <div class="text-xs text-gray-500">${timestamp}</div>
+                        </div>
+                    </div>
+                    <div class="message-content ml-11">
+                        ${data.message}
+                    </div>
+                `;
+            } else if (data.is_player) {
+                const queryClass = data.is_direct_query ? ' direct-query' : '';
+                messageHTML = `
+                    <div class="flex items-center mb-2">
+                        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center mr-3">
+                            <i class="fas fa-user text-white text-xs"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium text-blue-800">${data.sender}</div>
+                            <div class="text-xs text-gray-500">${timestamp}${data.is_direct_query ? ' • Direct Query' : ''}</div>
+                        </div>
+                    </div>
+                    <div class="message-content ml-11${queryClass}">
+                        ${data.message}
+                    </div>
+                `;
+            } else if (data.agent) {
+                const agentColor = getAgentColor(data.agent.ideology);
+                const llmModel = data.llm_model || 'openai';
+                const llmBadge = llmModel === 'gemini' ? 
+                    '<span class="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded ml-2">Gemini</span>' : 
+                    '<span class="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded ml-2">OpenAI</span>';
+
+                let interactionType = '';
+                if (data.responding_to) {
+                    interactionType = ` • Responding to ${data.responding_to}`;
+                } else if (data.is_direct_response) {
+                    interactionType = ' • Direct Response';
+                } else if (data.is_agent_debate) {
+                    interactionType = ' • Agent Debate';
+                }
+
+                messageHTML = `
+                    <div class="flex items-center mb-2">
+                        <div class="w-8 h-8 rounded-full ${agentColor} flex items-center justify-center mr-3">
+                            <i class="fas fa-robot text-white text-xs"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">${data.sender}${llmBadge}</div>
+                            <div class="text-xs text-gray-500">${data.agent.occupation} • ${timestamp}${interactionType}</div>
+                        </div>
+                    </div>
+                    <div class="message-content ml-11">
+                        ${data.message}
+                    </div>
+                `;
+            }
+
+            messageElement.innerHTML = messageHTML;
+            messagesDiv.appendChild(messageElement);
+
+            // Scroll to bottom
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
 </script>
 {% endblock %}

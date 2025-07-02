@@ -424,6 +424,7 @@ def handle_agent_response(data):
             - agent_index: Index of the agent to respond
             - policy_name: The policy being discussed
             - user_message: The most recent message from the user (optional)
+            - responding_to_agent_index: Index of agent being responded to (optional)
     """
     from flask import session
     import time
@@ -437,6 +438,7 @@ def handle_agent_response(data):
     agent_index = data.get('agent_index')
     policy_name = data.get('policy_name')
     user_message = data.get('user_message', '')
+    responding_to_agent_index = data.get('responding_to_agent_index')
     
     # Get conversation history from session if available
     conversation_history = session.get('conversation_history', [])
@@ -452,13 +454,25 @@ def handle_agent_response(data):
     
     agent = agents[agent_index]
     
+    # Check if this is an agent-to-agent response
+    responding_to_agent = None
+    if responding_to_agent_index is not None and responding_to_agent_index < len(agents):
+        responding_to_agent = agents[responding_to_agent_index]
+    
     # Generate a response that addresses the player's point
     try:
         # Use the policy's option level from the player's selections
         option_level = selections.get(policy_name, 2)  # Default to option 2 if not found
         
         # Generate a justification as a response, including conversation context
-        justification = agent_justify(policy_name, option_level, agent, user_message, recent_messages)
+        justification = agent_justify(
+            policy_name, 
+            option_level, 
+            agent, 
+            user_message, 
+            recent_messages, 
+            responding_to_agent
+        )
         
         # Store this message in the conversation history
         if len(conversation_history) >= 20:  # Limit history to prevent session from getting too large
@@ -468,7 +482,8 @@ def handle_agent_response(data):
             'sender': agent['name'],
             'message': justification,
             'timestamp': time.time(),
-            'policy': policy_name
+            'policy': policy_name,
+            'responding_to': responding_to_agent['name'] if responding_to_agent else None
         })
         
         # Update session
@@ -479,11 +494,13 @@ def handle_agent_response(data):
             'message': justification,
             'agent': agent,
             'timestamp': time.time(),
-            'policy': policy_name
+            'policy': policy_name,
+            'responding_to': responding_to_agent['name'] if responding_to_agent else None,
+            'llm_model': agent.get('llm_model', 'openai')
         }, to=room_id)
         
-        # 25% chance for spontaneous debate between two random agents about this policy
-        if random.random() < 0.25:
+        # 30% chance for spontaneous debate between two random agents about this policy
+        if random.random() < 0.30:
             # Schedule a follow-up debate between two random agents
             socketio.start_background_task(
                 generate_agent_debate, 
@@ -554,16 +571,15 @@ def generate_agent_debate(room_id, first_agent, policy_name, option_level, agent
         # Introduce a small delay to make the conversation feel natural
         time.sleep(1.5)
         
-        # Create a prompt specifically for continuing the conversation
-        second_agent_message = f"I've been listening to {first_agent['name']}'s perspective on {policy_name}..."
-        
         # Generate a response from the second agent that references the first agent's position
+        # This is now an agent-to-agent interaction
         second_response = agent_justify(
             policy_name, 
             second_option, 
             second_agent, 
-            first_agent['name'] + ' said: ' + conversation_history[-1]['message'],
-            conversation_history[-5:] if conversation_history else []
+            conversation_history[-1]['message'] if conversation_history else '',
+            conversation_history[-5:] if conversation_history else [],
+            first_agent  # This indicates it's responding to another agent
         )
         
         # Emit the response to the room
@@ -572,18 +588,122 @@ def generate_agent_debate(room_id, first_agent, policy_name, option_level, agent
             'message': second_response,
             'agent': second_agent,
             'timestamp': time.time(),
-            'policy': policy_name
+            'policy': policy_name,
+            'responding_to': first_agent['name'],
+            'llm_model': second_agent.get('llm_model', 'openai'),
+            'is_agent_debate': True
         }, to=room_id)
         
         # Add to conversation history (needs to be done through socket event for thread safety)
         socketio.emit('update_conversation_history', {
             'sender': second_agent['name'],
             'message': second_response,
-            'policy': policy_name
+            'policy': policy_name,
+            'responding_to': first_agent['name']
         }, to=room_id)
         
     except Exception as e:
         logging.error(f"Error generating agent debate: {e}")
+
+@socketio.on('query_agent')
+def handle_query_agent(data):
+    """
+    Allow user to directly ask a specific agent about their decision
+    
+    Args:
+        data: Dictionary containing:
+            - agent_index: Index of the agent to query
+            - question: The question being asked
+            - policy_name: Optional policy being discussed
+    """
+    from flask import session
+    import time
+    from ai_agents import agent_justify
+    
+    room_id = session.get('policy_room')
+    if not room_id:
+        emit('error', {'message': 'Not in a discussion room'})
+        return
+    
+    agent_index = data.get('agent_index')
+    question = data.get('question', '')
+    policy_name = data.get('policy_name', 'general policy discussion')
+    
+    agents = session.get('agents', [])
+    selections = session.get('player_package', {})
+    conversation_history = session.get('conversation_history', [])
+    
+    if not agents or agent_index is None or agent_index >= len(agents):
+        emit('error', {'message': 'Invalid agent'})
+        return
+    
+    if not question.strip():
+        emit('error', {'message': 'Question cannot be empty'})
+        return
+    
+    agent = agents[agent_index]
+    
+    try:
+        # Use a default option level for general discussions
+        option_level = selections.get(policy_name, 2)
+        
+        # Generate a response to the user's direct question
+        response = agent_justify(
+            policy_name, 
+            option_level, 
+            agent, 
+            question, 
+            conversation_history[-3:] if conversation_history else []
+        )
+        
+        # Store this message in the conversation history
+        if len(conversation_history) >= 20:
+            conversation_history = conversation_history[1:]
+            
+        conversation_history.extend([
+            {
+                'sender': 'You',
+                'message': f"@{agent['name']}: {question}",
+                'timestamp': time.time(),
+                'policy': policy_name,
+                'is_direct_query': True
+            },
+            {
+                'sender': agent['name'],
+                'message': response,
+                'timestamp': time.time() + 0.1,
+                'policy': policy_name,
+                'is_direct_response': True
+            }
+        ])
+        
+        # Update session
+        session['conversation_history'] = conversation_history
+        
+        # Emit the user's question first
+        emit('chat_message', {
+            'sender': 'You',
+            'message': f"@{agent['name']}: {question}",
+            'timestamp': time.time(),
+            'policy': policy_name,
+            'is_direct_query': True,
+            'is_player': True
+        }, to=room_id)
+        
+        # Then emit the agent's response
+        emit('chat_message', {
+            'sender': agent['name'],
+            'message': response,
+            'agent': agent,
+            'timestamp': time.time() + 0.1,
+            'policy': policy_name,
+            'is_direct_response': True,
+            'llm_model': agent.get('llm_model', 'openai')
+        }, to=room_id)
+        
+    except Exception as e:
+        logging.error(f"Error generating agent query response: {e}")
+        emit('error', {'message': 'Failed to get response from agent'})
 
 @socketio.on('call_vote')
 def handle_call_vote(data):
