@@ -142,7 +142,9 @@ This is a Flask-based web application that simulates policy-making processes for
 ✓ Added four AI agents with distinct personas using OpenAI and Google Gemini APIs
 ✓ Created turn-based discussion flow with moderator orchestration
 ✓ Added professional conversation interface with progress tracking
-✓ Integrated multi-agent system with existing Phase 2 via demo link
+✓ Integrated multi-agent system to replace existing Phase 2 completely
+✓ Multi-agent discussion now serves as the main Phase 2 experience
+✓ Seamless flow from Phase 1 card selection to multi-agent deliberation to Phase 3
 
 ## Changelog
 - June 21, 2025. Initial setup and card interface implementation

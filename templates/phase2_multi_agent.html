@@ -581,10 +581,30 @@ function updateFinalPolicyDisplay() {
 }
 
 function acceptRecommendation() {
-    // Handle accepting the group recommendation
-    alert('Group recommendation accepted! Proceeding to Phase 3...');
-    // This would typically redirect to the next phase
-    window.location.href = '/phase3';
+    // Store the final package in session and proceed to Phase 3
+    fetch('/api/multi_agent/accept_recommendation', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            accepted: true
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect_url || '/phase3';
+        } else {
+            console.error('Error accepting recommendation:', data);
+            alert('Error processing your decision. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Network error. Please try again.');
+    });
 }
 
 function requestModification() {
