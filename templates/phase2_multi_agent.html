@@ -564,11 +564,33 @@ function showFinalDecision() {
         finalSection.classList.add('active');
         finalSection.style.display = 'block';
         
+        // Update the final policy display with actual selections
+        updateFinalPolicyDisplay();
+        
         // Scroll to final decision section
         finalSection.scrollIntoView({ 
             behavior: 'smooth' 
         });
     }
+}
+
+function updateFinalPolicyDisplay() {
+    // This would be called to update the cards with actual deliberation results
+    // For now, the cards show the demo policy package
+    console.log('Final policy display updated with group recommendations');
+}
+
+function acceptRecommendation() {
+    // Handle accepting the group recommendation
+    alert('Group recommendation accepted! Proceeding to Phase 3...');
+    // This would typically redirect to the next phase
+    window.location.href = '/phase3';
+}
+
+function requestModification() {
+    // Handle requesting modifications to the recommendation
+    alert('Modification request noted. The group will reconvene to discuss changes.');
+    // This could reopen the discussion or provide modification options
 }
 
 function selectOption(optionId) {
