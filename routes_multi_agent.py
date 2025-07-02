@@ -144,7 +144,8 @@ def next_agent_turn():
             'agent_name': agent_name,
             'message': agent_response,
             'waiting_for_user': True,
-            'progress': f"{current_index + 1}/{len(agents_order)}"
+            'progress': f"{current_index + 1}/{len(agents_order)}",
+            'debug': f"Agent {agent_name} responded successfully"
         })
         
     except Exception as e:

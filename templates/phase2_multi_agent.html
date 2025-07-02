@@ -323,7 +323,7 @@
         </div>
         
         <!-- User Input Section -->
-        <div class="user-input-section" id="user-input-section">
+        <div class="user-input-section" id="user-input-section" style="display: none;">
             <div class="waiting-prompt" id="waiting-prompt">
                 Please answer the question above to continue the discussion...
             </div>
@@ -388,10 +388,12 @@ let selectedOption = null;
 
 // Initialize the discussion
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, starting discussion...');
     // Start with first agent after a brief delay
     setTimeout(() => {
+        console.log('Starting first agent turn...');
         nextAgentTurn();
-    }, 2000);
+    }, 3000);
 });
 
 function nextAgentTurn(userResponse = '') {
@@ -419,8 +421,11 @@ function nextAgentTurn(userResponse = '') {
     })
     .then(response => response.json())
     .then(data => {
+        console.log('Agent response received:', data);
         if (data.error) {
             console.error('Error:', data.error);
+            // Show error message to user
+            addModeratorMessage('Sorry, there was an error getting the agent response. Please try again.');
             return;
         }
         
@@ -430,8 +435,17 @@ function nextAgentTurn(userResponse = '') {
             
             // Show user input section
             waitingForUser = true;
-            document.getElementById('user-input-section').classList.add('active');
-            document.getElementById('user-response').focus();
+            console.log('Showing user input section...');
+            const inputSection = document.getElementById('user-input-section');
+            const userResponse = document.getElementById('user-response');
+            
+            if (inputSection) {
+                inputSection.classList.add('active');
+                inputSection.style.display = 'block';
+            }
+            if (userResponse) {
+                userResponse.focus();
+            }
             
         } else if (data.type === 'moderator_summary') {
             // Add final moderator summary
@@ -538,13 +552,22 @@ function updateProgress() {
 }
 
 function showFinalDecision() {
-    document.getElementById('user-input-section').classList.remove('active');
-    document.getElementById('final-decision-section').classList.add('active');
+    const inputSection = document.getElementById('user-input-section');
+    const finalSection = document.getElementById('final-decision-section');
     
-    // Scroll to final decision section
-    document.getElementById('final-decision-section').scrollIntoView({ 
-        behavior: 'smooth' 
-    });
+    if (inputSection) {
+        inputSection.classList.remove('active');
+        inputSection.style.display = 'none';
+    }
+    if (finalSection) {
+        finalSection.classList.add('active');
+        finalSection.style.display = 'block';
+        
+        // Scroll to final decision section
+        finalSection.scrollIntoView({ 
+            behavior: 'smooth' 
+        });
+    }
 }
 
 function selectOption(optionId) {
