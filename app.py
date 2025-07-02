@@ -64,6 +64,16 @@ def create_app():
     from routes import main as main_blueprint
     app.register_blueprint(main_blueprint)
     
+    # Register multi-agent routes
+    try:
+        from routes_multi_agent import multi_agent_bp
+        app.register_blueprint(multi_agent_bp)
+        print("Multi-agent blueprint registered successfully")
+    except ImportError as e:
+        print(f"Could not import multi-agent routes: {e}")
+    except Exception as e:
+        print(f"Error registering multi-agent blueprint: {e}")
+    
     # Import Socket.IO event handlers
     import events
     
