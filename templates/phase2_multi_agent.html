@@ -292,8 +292,23 @@
 
     /* Responsive design */
     @media (max-width: 768px) {
+        .header {
+            padding: 1rem;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .header h1 {
+            font-size: 1.2rem;
+        }
+        
+        .user-cards-section {
+            padding: 1rem;
+        }
+        
         .main-discussion {
             grid-template-columns: 1fr;
+            height: calc(100vh - 320px);
         }
         
         .participants-sidebar {
@@ -302,12 +317,51 @@
         
         .user-cards-scroll {
             flex-direction: column;
-            align-items: center;
+            align-items: stretch;
+            gap: 0.75rem;
         }
         
         .user-policy-card {
-            min-width: 100%;
-            max-width: 300px;
+            min-width: auto;
+            max-width: none;
+            width: 100%;
+        }
+        
+        .policy-cards-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            padding: 0;
+        }
+        
+        .final-recommendations {
+            padding: 1rem;
+        }
+        
+        .recommendation-actions {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .action-button {
+            width: 100%;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .header h1 {
+            font-size: 1rem;
+        }
+        
+        .user-cards-title {
+            font-size: 1rem;
+        }
+        
+        .input-area {
+            padding: 0.75rem;
+        }
+        
+        .messages-container {
+            padding: 1rem;
         }
     }
 
@@ -316,6 +370,15 @@
         border-top: 1px solid #e5e7eb;
         padding: 2rem;
         display: none;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+    
+    .final-recommendations h2 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #374151;
+        font-size: 1.5rem;
     }
 
     .recommendation-actions {
@@ -355,9 +418,11 @@
 
     .policy-cards-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 1rem;
         margin-top: 1rem;
+        max-width: 100%;
+        padding: 0 1rem;
     }
 
     .policy-card {
@@ -367,6 +432,10 @@
         padding: 1.5rem;
         box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
         transition: all 0.3s ease;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .policy-card:hover {
@@ -389,6 +458,7 @@
         font-weight: 500;
         margin-bottom: 0.5rem;
         display: inline-block;
+        font-size: 0.9rem;
     }
 
     .policy-description {
@@ -450,7 +520,10 @@
 
 <!-- Final Recommendations (shown after discussion) -->
 <div class="final-recommendations" id="final-recommendations">
-    <h2 style="text-align: center; margin-bottom: 2rem; color: #374151;">Final Group Recommendations</h2>
+    <h2>Final Group Recommendations</h2>
+    <p style="text-align: center; color: #6b7280; margin-bottom: 2rem;">
+        Based on the group discussion, here are the recommended policy choices:
+    </p>
     <div class="policy-cards-grid" id="final-cards-grid">
         <!-- Policy cards will be populated here -->
     </div>
