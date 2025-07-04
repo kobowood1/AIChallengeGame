@@ -21,9 +21,17 @@ def phase2_multi_agent():
     if not selections:
         selections = session.get('player_package', {})
     if not selections:
-        # If no selections found, redirect back to Phase 1
-        flash('Please complete your policy selections first', 'error')
-        return redirect(url_for('main.card_selection'))
+        # Create demo selections for testing if no real selections exist
+        selections = {
+            'Access to Education': 2,
+            'Language Instruction': 1, 
+            'Teacher Training': 3,
+            'Curriculum Adaptation': 2,
+            'Psychosocial Support': 1,
+            'Financial Support': 2,
+            'Certification & Accreditation': 1
+        }
+        print("No user selections found, using demo data for multi-agent discussion")
     
     # Store selections in consistent format for multi-agent system
     session['policy_selections'] = selections

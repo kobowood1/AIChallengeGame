@@ -488,10 +488,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function displayUserPolicyCards() {
     // Get user's policy selections and display them
-    const userPolicies = {{ user_selections | tojson }};
-    const policyData = {{ policy_data | tojson }};
+    const userPolicies = {{ user_selections | tojson | safe }};
+    const policyData = {{ policy_data | tojson | safe }};
     
     userCardsScroll.innerHTML = '';
+    
+    if (!userPolicies || Object.keys(userPolicies).length === 0) {
+        userCardsScroll.innerHTML = '<div style="padding: 1rem; color: #6b7280;">No policy selections found. Please complete Phase 1 first.</div>';
+        return;
+    }
     
     Object.keys(userPolicies).forEach(policyName => {
         const optionLevel = userPolicies[policyName];
@@ -589,10 +594,15 @@ function showFinalRecommendations() {
 
 function displayFinalPolicyCards() {
     const finalCardsGrid = document.getElementById('final-cards-grid');
-    const userPolicies = {{ user_selections | tojson }};
-    const policyData = {{ policy_data | tojson }};
+    const userPolicies = {{ user_selections | tojson | safe }};
+    const policyData = {{ policy_data | tojson | safe }};
     
     finalCardsGrid.innerHTML = '';
+    
+    if (!userPolicies || Object.keys(userPolicies).length === 0) {
+        finalCardsGrid.innerHTML = '<div style="padding: 1rem; color: #6b7280;">No final recommendations available.</div>';
+        return;
+    }
     
     Object.keys(userPolicies).forEach(policyName => {
         const optionLevel = userPolicies[policyName];
