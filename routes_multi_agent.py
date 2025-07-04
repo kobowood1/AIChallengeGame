@@ -72,7 +72,12 @@ def phase2_multi_agent():
         sim_state['moderator_intro_sent'] = True
         session['multi_agent_sim'] = sim_state
     
+    # Get policy data for template rendering
+    from game_data import POLICIES
+    
     return render_template('phase2_multi_agent.html',
+                         user_selections=selections,
+                         policy_data=POLICIES,
                          selections=selections,
                          policy_options=policy_data["options"],
                          user_vote=user_vote,
