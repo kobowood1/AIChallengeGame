@@ -442,8 +442,8 @@
         
         <div class="input-area">
             <button class="mic-button" title="Voice input">🎤</button>
-            <input type="text" id="user-input" placeholder="Type your message..." disabled>
-            <button class="send-button" id="send-button" disabled>Send</button>
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button class="send-button" id="send-button">Send</button>
         </div>
     </div>
 </div>
@@ -517,8 +517,8 @@ function displayUserPolicyCards() {
             card.className = 'user-policy-card';
             card.innerHTML = `
                 <div class="policy-name">${policyName}</div>
-                <div class="policy-option">${option.label || ('Option ' + optionLevel)}</div>
-                <div class="policy-description">${option.summary || option.description || 'No description available'}</div>
+                <div class="policy-option">Option ${optionLevel}</div>
+                <div class="policy-description">${option.description || 'Policy option selected'}</div>
             `;
             userCardsScroll.appendChild(card);
         } else {
@@ -677,7 +677,7 @@ function requestModification() {
 
 // Handle user input
 userInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' && !sendButton.disabled) {
+    if (e.key === 'Enter') {
         sendMessage();
     }
 });
@@ -686,15 +686,18 @@ sendButton.addEventListener('click', sendMessage);
 
 function sendMessage() {
     const message = userInput.value.trim();
-    if (message && userCanRespond) {
+    if (message) {
         addMessage('You', message, 'user');
         userInput.value = '';
-        userCanRespond = false;
-        userInput.disabled = true;
-        sendButton.disabled = true;
         
-        // Process user message and continue discussion
-        // This would integrate with the agent response system
+        // Show typing indicator
+        showTypingIndicator();
+        
+        // Simulate agent response after user message
+        setTimeout(() => {
+            hideTypingIndicator();
+            addMessage('Moderator', 'Thank you for your input. The agents will consider your perspective in the final recommendations.', 'moderator');
+        }, 2000);
     }
 }
 
@@ -714,5 +717,8 @@ function enableUserInput() {
     sendButton.disabled = false;
     userInput.focus();
 }
+
+// Enable input by default
+enableUserInput();
 </script>
 {% endblock %}
