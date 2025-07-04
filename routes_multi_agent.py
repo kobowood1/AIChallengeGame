@@ -147,6 +147,38 @@ def next_agent_turn():
     except Exception as e:
         return jsonify({'error': f'Failed to generate agent response: {str(e)}'}), 500
 
+@multi_agent_bp.route('/api/multi_agent/accept_recommendation', methods=['POST'])
+@login_required
+def accept_recommendation():
+    """Handle user accepting the group recommendation"""
+    try:
+        # Get the final policy package from the multi-agent simulation
+        sim_state = session.get('multi_agent_sim', {})
+        selections = session.get('policy_selections', {})
+        
+        # Store final package in session for Phase 3
+        session['final_package'] = selections.copy()
+        session['agent_votes'] = selections.copy()  # For compatibility with existing Phase 3
+        
+        # Calculate total cost for display
+        from game_data import POLICIES
+        total_cost = 0
+        for policy_name, option_level in selections.items():
+            for policy in POLICIES:
+                if policy['name'] == policy_name:
+                    total_cost += policy['options'][option_level - 1]['cost']
+                    break
+        session['final_cost'] = total_cost
+        
+        return jsonify({
+            'success': True,
+            'redirect_url': url_for('main.phase3')
+        })
+        
+    except Exception as e:
+        print(f"Error accepting recommendation: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @multi_agent_bp.route('/api/multi_agent/final_decision', methods=['POST'])
 @login_required
 def submit_final_decision():

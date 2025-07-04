@@ -5,409 +5,526 @@
 {% block head %}
 <style>
     body {
-        background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+        background: #f8f9fa;
         min-height: 100vh;
         color: #374151;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        margin: 0;
+        padding: 0;
     }
-    
-    .main-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 1.5rem;
-    }
-    
-    .page-header {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        text-align: center;
-    }
-    
-    .conversation-panel {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        min-height: 600px;
+
+    .header {
+        background: #28a745;
+        color: white;
+        padding: 1rem 2rem;
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    
-    .message-container {
-        flex: 1;
-        overflow-y: auto;
-        padding: 1rem;
-        background: #fafafa;
-        border-radius: 12px;
-        margin-bottom: 1rem;
-        max-height: 500px;
+
+    .header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
     }
-    
-    .message {
-        margin-bottom: 1.5rem;
-        padding: 1rem 1.25rem;
-        border-radius: 12px;
-        position: relative;
-        max-width: 85%;
-        word-wrap: break-word;
-        line-height: 1.6;
-    }
-    
-    .moderator-message {
-        background: linear-gradient(135deg, #fef3c7 0%, #fde047 100%);
-        border: 2px solid #f59e0b;
-        color: #92400e;
-        max-width: 100%;
-        margin: 0 auto;
-        text-align: center;
-    }
-    
-    .agent-message {
-        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-        border: 2px solid #22c55e;
-        color: #166534;
-        margin-right: auto;
-    }
-    
-    .user-message {
-        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-        border: 2px solid #3b82f6;
-        color: #1e40af;
-        margin-left: auto;
-    }
-    
-    .message-header {
-        font-weight: 700;
-        font-size: 0.875rem;
-        margin-bottom: 0.5rem;
+
+    .phase-info {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 1rem;
+        font-size: 0.9rem;
     }
-    
-    .message-icon {
-        width: 1.5rem;
-        height: 1.5rem;
+
+    .budget-badge {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+
+    .user-cards-section {
+        background: white;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .user-cards-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #28a745;
+        margin-bottom: 1rem;
+    }
+
+    .user-cards-scroll {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+
+    .user-policy-card {
+        background: white;
+        border: 2px solid #fbbf24;
+        border-radius: 12px;
+        padding: 1rem;
+        min-width: 250px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-policy-card .policy-name {
+        font-weight: 600;
+        color: #f59e0b;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .user-policy-card .policy-option {
+        background: #fef3c7;
+        color: #92400e;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        display: inline-block;
+    }
+
+    .user-policy-card .policy-description {
+        color: #6b7280;
+        font-size: 0.8rem;
+        line-height: 1.3;
+    }
+
+    .main-discussion {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        height: calc(100vh - 200px);
+    }
+
+    .participants-sidebar {
+        background: #f8f9fa;
+        border-right: 1px solid #e5e7eb;
+        padding: 1.5rem;
+        overflow-y: auto;
+    }
+
+    .participants-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 1rem;
+    }
+
+    .participant-item {
+        background: white;
+        border-radius: 8px;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        border: 1px solid #e5e7eb;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #4b5563;
+    }
+
+    .participant-item.active {
+        background: #dcfce7;
+        border-color: #16a34a;
+        color: #166534;
+    }
+
+    .participant-item.moderator {
+        background: #fef3c7;
+        border-color: #f59e0b;
+        color: #92400e;
+    }
+
+    .participant-item.you {
+        background: #dbeafe;
+        border-color: #3b82f6;
+        color: #1e40af;
+    }
+
+    .chat-area {
+        display: flex;
+        flex-direction: column;
+        background: white;
+    }
+
+    .messages-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1.5rem;
+        background: #f8f9fa;
+    }
+
+    .message {
+        margin-bottom: 1rem;
+        max-width: 80%;
+        word-wrap: break-word;
+    }
+
+    .message.moderator {
+        background: #fef3c7;
+        color: #92400e;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-left: 0;
+    }
+
+    .message.agent {
+        background: #dcfce7;
+        color: #166534;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-left: 0;
+    }
+
+    .message.user {
+        background: #dbeafe;
+        color: #1e40af;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-left: auto;
+        margin-right: 0;
+    }
+
+    .message-header {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .message-content {
+        line-height: 1.4;
+        font-size: 0.95rem;
+    }
+
+    .input-area {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .mic-button {
+        background: #6b7280;
+        color: white;
+        border: none;
         border-radius: 50%;
+        width: 40px;
+        height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.75rem;
-        color: white;
-    }
-    
-    .moderator-icon {
-        background: #f59e0b;
-    }
-    
-    .agent-icon {
-        background: #22c55e;
-    }
-    
-    .user-icon {
-        background: #3b82f6;
-    }
-    
-    .user-input-section {
-        border-top: 2px solid #f3f4f6;
-        padding-top: 1rem;
-        display: none;
-    }
-    
-    .user-input-section.active {
-        display: block;
-    }
-    
-    .input-group {
-        display: flex;
-        gap: 1rem;
-        align-items: end;
-    }
-    
-    .input-field {
-        flex: 1;
-        padding: 0.875rem 1rem;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
-        background: white;
-        font-size: 0.875rem;
-        min-height: 80px;
-        resize: vertical;
-        transition: all 0.3s ease;
-    }
-    
-    .input-field:focus {
-        outline: none;
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-    
-    .submit-btn {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 0.875rem 1.5rem;
-        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
-        white-space: nowrap;
-    }
-    
-    .submit-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-    }
-    
-    .submit-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-    }
-    
-    .progress-indicator {
-        background: white;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border: 1px solid #e5e7eb;
-        text-align: center;
-    }
-    
-    .progress-bar {
-        background: #f3f4f6;
-        height: 8px;
-        border-radius: 4px;
-        overflow: hidden;
-        margin: 0.5rem 0;
-    }
-    
-    .progress-fill {
-        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-        height: 100%;
-        transition: width 0.3s ease;
-    }
-    
-    .waiting-prompt {
-        background: linear-gradient(135deg, #fef3c7 0%, #fde047 100%);
-        border: 2px solid #f59e0b;
-        border-radius: 12px;
-        padding: 1rem;
-        margin: 1rem 0;
-        text-align: center;
-        font-style: italic;
-        color: #92400e;
-    }
-    
-    .final-decision-section {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        display: none;
-    }
-    
-    .final-decision-section.active {
-        display: block;
-    }
-    
-    .policy-options {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1rem;
-        margin: 1rem 0;
-    }
-    
-    .policy-option {
-        background: white;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 1rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    
-    .policy-option:hover {
-        border-color: #3b82f6;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    
-    .policy-option.selected {
-        border-color: #3b82f6;
-        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-    }
-    
-    .option-title {
-        font-weight: 700;
-        color: #374151;
-        margin-bottom: 0.5rem;
-    }
-    
-    .option-cost {
-        background: #f3f4f6;
-        color: #6b7280;
-        padding: 0.25rem 0.5rem;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        display: inline-block;
-        margin-bottom: 0.5rem;
-    }
-    
-    .option-description {
-        color: #6b7280;
-        font-size: 0.875rem;
-        line-height: 1.5;
+        transition: all 0.2s ease;
     }
 
-    .scrollbar-thin::-webkit-scrollbar {
-        width: 6px;
+    .mic-button:hover {
+        background: #4b5563;
     }
-    
-    .scrollbar-thin::-webkit-scrollbar-track {
+
+    .input-area input {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 20px;
+        background: #f9fafb;
+        color: #374151;
+        font-size: 0.95rem;
+    }
+
+    .input-area input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        background: white;
+    }
+
+    .send-button {
+        padding: 0.75rem 1.5rem;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+    }
+
+    .send-button:hover {
+        background: #2563eb;
+    }
+
+    .typing-indicator {
         background: #f3f4f6;
-        border-radius: 3px;
+        color: #6b7280;
+        padding: 0.5rem 1rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        font-style: italic;
+        display: none;
+        max-width: 80%;
     }
-    
-    .scrollbar-thin::-webkit-scrollbar-thumb {
+
+    .loading-spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #f3f4f6;
+        border-radius: 50%;
+        border-top-color: #3b82f6;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 0.5rem;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .main-discussion {
+            grid-template-columns: 1fr;
+        }
+        
+        .participants-sidebar {
+            display: none;
+        }
+        
+        .user-cards-scroll {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .user-policy-card {
+            min-width: 100%;
+            max-width: 300px;
+        }
+    }
+
+    .final-recommendations {
+        background: white;
+        border-top: 1px solid #e5e7eb;
+        padding: 2rem;
+        display: none;
+    }
+
+    .recommendation-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .action-button {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.95rem;
+    }
+
+    .accept-button {
+        background: #16a34a;
+        color: white;
+    }
+
+    .accept-button:hover {
+        background: #15803d;
+    }
+
+    .modify-button {
         background: #f59e0b;
-        border-radius: 3px;
+        color: white;
+    }
+
+    .modify-button:hover {
+        background: #d97706;
+    }
+
+    .policy-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .policy-card {
+        background: white;
+        border: 2px solid #f59e0b;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .policy-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+    }
+
+    .policy-title {
+        font-weight: 600;
+        color: #f59e0b;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .policy-option {
+        background: #fef3c7;
+        color: #92400e;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        display: inline-block;
+    }
+
+    .policy-description {
+        color: #6b7280;
+        font-size: 0.9rem;
+        line-height: 1.4;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="main-container">
-    <!-- Page Header -->
-    <div class="page-header">
-        <h1 class="text-4xl font-bold text-gray-800 mb-4">Multi-Agent Policy Discussion</h1>
-        <p class="text-lg text-gray-600 leading-relaxed">
-            You will now engage in a structured discussion with four AI representatives about refugee education policy.
-            Each agent will share their perspective and ask you a question. After hearing from all agents, you'll make a final group recommendation.
-        </p>
+<div class="header">
+    <h1>Republic of Bean: Refugee Education Policy Simulation</h1>
+    <div class="phase-info">
+        <span>Phase 2/3</span>
+        <span class="budget-badge">Budget: 3/14 units</span>
+    </div>
+</div>
+
+<div class="user-cards-section">
+    <div class="user-cards-title">Phase 2: Group Discussion</div>
+    <div class="user-cards-scroll" id="user-cards-scroll">
+        <!-- User's policy cards will be populated here -->
+    </div>
+</div>
+
+<div class="main-discussion">
+    <div class="participants-sidebar">
+        <div class="participants-title">Participants</div>
+        
+        <div class="participant-item moderator">Moderator</div>
+        <div class="participant-item">Amir</div>
+        <div class="participant-item">Salma</div>
+        <div class="participant-item">Lila</div>
+        <div class="participant-item">Leila</div>
+        <div class="participant-item you">You</div>
     </div>
 
-    <!-- Progress Indicator -->
-    <div class="progress-indicator">
-        <div class="text-sm font-medium text-gray-700 mb-1">Discussion Progress</div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
-        </div>
-        <div class="text-xs text-gray-500" id="progress-text">Waiting to begin...</div>
-    </div>
-
-    <!-- Conversation Panel -->
-    <div class="conversation-panel">
-        <div class="message-container scrollbar-thin" id="message-container">
-            <!-- Moderator Introduction -->
-            <div class="message moderator-message">
-                <div class="message-header">
-                    <div class="message-icon moderator-icon">
-                        <i class="fas fa-gavel"></i>
-                    </div>
-                    Moderator
-                </div>
-                <div>{{ moderator_intro }}</div>
+    <div class="chat-area">
+        <div class="messages-container" id="messages">
+            <div class="message moderator">
+                <div class="message-header">Moderator</div>
+                <div class="message-content">Welcome to the group discussion phase. You will now discuss your policy choices with four stakeholders from the Republic of Bean. Each stakeholder has their own background and perspective. Let's begin with introductions.</div>
             </div>
         </div>
         
-        <!-- User Input Section -->
-        <div class="user-input-section" id="user-input-section" style="display: none;">
-            <div class="waiting-prompt" id="waiting-prompt">
-                Please answer the question above to continue the discussion...
-            </div>
-            <div class="input-group">
-                <textarea 
-                    id="user-response" 
-                    class="input-field" 
-                    placeholder="Share your thoughts and respond to the agent's question..."
-                    rows="3"
-                ></textarea>
-                <button 
-                    id="submit-response" 
-                    class="submit-btn"
-                    onclick="submitUserResponse()"
-                >
-                    <i class="fas fa-paper-plane mr-2"></i>
-                    Submit Response
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Final Decision Section -->
-    <div class="final-decision-section" id="final-decision-section">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Final Group Recommendation</h2>
-        
-        <div class="policy-options">
-            {% for option_id, option in policy_options.items() %}
-            <div class="policy-option" onclick="selectOption('{{ option_id }}')" data-option="{{ option_id }}">
-                <div class="option-title">{{ option.name }}</div>
-                <div class="option-cost">Cost: {{ option.cost }} units</div>
-                <div class="option-description">{{ option.description }}</div>
-            </div>
-            {% endfor %}
+        <div class="typing-indicator" id="typing-indicator">
+            <span class="loading-spinner"></span>
+            <span id="typing-text">Agent is typing...</span>
         </div>
         
-        <div class="input-group mt-4">
-            <textarea 
-                id="final-reasoning" 
-                class="input-field" 
-                placeholder="Explain your final choice and how the discussion influenced your decision..."
-                rows="4"
-            ></textarea>
-            <button 
-                id="submit-final-decision" 
-                class="submit-btn"
-                onclick="submitFinalDecision()"
-                disabled
-            >
-                <i class="fas fa-check mr-2"></i>
-                Submit Decision
-            </button>
+        <div class="input-area">
+            <button class="mic-button" title="Voice input">🎤</button>
+            <input type="text" id="user-input" placeholder="Type your message..." disabled>
+            <button class="send-button" id="send-button" disabled>Send</button>
         </div>
     </div>
 </div>
 
+<!-- Final Recommendations (shown after discussion) -->
+<div class="final-recommendations" id="final-recommendations">
+    <h2 style="text-align: center; margin-bottom: 2rem; color: #374151;">Final Group Recommendations</h2>
+    <div class="policy-cards-grid" id="final-cards-grid">
+        <!-- Policy cards will be populated here -->
+    </div>
+    <div class="recommendation-actions">
+        <button class="action-button accept-button" onclick="acceptRecommendation()">
+            Accept Group Recommendation
+        </button>
+        <button class="action-button modify-button" onclick="requestModification()">
+            Request Modification
+        </button>
+    </div>
+</div>
+
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 <script>
-let currentAgentIndex = 0;
-const agentsOrder = ['Amir', 'Salma', 'Lila', 'Leila'];
-let waitingForUser = false;
-let selectedOption = null;
+// Socket.IO connection
+const socket = io();
+
+// DOM elements
+const messagesContainer = document.getElementById('messages');
+const userInput = document.getElementById('user-input');
+const sendButton = document.getElementById('send-button');
+const typingIndicator = document.getElementById('typing-indicator');
+const finalRecommendations = document.getElementById('final-recommendations');
+const userCardsScroll = document.getElementById('user-cards-scroll');
+
+// Discussion state
+let currentTurn = 0;
+let discussionActive = false;
+let agents = [];
+let userCanRespond = false;
 
 // Initialize the discussion
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Page loaded, starting discussion...');
-    // Start with first agent after a brief delay
-    setTimeout(() => {
-        console.log('Starting first agent turn...');
-        nextAgentTurn();
-    }, 3000);
+    displayUserPolicyCards();
+    startDiscussion();
 });
 
-function nextAgentTurn(userResponse = '') {
-    if (currentAgentIndex >= agentsOrder.length) {
-        // All agents have spoken, show final decision
-        showFinalDecision();
+function displayUserPolicyCards() {
+    // Get user's policy selections and display them
+    const userPolicies = {{ user_selections | tojson }};
+    const policyData = {{ policy_data | tojson }};
+    
+    userCardsScroll.innerHTML = '';
+    
+    Object.keys(userPolicies).forEach(policyName => {
+        const optionLevel = userPolicies[policyName];
+        const policyInfo = policyData.find(p => p.name === policyName);
+        
+        if (policyInfo) {
+            const option = policyInfo.options[optionLevel - 1];
+            const card = document.createElement('div');
+            card.className = 'user-policy-card';
+            card.innerHTML = `
+                <div class="policy-name">${policyName}</div>
+                <div class="policy-option">${option.label}</div>
+                <div class="policy-description">${option.summary}</div>
+            `;
+            userCardsScroll.appendChild(card);
+        }
+    });
+}
+
+function startDiscussion() {
+    console.log('Starting first agent turn...');
+    // Start with first agent
+    nextTurn();
+}
+
+function nextTurn() {
+    if (currentTurn >= 7) { // After all agents have spoken
+        showFinalRecommendations();
         return;
     }
     
-    // Hide user input while agent is "thinking"
-    document.getElementById('user-input-section').classList.remove('active');
-    
-    // Update progress
-    updateProgress();
+    // Show typing indicator
+    showTypingIndicator();
     
     // Make API call to get next agent response
     fetch('/api/multi_agent/next_turn', {
@@ -417,166 +534,83 @@ function nextAgentTurn(userResponse = '') {
             'X-CSRFToken': '{{ csrf_token() }}'
         },
         body: JSON.stringify({
-            user_response: userResponse
+            turn: currentTurn
         })
     })
     .then(response => response.json())
     .then(data => {
         console.log('Agent response received:', data);
-        if (data.error) {
-            console.error('Error:', data.error);
-            // Show error message to user
-            addModeratorMessage('Sorry, there was an error getting the agent response. Please try again.');
-            return;
-        }
+        hideTypingIndicator();
         
-        if (data.type === 'agent_response') {
-            // Add agent message to conversation
-            addAgentMessage(data.agent_name, data.message);
+        if (data.type === 'moderator_summary') {
+            addMessage('Moderator', data.message, 'moderator');
+            showFinalRecommendations();
+        } else if (data.message) {
+            addMessage(data.agent_name || 'Agent', data.message, 'agent');
+            currentTurn++;
             
-            // Show user input section
-            waitingForUser = true;
-            console.log('Showing user input section...');
-            const inputSection = document.getElementById('user-input-section');
-            const userResponse = document.getElementById('user-response');
-            
-            if (inputSection) {
-                inputSection.classList.add('active');
-                inputSection.style.display = 'block';
-            }
-            if (userResponse) {
-                userResponse.focus();
-            }
-            
-        } else if (data.type === 'moderator_summary') {
-            // Add final moderator summary
-            addModeratorMessage(data.message);
-            
-            // Show final decision section
+            // Schedule next turn
             setTimeout(() => {
-                showFinalDecision();
-            }, 1000);
+                nextTurn();
+            }, 2000);
         }
     })
     .catch(error => {
         console.error('Error:', error);
+        hideTypingIndicator();
     });
 }
 
-function submitUserResponse() {
-    const responseText = document.getElementById('user-response').value.trim();
-    if (!responseText) {
-        alert('Please enter your response before continuing.');
-        return;
-    }
-    
-    // Add user message to conversation
-    addUserMessage(responseText);
-    
-    // Clear input
-    document.getElementById('user-response').value = '';
-    
-    // Move to next agent
-    currentAgentIndex++;
-    waitingForUser = false;
-    
-    // Continue with next agent
-    setTimeout(() => {
-        nextAgentTurn(responseText);
-    }, 500);
-}
-
-function addModeratorMessage(message) {
-    const messageContainer = document.getElementById('message-container');
+function addMessage(sender, message, type = 'agent') {
     const messageDiv = document.createElement('div');
-    messageDiv.className = 'message moderator-message';
+    messageDiv.className = `message ${type}`;
     messageDiv.innerHTML = `
-        <div class="message-header">
-            <div class="message-icon moderator-icon">
-                <i class="fas fa-gavel"></i>
-            </div>
-            Moderator
-        </div>
-        <div>${message}</div>
+        <div class="message-header">${sender}</div>
+        <div class="message-content">${message}</div>
     `;
-    messageContainer.appendChild(messageDiv);
-    messageContainer.scrollTop = messageContainer.scrollHeight;
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-function addAgentMessage(agentName, message) {
-    const messageContainer = document.getElementById('message-container');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message agent-message';
-    messageDiv.innerHTML = `
-        <div class="message-header">
-            <div class="message-icon agent-icon">
-                <i class="fas fa-user"></i>
-            </div>
-            ${agentName}
-        </div>
-        <div>${message}</div>
-    `;
-    messageContainer.appendChild(messageDiv);
-    messageContainer.scrollTop = messageContainer.scrollHeight;
+function showTypingIndicator() {
+    typingIndicator.style.display = 'block';
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-function addUserMessage(message) {
-    const messageContainer = document.getElementById('message-container');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message user-message';
-    messageDiv.innerHTML = `
-        <div class="message-header">
-            <div class="message-icon user-icon">
-                <i class="fas fa-user"></i>
-            </div>
-            You
-        </div>
-        <div>${message}</div>
-    `;
-    messageContainer.appendChild(messageDiv);
-    messageContainer.scrollTop = messageContainer.scrollHeight;
+function hideTypingIndicator() {
+    typingIndicator.style.display = 'none';
 }
 
-function updateProgress() {
-    const progressFill = document.getElementById('progress-fill');
-    const progressText = document.getElementById('progress-text');
+function showFinalRecommendations() {
+    // Display final recommendations
+    displayFinalPolicyCards();
+    finalRecommendations.style.display = 'block';
+}
+
+function displayFinalPolicyCards() {
+    const finalCardsGrid = document.getElementById('final-cards-grid');
+    const userPolicies = {{ user_selections | tojson }};
+    const policyData = {{ policy_data | tojson }};
     
-    const progress = (currentAgentIndex / agentsOrder.length) * 100;
-    progressFill.style.width = progress + '%';
+    finalCardsGrid.innerHTML = '';
     
-    if (currentAgentIndex < agentsOrder.length) {
-        progressText.textContent = `Speaking with ${agentsOrder[currentAgentIndex]} (${currentAgentIndex + 1}/${agentsOrder.length})`;
-    } else {
-        progressText.textContent = 'Discussion complete - Make your final decision';
-        progressFill.style.width = '100%';
-    }
-}
-
-function showFinalDecision() {
-    const inputSection = document.getElementById('user-input-section');
-    const finalSection = document.getElementById('final-decision-section');
-    
-    if (inputSection) {
-        inputSection.classList.remove('active');
-        inputSection.style.display = 'none';
-    }
-    if (finalSection) {
-        finalSection.classList.add('active');
-        finalSection.style.display = 'block';
+    Object.keys(userPolicies).forEach(policyName => {
+        const optionLevel = userPolicies[policyName];
+        const policyInfo = policyData.find(p => p.name === policyName);
         
-        // Update the final policy display with actual selections
-        updateFinalPolicyDisplay();
-        
-        // Scroll to final decision section
-        finalSection.scrollIntoView({ 
-            behavior: 'smooth' 
-        });
-    }
-}
-
-function updateFinalPolicyDisplay() {
-    // This would be called to update the cards with actual deliberation results
-    // For now, the cards show the demo policy package
+        if (policyInfo) {
+            const option = policyInfo.options[optionLevel - 1];
+            const card = document.createElement('div');
+            card.className = 'policy-card';
+            card.innerHTML = `
+                <div class="policy-title">${policyName}</div>
+                <div class="policy-option">${option.label}</div>
+                <div class="policy-description">${option.summary}</div>
+            `;
+            finalCardsGrid.appendChild(card);
+        }
+    });
+    
     console.log('Final policy display updated with group recommendations');
 }
 
@@ -608,68 +642,48 @@ function acceptRecommendation() {
 }
 
 function requestModification() {
-    // Handle requesting modifications to the recommendation
-    alert('Modification request noted. The group will reconvene to discuss changes.');
-    // This could reopen the discussion or provide modification options
+    // Handle requesting modification
+    alert('Modification request feature coming soon!');
 }
 
-function selectOption(optionId) {
-    // Remove previous selection
-    document.querySelectorAll('.policy-option').forEach(option => {
-        option.classList.remove('selected');
-    });
-    
-    // Add selection to clicked option
-    document.querySelector(`[data-option="${optionId}"]`).classList.add('selected');
-    selectedOption = optionId;
-    
-    // Enable submit button
-    document.getElementById('submit-final-decision').disabled = false;
-}
-
-function submitFinalDecision() {
-    if (!selectedOption) {
-        alert('Please select a policy option before submitting.');
-        return;
-    }
-    
-    const reasoning = document.getElementById('final-reasoning').value.trim();
-    if (!reasoning) {
-        alert('Please explain your reasoning before submitting.');
-        return;
-    }
-    
-    // Submit final decision
-    fetch('/api/multi_agent/final_decision', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            final_choice: selectedOption,
-            reasoning: reasoning
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Redirect to phase 3
-            window.location.href = data.redirect_url;
-        } else {
-            console.error('Error submitting decision:', data);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
-// Allow Enter key to submit responses
-document.getElementById('user-response').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        submitUserResponse();
+// Handle user input
+userInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !sendButton.disabled) {
+        sendMessage();
     }
 });
+
+sendButton.addEventListener('click', sendMessage);
+
+function sendMessage() {
+    const message = userInput.value.trim();
+    if (message && userCanRespond) {
+        addMessage('You', message, 'user');
+        userInput.value = '';
+        userCanRespond = false;
+        userInput.disabled = true;
+        sendButton.disabled = true;
+        
+        // Process user message and continue discussion
+        // This would integrate with the agent response system
+    }
+}
+
+// Handle socket events
+socket.on('connect', function() {
+    console.log('Connected to server');
+});
+
+socket.on('disconnect', function() {
+    console.log('Disconnected from server');
+});
+
+// Enable user input when appropriate
+function enableUserInput() {
+    userCanRespond = true;
+    userInput.disabled = false;
+    sendButton.disabled = false;
+    userInput.focus();
+}
 </script>
 {% endblock %}
