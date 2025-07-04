@@ -47,6 +47,7 @@
         background: white;
         padding: 1.5rem 2rem;
         border-bottom: 1px solid #e5e7eb;
+        min-height: 120px;
     }
 
     .user-cards-title {
@@ -68,9 +69,11 @@
         border: 2px solid #fbbf24;
         border-radius: 12px;
         padding: 1rem;
-        min-width: 250px;
+        min-width: 280px;
+        max-width: 320px;
         flex-shrink: 0;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 0.5rem;
     }
 
     .user-policy-card .policy-name {
@@ -100,7 +103,8 @@
     .main-discussion {
         display: grid;
         grid-template-columns: 250px 1fr;
-        height: calc(100vh - 200px);
+        height: calc(100vh - 280px);
+        min-height: 500px;
     }
 
     .participants-sidebar {
@@ -400,7 +404,7 @@
     <h1>Republic of Bean: Refugee Education Policy Simulation</h1>
     <div class="phase-info">
         <span>Phase 2/3</span>
-        <span class="budget-badge">Budget: 3/14 units</span>
+        <span class="budget-badge">Multi-Agent Discussion</span>
     </div>
 </div>
 
@@ -491,6 +495,9 @@ function displayUserPolicyCards() {
     const userPolicies = {{ user_selections | tojson | safe }};
     const policyData = {{ policy_data | tojson | safe }};
     
+    console.log('User policies:', userPolicies);
+    console.log('Policy data:', policyData);
+    
     userCardsScroll.innerHTML = '';
     
     if (!userPolicies || Object.keys(userPolicies).length === 0) {
@@ -502,14 +509,26 @@ function displayUserPolicyCards() {
         const optionLevel = userPolicies[policyName];
         const policyInfo = policyData.find(p => p.name === policyName);
         
-        if (policyInfo) {
+        console.log(`Processing ${policyName}, level ${optionLevel}, found policy:`, policyInfo);
+        
+        if (policyInfo && policyInfo.options && policyInfo.options[optionLevel - 1]) {
             const option = policyInfo.options[optionLevel - 1];
             const card = document.createElement('div');
             card.className = 'user-policy-card';
             card.innerHTML = `
                 <div class="policy-name">${policyName}</div>
-                <div class="policy-option">${option.label}</div>
-                <div class="policy-description">${option.summary}</div>
+                <div class="policy-option">${option.label || ('Option ' + optionLevel)}</div>
+                <div class="policy-description">${option.summary || option.description || 'No description available'}</div>
+            `;
+            userCardsScroll.appendChild(card);
+        } else {
+            // Fallback card for debugging
+            const card = document.createElement('div');
+            card.className = 'user-policy-card';
+            card.innerHTML = `
+                <div class="policy-name">${policyName}</div>
+                <div class="policy-option">Option ${optionLevel}</div>
+                <div class="policy-description">Policy option selected</div>
             `;
             userCardsScroll.appendChild(card);
         }
