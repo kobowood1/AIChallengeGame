@@ -490,10 +490,19 @@
         <div class="participants-title">Participants</div>
         
         <div class="participant-item moderator">Moderator</div>
-        <div class="participant-item">Amir</div>
-        <div class="participant-item">Salma</div>
-        <div class="participant-item">Lila</div>
-        <div class="participant-item">Leila</div>
+        {% for agent_name in agent_names %}
+        <div class="participant-item agent-participant" data-agent="{{ agent_name }}">
+            {{ agent_name }}
+            {% if agent_policies.get(agent_name) %}
+            <div class="agent-policy-preview">
+                <div class="text-xs text-gray-600 mt-1">Selections:</div>
+                {% for policy_name, option_level in agent_policies[agent_name].items() %}
+                <div class="text-xs text-gray-500">{{ policy_name[:12] }}... Opt{{ option_level }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
         <div class="participant-item you">You</div>
     </div>
 
@@ -815,5 +824,15 @@ function enableUserInput() {
 
 // Enable input by default
 enableUserInput();
+
+// Add click handlers for participant items to mention them
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.agent-participant').forEach(item => {
+        item.addEventListener('click', function() {
+            const agentName = this.getAttribute('data-agent');
+            mentionUser(agentName);
+        });
+    });
+});
 </script>
 {% endblock %}

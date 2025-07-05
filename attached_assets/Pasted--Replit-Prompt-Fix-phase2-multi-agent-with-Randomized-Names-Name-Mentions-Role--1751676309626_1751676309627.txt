@@ -1,0 +1,64 @@
+**Replit Prompt – “Fix `/phase2_multi_agent` with Randomized Names & Name Mentions”**
+
+> **Role:** You are a senior full-stack engineer using Flask, Jinja2, Socket.IO, Tailwind CSS, and both OpenAI & Gemini APIs.
+> **Objective:** Repair the `/phase2_multi_agent` page so that:
+>
+> 1. Each agent is assigned a **random name** on load (not “Agent A/B/C/D”).
+> 2. When any participant types “@Name” in chat, the matching agent (or user) responds immediately.
+> 3. The user’s policy cards appear at the top; each agent’s policy cards display in a randomized order in the sidebar.
+> 4. Agent↔agent, agent↔user, and user↔agent messaging all work seamlessly.
+>
+> **Tasks:**
+>
+> 1. **Randomize Agent Names**
+>
+>    * In your Python route (`multi_agent.py`), create a list of unique human names (e.g., `["Amir","Salma","Lila","Leila","Rashid","Mara"]`).
+>    * On each new session, shuffle this list and pop four names for agents. Store under `session["agent_names"]`.
+>    * Update the sidebar rendering in `phase2_multi_agent.html` to use `agent_names` instead of static labels.
+> 2. **Display User & Agent Policy Cards**
+>
+>    * Top of the page: render `session["user_policy"]` cards in an `overflow-x-auto flex space-x-4`.
+>    * Sidebar: render each agent’s `session["agent_policy"][name]` in a `div` labeled by that random name.
+> 3. **Socket.IO Event Handling**
+>
+>    * On connect, emit `join_room("multi_agent")`.
+>    * Listen for `chat_message` events with payload `{ from, text }`.
+>    * Broadcast every incoming message to all sockets.
+> 4. **Name Mention Trigger**
+>
+>    * After broadcasting a user’s message, scan `text` for `@Name` matches against `session["agent_names"]` or `"You"`/`"Moderator"`.
+>    * If found, immediately invoke that entity’s response flow:
+>
+>      * **Moderator**: always use OpenAI ChatCompletion.
+>      * **First two agents**: use OpenAI API.
+>      * **Last two agents**: use Gemini API.
+>    * Append the response to the chat history and emit it back into the room.
+> 5. **Maintain Context History**
+>
+>    * Keep a rolling `history` list in memory/session that begins with:
+>
+>      1. System prompt summarizing `session["user_policy"]`.
+>      2. System prompt introducing randomized agent names and their policy choices.
+>    * For every new message, append `{role:"user"|"assistant", name:, content:}`.
+>    * Pass full `history` into each API call so agents can refer back to any previous mention or policy detail.
+> 6. **UI – WhatsApp-Style Chat**
+>
+>    * Use Tailwind classes for message bubbles:
+>
+>      * Moderator: `bg-gray-200`
+>      * User: `bg-yellow-300`
+>      * OpenAI agents: `bg-blue-200`
+>      * Gemini agents: `bg-purple-200`
+>    * Each bubble shows `senderName`, timestamp, and `text`.
+>    * Support clickable `@Name` within bubbles (wrap in `<span class="font-bold cursor-pointer">@Name</span>`).
+>    * On click, focus the input and prefill with `@Name `.
+>
+> **Acceptance Criteria:**
+>
+> * Every session yields **new agent names** displayed in the sidebar.
+> * Typing “@Name” triggers that exact agent to speak.
+> * Chat flows: user message → broadcast → any name-mention triggers single agent response → broadcast → others unaffected unless mentioned.
+> * Policy cards remain visible in correct sections.
+> * No JavaScript console errors; chat scrolls smoothly; layout preserves your yellow card aesthetic.
+>
+> Paste this prompt into Replit AI to generate the updated route code, Socket.IO handlers, and template changes for `phase2_multi_agent.html`.
