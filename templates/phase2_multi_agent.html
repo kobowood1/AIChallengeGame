@@ -588,9 +588,26 @@ sendButton.addEventListener('click', function(e) {
     sendMessage();
 });
 
+// Process @mentions in messages
+function processAtMentions(message) {
+    // Find all @mentions in the message
+    const mentionPattern = /@(\w+)/g;
+    let processedMessage = message;
+    
+    // Replace @mentions with proper formatting
+    processedMessage = processedMessage.replace(mentionPattern, (match, name) => {
+        return `<span class="mention">@${name}</span>`;
+    });
+    
+    return processedMessage;
+}
+
 function sendMessage() {
     const message = userInput.value.trim();
     if (message) {
+        // Add user message to chat immediately
+        addMessage('You', message, 'user');
+        
         // Send message via Socket.IO
         socket.emit('send_multi_agent_message', {
             room_id: 'multi_agent',
@@ -605,6 +622,8 @@ function sendMessage() {
 // Handle socket events
 socket.on('connect', function() {
     console.log('Connected to server');
+    console.log('Socket.IO loaded:', typeof io !== "undefined");
+    console.log('Socket connected:', socket.connected);
     // Join the multi-agent room
     socket.emit('join_multi_agent_room', { room_id: 'multi_agent' });
 });

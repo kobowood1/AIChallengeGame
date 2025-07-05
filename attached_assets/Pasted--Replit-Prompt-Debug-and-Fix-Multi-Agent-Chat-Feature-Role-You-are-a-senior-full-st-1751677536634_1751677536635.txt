@@ -1,0 +1,81 @@
+**Replit Prompt – “Debug and Fix Multi-Agent Chat Feature”**
+
+> **Role:** You are a senior full-stack engineer using Flask, Jinja2, Socket.IO, and Tailwind CSS.
+> **Objective:** Pinpoint and resolve why the `/phase2_multi_agent` group chat UI is not displaying messages, and why user inputs and AI agent responses are not appearing.
+>
+> **Tasks:**
+>
+> 1. **Verify Socket.IO Client Load**
+>
+>    * In `templates/phase2_multi_agent.html` just before `</body>`, add:
+>
+>      ```html
+>      <script src="/socket.io/socket.io.js"></script>
+>      <script>
+>        console.log("Socket.IO loaded:", typeof io !== "undefined");
+>        const socket = io();
+>        console.log("Socket connected:", socket);
+>      </script>
+>      ```
+> 2. **Ensure Chat Container Exists**
+>
+>    * Confirm there is a `<div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-2"></div>` in your HTML.
+>    * If missing, insert it above the message input form.
+> 3. **Add Client-Side Echo Listener**
+>
+>    * After your Socket.IO snippet, append:
+>
+>      ```html
+>      <script>
+>        socket.on("connect", () => console.log("Socket.IO connected as", socket.id));
+>        socket.on("chat_message", data => {
+>          console.log("Received chat_message:", data);
+>          const container = document.getElementById("chat-container");
+>          const msgEl = document.createElement("div");
+>          msgEl.className = "p-2 rounded bg-gray-200";
+>          msgEl.textContent = `${data.from}: ${data.text}`;
+>          container.appendChild(msgEl);
+>          container.scrollTop = container.scrollHeight;
+>        });
+>        document.getElementById("send-btn").addEventListener("click", () => {
+>          const input = document.getElementById("chat-input");
+>          const text = input.value.trim();
+>          if (!text) return;
+>          console.log("Sending chat_message:", text);
+>          socket.emit("chat_message", { from: "You", text });
+>          input.value = "";
+>        });
+>      </script>
+>      ```
+>    * Ensure your send button has `id="send-btn"` and your input has `id="chat-input"`.
+> 4. **Log Server-Side Events**
+>
+>    * In your Flask Socket.IO handler, add:
+>
+>      ```python
+>      @socketio.on("chat_message")
+>      def handle_chat(data):
+>          app.logger.info(f"Server got chat_message: {data}")
+>          emit("chat_message", data, broadcast=True, include_self=True)
+>      ```
+>    * Run the app in debug mode and confirm these logs appear when you send a message.
+> 5. **Test AI Agent Responses**
+>
+>    * After echo works, modify `handle_chat` to trigger agent responses on `@Name` or round-robin:
+>
+>      ```python
+>      if "@" + agent_name in data["text"]:
+>          response = generate_agent_reply(agent_name, data["text"])
+>          app.logger.info(f"Agent {agent_name} responding: {response}")
+>          emit("chat_message", {"from": agent_name, "text": response}, broadcast=True)
+>      ```
+>    * Check for the “Agent … responding” log entries.
+>
+> **Acceptance Criteria:**
+>
+> * Browser console shows “Socket.IO loaded” and “Socket.IO connected”.
+> * Sending a message echoes back in the chat UI.
+> * Server logs incoming `chat_message` events.
+> * AI agent reply code logs and broadcasts messages when triggered.
+>
+> Paste this entire prompt into Replit AI to generate the necessary updates in your HTML template, client‐side script, and Flask Socket.IO handlers.
