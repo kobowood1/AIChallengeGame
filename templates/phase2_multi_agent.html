@@ -43,248 +43,7 @@
         font-weight: 500;
     }
 
-    .user-cards-section {
-        background: white;
-        padding: 1.5rem 2rem;
-        border-bottom: 1px solid #e5e7eb;
-        min-height: 120px;
-    }
-
-    .user-cards-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #28a745;
-        margin-bottom: 1rem;
-    }
-
-    .user-cards-scroll {
-        display: flex;
-        gap: 1rem;
-        overflow-x: auto;
-        padding-bottom: 0.5rem;
-    }
-
-    .user-policy-card {
-        background: white;
-        border: 2px solid #fbbf24;
-        border-radius: 12px;
-        padding: 1rem;
-        min-width: 280px;
-        max-width: 320px;
-        flex-shrink: 0;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        margin-bottom: 0.5rem;
-    }
-
-    .user-policy-card .policy-name {
-        font-weight: 600;
-        color: #f59e0b;
-        margin-bottom: 0.5rem;
-        font-size: 1rem;
-    }
-
-    .user-policy-card .policy-option {
-        background: #fef3c7;
-        color: #92400e;
-        padding: 0.5rem 0.75rem;
-        border-radius: 8px;
-        font-weight: 500;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-        display: inline-block;
-    }
-
-    .user-policy-card .policy-description {
-        color: #6b7280;
-        font-size: 0.8rem;
-        line-height: 1.3;
-    }
-
-    .main-discussion {
-        display: grid;
-        grid-template-columns: 250px 1fr;
-        height: calc(100vh - 280px);
-        min-height: 500px;
-    }
-
-    .participants-sidebar {
-        background: #f8f9fa;
-        border-right: 1px solid #e5e7eb;
-        padding: 1.5rem;
-        overflow-y: auto;
-    }
-
-    .participants-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 1rem;
-    }
-
-    .participant-item {
-        background: white;
-        border-radius: 8px;
-        padding: 0.75rem;
-        margin-bottom: 0.75rem;
-        border: 1px solid #e5e7eb;
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: #4b5563;
-    }
-
-    .participant-item.active {
-        background: #dcfce7;
-        border-color: #16a34a;
-        color: #166534;
-    }
-
-    .participant-item.moderator {
-        background: #fef3c7;
-        border-color: #f59e0b;
-        color: #92400e;
-    }
-
-    .participant-item.you {
-        background: #dbeafe;
-        border-color: #3b82f6;
-        color: #1e40af;
-    }
-
-    .chat-area {
-        display: flex;
-        flex-direction: column;
-        background: white;
-    }
-
-    .messages-container {
-        flex: 1;
-        overflow-y: auto;
-        padding: 1.5rem;
-        background: #f8f9fa;
-    }
-
-    .message {
-        margin-bottom: 1rem;
-        max-width: 80%;
-        word-wrap: break-word;
-    }
-
-    .message.moderator {
-        background: #fef3c7;
-        color: #92400e;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-left: 0;
-    }
-
-    .message.agent {
-        background: #dcfce7;
-        color: #166534;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-left: 0;
-    }
-
-    .message.user {
-        background: #dbeafe;
-        color: #1e40af;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-left: auto;
-        margin-right: 0;
-    }
-
-    .message-header {
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
-
-    .message-content {
-        line-height: 1.4;
-        font-size: 0.95rem;
-    }
-
-    .input-area {
-        display: flex;
-        gap: 0.75rem;
-        align-items: center;
-        padding: 1rem 1.5rem;
-        background: white;
-        border-top: 1px solid #e5e7eb;
-    }
-
-    .mic-button {
-        background: #6b7280;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .mic-button:hover {
-        background: #4b5563;
-    }
-
-    .input-area input {
-        flex: 1;
-        padding: 0.75rem 1rem;
-        border: 1px solid #d1d5db;
-        border-radius: 20px;
-        background: #f9fafb;
-        color: #374151;
-        font-size: 0.95rem;
-    }
-
-    .input-area input:focus {
-        outline: none;
-        border-color: #3b82f6;
-        background: white;
-    }
-
-    .send-button {
-        padding: 0.75rem 1.5rem;
-        background: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 20px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-size: 0.9rem;
-    }
-
-    .send-button:hover {
-        background: #2563eb;
-    }
-
-    .typing-indicator {
-        background: #f3f4f6;
-        color: #6b7280;
-        padding: 0.5rem 1rem;
-        border-radius: 12px;
-        margin-bottom: 1rem;
-        font-style: italic;
-        display: none;
-        max-width: 80%;
-    }
-
-    .loading-spinner {
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        border: 2px solid #f3f4f6;
-        border-radius: 50%;
-        border-top-color: #3b82f6;
-        animation: spin 1s ease-in-out infinite;
-        margin-right: 0.5rem;
-    }
+    /* All styles now handled by Tailwind CSS classes */
 
     @keyframes spin {
         to { transform: rotate(360deg); }
@@ -478,71 +237,93 @@
     </div>
 </div>
 
-<div class="user-cards-section">
-    <div class="user-cards-title">Phase 2: Group Discussion</div>
-    <div class="user-cards-scroll" id="user-cards-scroll">
+<!-- Policy Cards Section - Responsive Grid -->
+<div class="w-full bg-white p-4 border-b border-gray-200">
+    <div class="text-lg font-semibold text-gray-800 mb-4">Phase 2: Group Discussion</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4" id="user-cards-scroll">
         <!-- User's policy cards will be populated here -->
     </div>
 </div>
 
-<div class="main-discussion">
-    <div class="participants-sidebar">
-        <div class="participants-title">Participants</div>
+<!-- Main Discussion Layout - Responsive Flex -->
+<div class="flex flex-col lg:flex-row h-full">
+    <!-- Sidebar - Full width on mobile, fixed width on desktop -->
+    <aside class="w-full lg:w-64 flex-shrink-0 p-4 bg-gray-50 border-r border-gray-200">
+        <div class="text-lg font-semibold text-gray-800 mb-4">Participants</div>
         
-        <div class="participant-item moderator">Moderator</div>
-        {% for agent_name in agent_names %}
-        <div class="participant-item agent-participant" data-agent="{{ agent_name }}">
-            {{ agent_name }}
-            {% if agent_policies.get(agent_name) %}
-            <div class="agent-policy-preview">
-                <div class="text-xs text-gray-600 mt-1">Selections:</div>
-                {% for policy_name, option_level in agent_policies[agent_name].items() %}
-                <div class="text-xs text-gray-500">{{ policy_name[:12] }}... Opt{{ option_level }}</div>
-                {% endfor %}
+        <div class="space-y-2">
+            <div class="p-3 bg-gray-200 text-gray-800 rounded-lg font-medium">Moderator</div>
+            {% for agent_name in agent_names %}
+            <div class="p-3 bg-white border border-gray-200 rounded-lg cursor-pointer hover:bg-yellow-50 hover:border-yellow-300 transition-all agent-participant" data-agent="{{ agent_name }}">
+                <div class="font-medium text-gray-800">{{ agent_name }}</div>
+                {% if agent_policies.get(agent_name) %}
+                <div class="mt-2 text-xs text-gray-600">
+                    <div class="font-medium mb-1">Policy Selections:</div>
+                    {% for policy_name, option_level in agent_policies[agent_name].items() %}
+                    <div class="text-gray-500">{{ policy_name[:12] }}... Option {{ option_level }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
+            {% endfor %}
+            <div class="p-3 bg-yellow-200 text-gray-800 rounded-lg font-medium">You</div>
         </div>
-        {% endfor %}
-        <div class="participant-item you">You</div>
-    </div>
+    </aside>
 
-    <div class="chat-area">
-        <div class="messages-container" id="messages">
-            <div class="message moderator">
-                <div class="message-header">Moderator</div>
-                <div class="message-content">Welcome to the group discussion phase. You will now discuss your policy choices with four stakeholders from the Republic of Bean. Each stakeholder has their own background and perspective. Let's begin with introductions.</div>
+    <!-- Main Chat Area - Flexible content area -->
+    <main class="flex-1 flex flex-col p-4">
+        <!-- Messages Container - Responsive max width -->
+        <div class="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto overflow-y-auto flex-1 space-y-4" id="messages">
+            <div class="bg-gray-200 text-gray-800 p-4 rounded-lg max-w-full">
+                <div class="font-semibold text-sm mb-2">Moderator</div>
+                <div class="text-sm">Welcome to the group discussion phase. You will now discuss your policy choices with four stakeholders from the Republic of Bean. Each stakeholder has their own background and perspective. Let's begin with introductions.</div>
             </div>
         </div>
         
-        <div class="typing-indicator" id="typing-indicator">
-            <span class="loading-spinner"></span>
-            <span id="typing-text">Agent is typing...</span>
+        <!-- Typing Indicator -->
+        <div class="hidden max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto mt-4" id="typing-indicator">
+            <div class="flex items-center space-x-2 text-gray-500 text-sm">
+                <div class="flex space-x-1">
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                </div>
+                <span id="typing-text">Agent is typing...</span>
+            </div>
         </div>
         
-        <div class="input-area">
-            <button class="mic-button" title="Voice input">🎤</button>
-            <input type="text" id="user-input" placeholder="Type your message...">
-            <button class="send-button" id="send-button">Send</button>
+        <!-- Input Area - Responsive form -->
+        <div class="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto mt-4 w-full">
+            <form class="flex flex-col sm:flex-row gap-2 w-full">
+                <input type="text" id="user-input" placeholder="Type your message or @mention an agent..." 
+                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                <button type="submit" id="send-button" 
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                    Send
+                </button>
+            </form>
         </div>
-    </div>
+    </main>
 </div>
 
 <!-- Final Recommendations (shown after discussion) -->
-<div class="final-recommendations" id="final-recommendations">
-    <h2>Final Group Recommendations</h2>
-    <p style="text-align: center; color: #6b7280; margin-bottom: 2rem;">
-        Based on the group discussion, here are the recommended policy choices:
-    </p>
-    <div class="policy-cards-grid" id="final-cards-grid">
-        <!-- Policy cards will be populated here -->
-    </div>
-    <div class="recommendation-actions">
-        <button class="action-button accept-button" onclick="acceptRecommendation()">
-            Accept Group Recommendation
-        </button>
-        <button class="action-button modify-button" onclick="requestModification()">
-            Request Modification
-        </button>
+<div class="hidden bg-white p-6 border-t border-gray-200" id="final-recommendations">
+    <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Final Group Recommendations</h2>
+        <p class="text-center text-gray-600 mb-8">
+            Based on the group discussion, here are the recommended policy choices:
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8" id="final-cards-grid">
+            <!-- Policy cards will be populated here -->
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium" onclick="acceptRecommendation()">
+                Accept Group Recommendation
+            </button>
+            <button class="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium" onclick="requestModification()">
+                Request Modification
+            </button>
+        </div>
     </div>
 </div>
 
@@ -596,21 +377,21 @@ function displayUserPolicyCards() {
         if (policyInfo && policyInfo.options && policyInfo.options[optionLevel - 1]) {
             const option = policyInfo.options[optionLevel - 1];
             const card = document.createElement('div');
-            card.className = 'user-policy-card';
+            card.className = 'bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow w-full';
             card.innerHTML = `
-                <div class="policy-name">${policyName}</div>
-                <div class="policy-option">Option ${optionLevel}</div>
-                <div class="policy-description">${option.description || 'Policy option selected'}</div>
+                <div class="font-semibold text-gray-800 text-sm mb-2">${policyName}</div>
+                <div class="text-xs text-blue-600 font-medium mb-2">Option ${optionLevel}</div>
+                <div class="text-xs text-gray-600 leading-relaxed">${option.description || 'Policy option selected'}</div>
             `;
             userCardsScroll.appendChild(card);
         } else {
             // Fallback card for debugging
             const card = document.createElement('div');
-            card.className = 'user-policy-card';
+            card.className = 'bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow w-full';
             card.innerHTML = `
-                <div class="policy-name">${policyName}</div>
-                <div class="policy-option">Option ${optionLevel}</div>
-                <div class="policy-description">Policy option selected</div>
+                <div class="font-semibold text-gray-800 text-sm mb-2">${policyName}</div>
+                <div class="text-xs text-blue-600 font-medium mb-2">Option ${optionLevel}</div>
+                <div class="text-xs text-gray-600 leading-relaxed">Policy option selected</div>
             `;
             userCardsScroll.appendChild(card);
         }
@@ -667,13 +448,40 @@ function nextTurn() {
     });
 }
 
-function addMessage(sender, message, type = 'agent') {
+function addMessage(sender, message, type = 'agent', agentType = null) {
     const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${type}`;
+    
+    // Determine bubble color and alignment based on sender type
+    let bubbleClasses = 'p-4 rounded-lg max-w-full break-words';
+    let containerClasses = 'w-full';
+    
+    if (type === 'user') {
+        bubbleClasses += ' bg-yellow-300 text-gray-800 ml-auto';
+        containerClasses += ' flex justify-end';
+    } else if (sender === 'Moderator' || type === 'system' || type === 'moderator') {
+        bubbleClasses += ' bg-gray-200 text-gray-800';
+    } else if (agentType === 'openai') {
+        bubbleClasses += ' bg-blue-200 text-gray-800';
+    } else if (agentType === 'gemini') {
+        bubbleClasses += ' bg-purple-200 text-gray-800';
+    } else {
+        bubbleClasses += ' bg-gray-100 text-gray-800';
+    }
+    
+    const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    
+    // Process @mentions in the message
+    const processedMessage = processAtMentions(message);
+    
+    messageDiv.className = containerClasses;
     messageDiv.innerHTML = `
-        <div class="message-header">${sender}</div>
-        <div class="message-content">${message}</div>
+        <div class="${bubbleClasses}">
+            <div class="font-semibold text-sm mb-2">${sender}</div>
+            <div class="text-sm leading-relaxed">${processedMessage}</div>
+            <div class="text-xs opacity-70 mt-2">${timestamp}</div>
+        </div>
     `;
+    
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
@@ -682,18 +490,18 @@ function showTypingIndicator(agentName = 'Agent') {
     const indicator = typingIndicator;
     const text = document.getElementById('typing-text');
     text.textContent = `${agentName} is typing...`;
-    indicator.style.display = 'block';
+    indicator.classList.remove('hidden');
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 function hideTypingIndicator() {
-    typingIndicator.style.display = 'none';
+    typingIndicator.classList.add('hidden');
 }
 
 function showFinalRecommendations() {
     // Display final recommendations
     displayFinalPolicyCards();
-    finalRecommendations.style.display = 'block';
+    finalRecommendations.classList.remove('hidden');
 }
 
 function displayFinalPolicyCards() {
@@ -760,14 +568,25 @@ function requestModification() {
     alert('Modification request feature coming soon!');
 }
 
+// Handle form submission
+const inputForm = document.querySelector('form');
+inputForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    sendMessage();
+});
+
 // Handle user input
 userInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
         sendMessage();
     }
 });
 
-sendButton.addEventListener('click', sendMessage);
+sendButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    sendMessage();
+});
 
 function sendMessage() {
     const message = userInput.value.trim();

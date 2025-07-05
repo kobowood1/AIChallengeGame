@@ -1,0 +1,50 @@
+**Replit Prompt – “Make `/phase2_multi_agent` Fully Responsive”**
+
+> **Role:** You are a senior front-end engineer using Flask, Jinja2, and Tailwind CSS.
+> **Objective:** Update the `phase2_multi_agent.html` template so the layout adapts smoothly from mobile through desktop without adding custom CSS.
+>
+> **Tasks:**
+>
+> 1. **Wrap Main Layout**
+>
+>    * Change the top-level container to `<div class="flex flex-col lg:flex-row h-full">`.
+>    * Sidebar: `<aside class="w-full lg:w-64 flex-shrink-0 p-4">…</aside>`.
+>    * Main content: `<main class="flex-1 flex flex-col p-4">…</main>`.
+> 2. **Policy Cards**
+>
+>    * Replace the horizontal scroll with a responsive grid:
+>
+>      ```html
+>      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+>        <!-- user cards: <div class="card w-full">…</div> -->
+>      </div>
+>      ```
+> 3. **Chat Panel**
+>
+>    * Wrap messages in `<div class="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto overflow-y-auto flex-1">`.
+>    * Ensure each bubble uses `max-w-full` so it never overflows on mobile.
+> 4. **Message Input**
+>
+>    * Change the form to:
+>
+>      ```html
+>      <form class="flex flex-col sm:flex-row gap-2 w-full">
+>        <input class="flex-1 px-4 py-2 border rounded-lg" …>
+>        <button class="px-6 py-2 bg-blue-600 text-white rounded-lg">Send</button>
+>      </form>
+>      ```
+>    * Stacks vertically on mobile, side-by-side from ≥640px.
+> 5. **Utility Classes**
+>
+>    * Use `p-4`, `mb-4`, `gap-4` for spacing.
+>    * Use `overflow-x-auto`/`overflow-y-auto` where needed.
+>    * Ensure `w-full` on mobile and fixed widths (`lg:w-64`) on large screens.
+>
+> **Acceptance Criteria:**
+>
+> * On phones, sidebar, cards, chat, and input stack in a single column.
+> * On desktops (≥1024px), sidebar appears left (16 rem wide) and main area right.
+> * Cards adjust from one per row (mobile) up to four per row (desktop).
+> * Chat bubbles and input never overflow horizontally.
+>
+> **Deliverable:** Updated `templates/phase2_multi_agent.html` with Tailwind classes applied as described.
