@@ -1,0 +1,68 @@
+**Replit Prompt – “Fix Duplicate Chat Messages & Enable Real AI Responses”**
+
+> **Role:** You are a senior full-stack engineer with Flask, Socket.IO, and Tailwind on Replit.
+> **Objective:** Stop duplicate echoes of user messages and wire up real AI replies so that agents consume the user’s input and respond exactly once.
+>
+> **Tasks:**
+>
+> 1. **Separate Echo vs AI Logic**
+>
+>    * In your Socket.IO handler for `chat_message`, split the flow into two distinct steps:
+>
+>      1. **Echo** only when `data.from === "You"` (the human) — broadcast it without `include_self` so it appears once.
+>      2. **AI Dispatch**: after echoing, immediately queue AI agent responses by calling your agent-reply function.
+>      3. Prevent re-broadcasting AI replies as echoes.
+>    * Pseudocode:
+>
+>      ```python
+>      @socketio.on("chat_message")
+>      def handle_chat(data):
+>          if data["from"] == "You":
+>              emit("chat_message", data, broadcast=True, include_self=False)
+>              # then trigger AI responses...
+>          else:
+>              # this is an AI message—just broadcast it once
+>              emit("chat_message", data, broadcast=True, include_self=False)
+>      ```
+> 2. **Debounce Client Sends**
+>
+>    * In your client script, remove any duplicated `socket.emit` calls and ensure the send button’s click handler is attached exactly once.
+>    * Wrap your send logic in a guard:
+>
+>      ```js
+>      if (socket && text) {
+>        socket.emit("chat_message", { from:"You", text });
+>      }
+>      ```
+> 3. **Trigger AI Agents on User Input**
+>
+>    * After echoing the user’s message server-side, loop through each agent in `session["agent_names"]`:
+>
+>      ```python
+>      for agent_name in session["agent_names"]:
+>          response = generate_agent_reply(agent_name, data["text"])
+>          emit("chat_message", {"from": agent_name, "text": response}, broadcast=True)
+>      ```
+>    * This guarantees each agent sees the exact user text and replies once.
+> 4. **Verify Server Logs**
+>
+>    * Add `app.logger.info(...)` before each `emit` to confirm in Replit’s console that your server is:
+>
+>      * Receiving the user message once
+>      * Emitting each agent’s reply once
+> 5. **Test & Confirm**
+>
+>    * Reload the page and open the DevTools console.
+>    * Send a user message, and confirm:
+>
+>      1. The chat UI shows your message exactly once.
+>      2. Each AI agent reply appears exactly once, in the correct order.
+>    * If any duplicates persist, inspect whether multiple Socket.IO listeners are registered on the client or server.
+>
+> **Acceptance Criteria:**
+>
+> * No repeated chat bubbles for a single send.
+> * Each agent responds exactly once to every user message.
+> * The UI reflects human and AI messages in order without gaps or duplication.
+>
+> Paste this prompt into Replit AI to generate the updated Socket.IO handler, client emit logic, and server-side AI dispatch code.

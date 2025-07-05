@@ -604,15 +604,14 @@ function processAtMentions(message) {
 
 function sendMessage() {
     const message = userInput.value.trim();
-    if (message) {
-        // Add user message to chat immediately
-        addMessage('You', message, 'user');
+    if (socket && message) {
+        // Don't add message to chat locally - let server echo it to prevent duplicates
         
         // Send message via Socket.IO
         socket.emit('send_multi_agent_message', {
             room_id: 'multi_agent',
             text: message,
-            from: 'user'
+            from: 'You'
         });
         
         userInput.value = '';

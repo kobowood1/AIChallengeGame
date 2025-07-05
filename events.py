@@ -888,48 +888,59 @@ def handle_join_multi_agent_room(data):
 def handle_send_multi_agent_message(data):
     """Handle messages in the multi-agent chat with @mention support"""
     room_id = data.get('room_id', 'multi_agent')
-    message_text = data.get('text', '')
+    message_text = data.get('text', '').strip()
     sender = data.get('from', 'You')
     
-    # Broadcast user message immediately
-    emit('message', {
-        'from': sender,
-        'text': message_text,
-        'timestamp': time.time(),
-        'type': 'user'
-    }, room=room_id)
+    if not message_text:
+        return
     
-    # Get agent names and check for @mentions
-    agent_names = session.get('agent_names', [])
-    all_names = agent_names + ['Moderator', 'You']
+    logging.info(f"Server received message from {sender}: {message_text}")
     
-    # Find mentioned names in the message
-    mentioned_names = []
-    for name in all_names:
-        if f'@{name}' in message_text:
-            mentioned_names.append(name)
-    
-    # Add message to conversation history
-    conversation_history = session.get('conversation_history', [])
-    conversation_history.append({
-        'sender': sender,
-        'message': message_text,
-        'timestamp': time.time()
-    })
-    session['conversation_history'] = conversation_history
-    
-    # If specific agents are mentioned, trigger only those responses
-    if mentioned_names:
-        for mentioned_name in mentioned_names:
-            if mentioned_name in agent_names:
-                trigger_single_agent_response(room_id, mentioned_name, message_text)
-            elif mentioned_name == 'Moderator':
-                trigger_moderator_response(room_id, message_text)
+    # Only echo user messages (not AI messages)
+    if sender == 'You':
+        # Broadcast user message without include_self to prevent duplicates
+        emit('message', {
+            'from': sender,
+            'text': message_text,
+            'timestamp': time.time(),
+            'type': 'user'
+        }, room=room_id, include_self=False)
+        logging.info(f"Echoed user message to room {room_id}")
+        
+        # Add message to conversation history
+        conversation_history = session.get('conversation_history', [])
+        conversation_history.append({
+            'sender': sender,
+            'message': message_text,
+            'timestamp': time.time()
+        })
+        session['conversation_history'] = conversation_history
+        
+        # Get agent names and trigger AI responses
+        agent_names = session.get('agent_names', [])
+        
+        # Check for @mentions
+        mentioned_agents = []
+        for name in agent_names:
+            if f'@{name}' in message_text:
+                mentioned_agents.append(name)
+        
+        # If specific agents mentioned, only they respond
+        if mentioned_agents:
+            for agent_name in mentioned_agents:
+                trigger_single_agent_response(room_id, agent_name, message_text)
+        else:
+            # If no mentions, trigger moderator response
+            trigger_moderator_response(room_id, message_text)
     else:
-        # If no specific mentions, trigger a general discussion
-        # Only trigger if this is the first user message
-        if len([msg for msg in conversation_history if msg['sender'] == sender]) == 1:
-            trigger_initial_agent_discussion(room_id)
+        # This is an AI message - just broadcast it once
+        emit('message', {
+            'from': sender,
+            'text': message_text,
+            'timestamp': time.time(),
+            'type': 'agent'
+        }, room=room_id, include_self=False)
+        logging.info(f"Broadcasted AI message from {sender}")
 
 def trigger_single_agent_response(room_id, agent_name, user_message):
     """Trigger response from a single mentioned agent"""
@@ -944,6 +955,53 @@ def trigger_single_agent_response(room_id, agent_name, user_message):
         
         simulation = MultiAgentSimulation()
         user_selections = session.get('policy_selections', {})
+        
+        # Generate response for this specific agent
+        response = simulation.generate_agent_response(
+            agent_name=agent_name,
+            user_message=user_message,
+            user_selections=user_selections
+        )
+        
+        # Hide typing indicator
+        emit('typing', {
+            'from': agent_name,
+            'typing': False
+        }, room=room_id)
+        
+        # Send agent response
+        if response and response.strip():
+            emit('message', {
+                'from': agent_name,
+                'text': response,
+                'timestamp': time.time(),
+                'type': 'agent',
+                'agent_type': 'openai' if simulation.agents.get(agent_name, {}).get('model') == 'openai' else 'gemini'
+            }, room=room_id)
+            logging.info(f"Agent {agent_name} responded: {response[:50]}...")
+        else:
+            emit('message', {
+                'from': agent_name,
+                'text': f"I appreciate your question about {user_message}. Let me think about that...",
+                'timestamp': time.time(),
+                'type': 'agent'
+            }, room=room_id)
+        
+    except Exception as e:
+        logging.error(f"Error generating response for {agent_name}: {e}")
+        # Hide typing indicator
+        emit('typing', {
+            'from': agent_name,
+            'typing': False
+        }, room=room_id)
+        
+        # Send fallback response
+        emit('message', {
+            'from': agent_name,
+            'text': f"Agent {agent_name} not found.",
+            'timestamp': time.time(),
+            'type': 'agent'
+        }, room=room_id)
         conversation_history = session.get('conversation_history', [])
         
         # Get agent response
@@ -990,6 +1048,18 @@ def trigger_single_agent_response(room_id, agent_name, user_message):
 
 def trigger_moderator_response(room_id, user_message):
     """Trigger response from moderator"""
+    try:
+        # Simple moderator response encouraging discussion
+        emit('message', {
+            'from': 'Moderator',
+            'text': f"Feel free to ask questions or share your thoughts. You can mention specific agents using @Name to get their direct input on any policy area.",
+            'timestamp': time.time(),
+            'type': 'moderator'
+        }, room=room_id)
+        logging.info("Moderator provided guidance message")
+        
+    except Exception as e:
+        logging.error(f"Error with moderator response: {e}")
     try:
         # Show typing indicator
         emit('typing', {
