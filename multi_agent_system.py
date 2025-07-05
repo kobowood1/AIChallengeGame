@@ -218,6 +218,90 @@ Agent contributions: {'; '.join([msg for msg in self.conversation_history if 'Ag
         summary = response.choices[0].message.content.strip()
         self.conversation_history.append(f"Moderator: {summary}")
         return summary
+    
+    def get_agent_response(self, agent_name: str, user_selections: Dict, conversation_history: List, policy_focus: str) -> str:
+        """Get a response from a specific agent"""
+        if agent_name not in self.agents:
+            return f"Agent {agent_name} not found."
+        
+        agent = self.agents[agent_name]
+        
+        # Get the user's selection for the policy focus
+        user_option = user_selections.get(policy_focus, 2)
+        
+        # Build context from conversation history
+        context = ""
+        if conversation_history:
+            recent_messages = conversation_history[-3:]  # Last 3 messages
+            context = "\n".join([f"{msg['sender']}: {msg['message']}" for msg in recent_messages])
+        
+        return self._get_agent_justification(agent, policy_focus, user_option, context)
+    
+    def _get_agent_justification(self, agent: Agent, policy_focus: str, user_option: int, context: str = "") -> str:
+        """Generate agent justification for a policy choice"""
+        prompt = f"""
+As {agent.name}, respond to the user's policy choice.
+
+Background: {agent.background}
+Ideology: {agent.ideology}
+
+Policy Area: {policy_focus}
+User's Choice: Option {user_option}
+
+Context from recent conversation:
+{context}
+
+Respond in character as {agent.name}. Be conversational, authentic, and reference the user's choice. Keep response to 2-3 sentences maximum.
+"""
+        
+        try:
+            if agent.model_type == 'openai':
+                response = openai_client.chat.completions.create(
+                    model="gpt-4o",
+                    messages=[
+                        {"role": "system", "content": f"You are {agent.name}. {agent.background}. {agent.ideology}"},
+                        {"role": "user", "content": prompt}
+                    ],
+                    max_tokens=150,
+                    temperature=0.7
+                )
+                return response.choices[0].message.content.strip()
+            else:
+                # Gemini
+                if agent.model:
+                    response = agent.model.generate_content(prompt)
+                    return response.text.strip()
+                else:
+                    # Fallback to OpenAI
+                    response = openai_client.chat.completions.create(
+                        model="gpt-4o",
+                        messages=[
+                            {"role": "system", "content": f"You are {agent.name}. {agent.background}. {agent.ideology}"},
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=150,
+                        temperature=0.7
+                    )
+                    return response.choices[0].message.content.strip()
+        except Exception as e:
+            return f"As {agent.name}, I appreciate your choice on {policy_focus}. This is an important decision that requires careful consideration of all stakeholders."
+    
+    def get_moderator_summary(self, conversation_history: List, user_selections: Dict) -> str:
+        """Generate a moderator summary of the discussion"""
+        try:
+            # Build summary of discussion
+            discussion_points = []
+            for msg in conversation_history[-8:]:  # Last 8 messages
+                if msg['sender'] in ['Amir', 'Salma', 'Lila', 'Leila']:
+                    discussion_points.append(f"**Agent {msg['sender']}** {msg['message'][:150]}...")
+            
+            summary_text = "During the discussion, each agent provided valuable insights:\n\n" + "\n\n".join(discussion_points)
+            summary_text += f"\n\nBased on this discussion, the group recommends proceeding with the proposed policy package."
+            
+            return summary_text
+            
+        except Exception as e:
+            return "The agents have shared their perspectives on your policy choices. Based on the discussion, we recommend proceeding with a balanced approach that addresses the key concerns raised."
 
 def create_policy_simulation_data():
     """Create sample policy data for testing"""

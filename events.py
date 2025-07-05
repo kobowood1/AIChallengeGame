@@ -1,14 +1,16 @@
 """
 Socket.IO event handlers for the AI policy deliberation simulation
 """
-from flask import request
+from flask import request, session
 from flask_socketio import emit, join_room, leave_room
 from app import socketio
 from game import game_manager
+from multi_agent_system import MultiAgentSimulation
 import uuid
 import logging
 import random
 import time
+import json
 
 @socketio.on('connect')
 def handle_connect():
@@ -860,3 +862,135 @@ def handle_call_vote(data):
         'total_cost': total_cost,
         'is_valid': is_valid
     }, to=room_id)
+
+# Multi-agent chat events
+@socketio.on('join_multi_agent_room')
+def handle_join_multi_agent_room(data):
+    """Join the multi-agent discussion room"""
+    room_id = data.get('room_id', 'multi_agent')
+    join_room(room_id)
+    logging.debug(f"Client {request.sid} joined multi-agent room: {room_id}")
+    
+    # Send welcome message from moderator
+    emit('message', {
+        'from': 'moderator',
+        'text': 'Welcome to the policy discussion. Let\'s review your selections and hear from our expert agents.',
+        'timestamp': time.time(),
+        'type': 'system'
+    }, room=room_id)
+
+@socketio.on('send_multi_agent_message')
+def handle_send_multi_agent_message(data):
+    """Handle messages in the multi-agent chat"""
+    room_id = data.get('room_id', 'multi_agent')
+    message_text = data.get('text', '')
+    sender = data.get('from', 'user')
+    
+    # Broadcast user message immediately
+    emit('message', {
+        'from': sender,
+        'text': message_text,
+        'timestamp': time.time(),
+        'type': 'user'
+    }, room=room_id)
+    
+    # Trigger agent responses if user sent message
+    if sender == 'user':
+        # Get policy selections from session
+        selections = session.get('policy_selections', {})
+        
+        # Initialize multi-agent simulation if not exists
+        if 'multi_agent_sim' not in session:
+            session['multi_agent_sim'] = {
+                'initialized': True,
+                'current_agent': 0,
+                'agents_order': ['Amir', 'Salma', 'Lila', 'Leila'],
+                'conversation_history': [],
+                'phase_complete': False
+            }
+        
+        # Add user message to conversation history
+        session['multi_agent_sim']['conversation_history'].append({
+            'sender': 'user',
+            'message': message_text,
+            'timestamp': time.time()
+        })
+        
+        # Trigger agent responses
+        trigger_agent_responses(room_id, selections, session['multi_agent_sim'])
+
+def trigger_agent_responses(room_id, user_selections, sim_state):
+    """Trigger sequential agent responses"""
+    try:
+        from multi_agent_system import MultiAgentSimulation
+        
+        simulation = MultiAgentSimulation()
+        agents_order = sim_state['agents_order']
+        
+        # Get conversation history
+        history = sim_state.get('conversation_history', [])
+        
+        # Generate responses from each agent
+        for i, agent_name in enumerate(agents_order):
+            # Show typing indicator
+            emit('typing', {
+                'from': agent_name,
+                'typing': True
+            }, room=room_id)
+            
+            # Get agent response
+            response = simulation.get_agent_response(
+                agent_name=agent_name,
+                user_selections=user_selections,
+                conversation_history=history,
+                policy_focus='Access to Education'  # This could be dynamic
+            )
+            
+            # Add slight delay for realism
+            time.sleep(2)
+            
+            # Hide typing indicator
+            emit('typing', {
+                'from': agent_name,
+                'typing': False
+            }, room=room_id)
+            
+            # Send agent response
+            emit('message', {
+                'from': agent_name,
+                'text': response,
+                'timestamp': time.time(),
+                'type': 'agent',
+                'agent_type': 'openai' if agent_name in ['Amir', 'Salma'] else 'gemini'
+            }, room=room_id)
+            
+            # Add to conversation history
+            history.append({
+                'sender': agent_name,
+                'message': response,
+                'timestamp': time.time()
+            })
+        
+        # After all agents respond, send moderator summary
+        time.sleep(1)
+        moderator_summary = simulation.get_moderator_summary(history, user_selections)
+        
+        emit('message', {
+            'from': 'moderator',
+            'text': moderator_summary,
+            'timestamp': time.time(),
+            'type': 'moderator_summary'
+        }, room=room_id)
+        
+        # Mark phase as complete
+        sim_state['phase_complete'] = True
+        session['multi_agent_sim'] = sim_state
+        
+    except Exception as e:
+        logging.error(f"Error in agent responses: {e}")
+        emit('message', {
+            'from': 'system',
+            'text': 'There was an error processing agent responses. Please try again.',
+            'timestamp': time.time(),
+            'type': 'error'
+        }, room=room_id)

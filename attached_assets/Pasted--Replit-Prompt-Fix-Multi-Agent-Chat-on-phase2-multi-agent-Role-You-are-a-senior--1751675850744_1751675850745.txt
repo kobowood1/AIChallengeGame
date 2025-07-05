@@ -1,0 +1,62 @@
+**Replit Prompt – “Fix Multi-Agent Chat on `/phase2_multi_agent`”**
+
+> **Role:** You are a senior full-stack engineer using Flask, Jinja2, Socket.IO, Tailwind CSS, and the OpenAI & Gemini APIs.
+> **Objective:** Repair and extend the `/phase2_multi_agent` page so that:
+>
+> 1. The user's previously selected policy cards appear at the top.
+> 2. Each of four agents (two via OpenAI ChatGPT, two via Google Gemini) and a moderator (OpenAI ChatGPT) join a WhatsApp-style group chat.
+> 3. Agents remember and reference the user’s policy choices.
+> 4. Agent→agent, agent→user, and user→agent messaging all function reliably in real time.
+>
+> **Tasks:**
+>
+> 1. **Load Context & Display Cards**
+>
+>    * In the Flask route for `/phase2_multi_agent`, pull `session["user_policy"]` and each agent’s `session["agent_policy"]`.
+>    * At the top of `templates/phase2_multi_agent.html`, render user cards in a horizontal strip (`overflow-x-auto flex space-x-4`).
+>    * In a sidebar, render each agent’s policy cards vertically with small badges indicating “Agent A”, “Agent B”, etc.
+> 2. **Socket.IO & Event Flow**
+>
+>    * On page load, emit `join_room('multi_agent')`.
+>    * Server listens for `message` events tagged with `{ from: senderId, text: msg }`.
+>    * Broadcast incoming messages to all participants in `multi_agent`.
+>    * After load, immediately queue a system message from the moderator:
+>
+>      ```js
+>      socket.emit('message', { from: 'moderator', text: 'Welcome to the policy discussion. Agents, please introduce your policy choices and begin.' });
+>      ```
+> 3. **Integrate OpenAI & Gemini**
+>
+>    * In `multi_agent.py`, for OpenAI agents A & B use:
+>
+>      ```python
+>      openai.ChatCompletion.create(model="gpt-4o", messages=history)
+>      ```
+>    * For Gemini agents C & D use your configured Gemini SDK call with the same `history`.
+>    * After each agent posts, append their response to `history` so subsequent agents see and reference user and other-agent messages.
+>    * Ensure `history` always includes a summary of `session["user_policy"]` at the very start.
+> 4. **UI – WhatsApp-Style Chat**
+>
+>    * Use a scrollable container: `div.flex-1.overflow-y-auto` with message bubbles:
+>
+>      * Moderator in gray (`bg-gray-200`),
+>      * User in yellow (`bg-yellow-300`),
+>      * OpenAI agents in blue (`bg-blue-200`),
+>      * Gemini agents in purple (`bg-purple-200`).
+>    * Each bubble shows `senderName`, timestamp, and the text.
+>    * Ensure new messages scroll into view with `element.scrollIntoView()`.
+> 5. **Testing & Fixes**
+>
+>    * Verify that when the user sends a message, it appears in chat and triggers each AI agent’s turn in sequence.
+>    * Confirm that each agent’s responses correctly reference the user’s policy choices.
+>    * Fix any JavaScript errors (null references, incorrect selectors) in `static/script.js`.
+>
+> **Acceptance Criteria:**
+>
+> * On `/phase2_multi_agent`, user and agent policy cards display correctly before the chat begins.
+> * The moderator sends the opening message automatically.
+> * The user types a message; it appears immediately, then agents A→B→C→D each respond in turn.
+> * Agents reference the user’s policy context in their replies.
+> * No console errors; chat scrolls smoothly; layout matches the yellow card aesthetic.
+>
+> Paste this entire prompt into Replit AI to generate the updated `phase2_multi_agent.html`, route handlers, and client-side socket logic.

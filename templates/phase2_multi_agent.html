@@ -669,8 +669,11 @@ function addMessage(sender, message, type = 'agent') {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-function showTypingIndicator() {
-    typingIndicator.style.display = 'block';
+function showTypingIndicator(agentName = 'Agent') {
+    const indicator = typingIndicator;
+    const text = document.getElementById('typing-text');
+    text.textContent = `${agentName} is typing...`;
+    indicator.style.display = 'block';
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
@@ -700,14 +703,14 @@ function displayFinalPolicyCards() {
         const optionLevel = userPolicies[policyName];
         const policyInfo = policyData.find(p => p.name === policyName);
         
-        if (policyInfo) {
+        if (policyInfo && policyInfo.options && policyInfo.options[optionLevel - 1]) {
             const option = policyInfo.options[optionLevel - 1];
             const card = document.createElement('div');
             card.className = 'policy-card';
             card.innerHTML = `
                 <div class="policy-title">${policyName}</div>
-                <div class="policy-option">${option.label}</div>
-                <div class="policy-description">${option.summary}</div>
+                <div class="policy-option">Option ${optionLevel}</div>
+                <div class="policy-description">${option.description || 'Policy option selected'}</div>
             `;
             finalCardsGrid.appendChild(card);
         }
@@ -760,27 +763,46 @@ sendButton.addEventListener('click', sendMessage);
 function sendMessage() {
     const message = userInput.value.trim();
     if (message) {
-        addMessage('You', message, 'user');
+        // Send message via Socket.IO
+        socket.emit('send_multi_agent_message', {
+            room_id: 'multi_agent',
+            text: message,
+            from: 'user'
+        });
+        
         userInput.value = '';
-        
-        // Show typing indicator
-        showTypingIndicator();
-        
-        // Simulate agent response after user message
-        setTimeout(() => {
-            hideTypingIndicator();
-            addMessage('Moderator', 'Thank you for your input. The agents will consider your perspective in the final recommendations.', 'moderator');
-        }, 2000);
     }
 }
 
 // Handle socket events
 socket.on('connect', function() {
     console.log('Connected to server');
+    // Join the multi-agent room
+    socket.emit('join_multi_agent_room', { room_id: 'multi_agent' });
 });
 
 socket.on('disconnect', function() {
     console.log('Disconnected from server');
+});
+
+// Handle incoming messages
+socket.on('message', function(data) {
+    console.log('Message received:', data);
+    addMessage(data.from, data.text, data.type || 'agent', data.agent_type);
+    
+    // Check if this is a moderator summary (final recommendations)
+    if (data.type === 'moderator_summary') {
+        showFinalRecommendations();
+    }
+});
+
+// Handle typing indicators
+socket.on('typing', function(data) {
+    if (data.typing) {
+        showTypingIndicator(data.from);
+    } else {
+        hideTypingIndicator();
+    }
 });
 
 // Enable user input when appropriate
