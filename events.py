@@ -953,15 +953,14 @@ def trigger_single_agent_response(room_id, agent_name, user_message):
             'typing': True
         }, room=room_id)
         
-        simulation = MultiAgentSimulation()
+        # Get agent names from session
+        agent_names = session.get('agent_names', ['Agent1', 'Agent2', 'Agent3', 'Agent4'])
+        simulation = MultiAgentSimulation(agent_names)
         user_selections = session.get('policy_selections', {})
         
         # Generate response for this specific agent
-        response = simulation.generate_agent_response(
-            agent_name=agent_name,
-            user_message=user_message,
-            user_selections=user_selections
-        )
+        context = f"User message: {user_message}\nUser policy selections: {user_selections}"
+        response = simulation.generate_agent_response(agent_name, context)
         
         # Hide typing indicator
         emit('typing', {

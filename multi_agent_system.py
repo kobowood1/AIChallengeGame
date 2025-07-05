@@ -40,33 +40,44 @@ class Agent:
 class MultiAgentSimulation:
     """Orchestrates the multi-agent policy simulation"""
     
-    def __init__(self):
-        self.agents = {
-            'Amir': Agent(
-                name='Amir',
-                model_type='openai',
-                background='Former teacher and refugee advocate with 15 years experience in education',
-                ideology='Progressive - believes in comprehensive support and integration'
-            ),
-            'Salma': Agent(
-                name='Salma',
-                model_type='openai', 
-                background='Education policy researcher and mother of three school-age children',
-                ideology='Pragmatic - focuses on practical implementation and measurable outcomes'
-            ),
-            'Lila': Agent(
-                name='Lila',
-                model_type='gemini',
-                background='School principal with experience managing diverse student populations',
-                ideology='Collaborative - emphasizes community engagement and shared responsibility'
-            ),
-            'Leila': Agent(
-                name='Leila',
-                model_type='gemini',
-                background='Social worker specializing in refugee family services and trauma-informed care',
-                ideology='Humanitarian - prioritizes individual student needs and wellbeing'
+    def __init__(self, agent_names=None):
+        # Default agent profiles that can be assigned to any names
+        self.agent_profiles = [
+            {
+                'model_type': 'openai',
+                'background': 'Former teacher and refugee advocate with 15 years experience in education',
+                'ideology': 'Progressive - believes in comprehensive support and integration'
+            },
+            {
+                'model_type': 'openai', 
+                'background': 'Education policy researcher and mother of three school-age children',
+                'ideology': 'Pragmatic - focuses on practical implementation and measurable outcomes'
+            },
+            {
+                'model_type': 'gemini',
+                'background': 'School principal with experience managing diverse student populations',
+                'ideology': 'Collaborative - emphasizes community engagement and shared responsibility'
+            },
+            {
+                'model_type': 'gemini',
+                'background': 'Social worker specializing in refugee family services and trauma-informed care',
+                'ideology': 'Humanitarian - prioritizes individual student needs and wellbeing'
+            }
+        ]
+        
+        # Initialize agents with provided names or defaults
+        if agent_names is None:
+            agent_names = ['Amir', 'Salma', 'Lila', 'Leila']
+            
+        self.agents = {}
+        for i, name in enumerate(agent_names[:4]):  # Limit to 4 agents
+            profile = self.agent_profiles[i % len(self.agent_profiles)]
+            self.agents[name] = Agent(
+                name=name,
+                model_type=profile['model_type'],
+                background=profile['background'],
+                ideology=profile['ideology']
             )
-        }
         
         self.conversation_history = []
         self.current_policy_area = None
