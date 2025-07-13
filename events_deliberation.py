@@ -278,14 +278,25 @@ def get_agent_policy_responses(session_id, policy_area):
         agent_choices[agent_name] = agent_choice
         
         # Generate rationale using AI
-        context = f"Policy area: {policy_area.name}\nYour choice: Option {agent_choice}\nBriefly explain your rationale."
+        agent_profile = delib_session.simulation.agents[agent_name]
+        
+        # Create a simple context for the rationale
+        context = f"Policy area: {policy_area.name}\nYour choice: Option {agent_choice}\nBriefly explain your rationale in 1-2 sentences."
         
         try:
+            # Set the policy context for the agent
+            delib_session.simulation.set_policy_context(policy_area.name, {}, agent_choice)
             rationale = delib_session.simulation.generate_agent_response(agent_name, context)
             response_text = f"I selected Option {agent_choice}. {rationale}"
         except Exception as e:
-            logging.error(f"Error generating agent response: {e}")
-            response_text = f"I selected Option {agent_choice} based on my experience and the needs of refugee students."
+            logging.error(f"Error generating agent response for {agent_name}: {e}")
+            # Use fallback based on agent profile
+            if 'cost-effective' in agent_profile.ideology.lower():
+                response_text = f"I selected Option {agent_choice} because it provides a cost-effective approach that fits our budget constraints."
+            elif 'comprehensive' in agent_profile.ideology.lower():
+                response_text = f"I selected Option {agent_choice} because it offers comprehensive support for refugee students."
+            else:
+                response_text = f"I selected Option {agent_choice} based on my experience and the needs of refugee students."
         
         agent_profile = delib_session.simulation.agents[agent_name]
         emit('agent_message', {
@@ -396,8 +407,14 @@ def start_final_recommendations(session_id):
         
         if current_step == 'user_introduction':
             # User has introduced themselves, move to policy deliberation
-            socketio.sleep(1)
-            start_policy_deliberation(session_id)
+            try:
+                socketio.sleep(1)
+                start_policy_deliberation(session_id)
+            except Exception as e:
+                logging.error(f"Error starting policy deliberation: {e}")
+                emit('system_message', {
+                    'message': f"Error starting policy deliberation: {str(e)}. Please refresh the page."
+                }, room=session_id)
             
         elif current_step == 'policy_deliberation':
             # User explained their choice, check if we need voting
