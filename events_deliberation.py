@@ -8,6 +8,9 @@ from flask_socketio import emit, join_room, leave_room
 from multi_agent_system import MultiAgentSimulation
 from challenge_content import POLICY_AREAS
 
+# Global socketio instance will be set when registering events
+socketio = None
+
 # Deliberation state management
 deliberation_sessions = {}
 
@@ -90,10 +93,12 @@ class DeliberationSession:
         import random
         return random.choice(winners)
 
-def register_deliberation_events(socketio):
+def register_deliberation_events(socketio_instance):
     """Register all deliberation-related Socket.IO events"""
+    global socketio
+    socketio = socketio_instance
     
-    @socketio.on('join_deliberation_room')
+    @socketio_instance.on('join_deliberation_room')
     def handle_join_deliberation_room():
         """Initialize and join the structured deliberation session"""
         session_id = request.sid
@@ -368,7 +373,7 @@ def start_final_recommendations(session_id):
     # Store final package in session
     session['final_package'] = delib_session.final_package
 
-    @socketio.on('user_message')
+    @socketio_instance.on('user_message')
     def handle_user_message(data):
         """Handle user messages during deliberation"""
         session_id = request.sid
@@ -427,7 +432,7 @@ def start_final_recommendations(session_id):
                 socketio.sleep(1)
                 start_voting(session_id, policy_area)
 
-    @socketio.on('cast_vote')
+    @socketio_instance.on('cast_vote')
     def handle_cast_vote(data):
         """Handle user vote during policy deliberation"""
         session_id = request.sid
@@ -459,7 +464,7 @@ def start_final_recommendations(session_id):
         socketio.sleep(2)
         discuss_policy_area(session_id, policy_index + 1)
 
-    @socketio.on('disconnect')
+    @socketio_instance.on('disconnect')
     def handle_disconnect():
         """Clean up deliberation session on disconnect"""
         session_id = request.sid
