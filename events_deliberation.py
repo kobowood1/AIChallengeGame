@@ -120,6 +120,110 @@ def register_deliberation_events(socketio_instance):
         
         # Start with moderator introduction
         start_moderator_intro(session_id)
+    
+    @socketio_instance.on('user_message')
+    def handle_user_message(data):
+        """Handle user messages during deliberation"""
+        session_id = request.sid
+        delib_session = deliberation_sessions.get(session_id)
+        if not delib_session:
+            return
+        
+        message = data.get('message', '')
+        step = data.get('step', 0)
+        policy_index = data.get('policyIndex', 0)
+        
+        # Record message in conversation history
+        delib_session.conversation_history.append({
+            'sender': delib_session.user_name,
+            'message': message,
+            'timestamp': time.time()
+        })
+        
+        current_step = delib_session.get_current_step()
+        
+        if current_step == 'user_introduction':
+            # User has introduced themselves, move to policy deliberation
+            try:
+                socketio.sleep(1)
+                start_policy_deliberation(session_id)
+            except Exception as e:
+                logging.error(f"Error starting policy deliberation: {e}")
+                emit('system_message', {
+                    'message': f"Error starting policy deliberation: {str(e)}. Please refresh the page."
+                }, room=session_id)
+        elif current_step == 'policy_deliberation':
+            # User explained their choice, check if we need voting
+            policy_area = delib_session.get_policy_area(policy_index)
+            if not policy_area:
+                return
+            
+            # Get all choices for this policy
+            user_choice = delib_session.get_user_choice(policy_area.name)
+            agent_choices = {}
+            for agent_name in delib_session.agent_names:
+                agent_choices[agent_name] = delib_session.get_agent_choice(agent_name, policy_area.name)
+            
+            all_choices = list(agent_choices.values()) + [user_choice]
+            unique_choices = set(all_choices)
+            
+            if len(unique_choices) == 1:
+                # Everyone agreed
+                agreed_option = list(unique_choices)[0]
+                delib_session.final_package[policy_area.name] = agreed_option
+                
+                emit('moderator_message', {
+                    'message': f"All agreed on Option {agreed_option}. Moving on.",
+                    'step': 4
+                }, room=session_id)
+                
+                # Move to next policy
+                socketio.sleep(2)
+                discuss_policy_area(session_id, policy_index + 1)
+            else:
+                # Need voting
+                socketio.sleep(1)
+                start_voting(session_id, policy_area)
+    
+    @socketio_instance.on('cast_vote')
+    def handle_cast_vote(data):
+        """Handle user vote during policy deliberation"""
+        session_id = request.sid
+        delib_session = deliberation_sessions.get(session_id)
+        if not delib_session:
+            return
+        
+        option = data.get('option', 1)
+        policy_index = data.get('policyIndex', 0)
+        
+        policy_area = delib_session.get_policy_area(policy_index)
+        if not policy_area:
+            return
+        
+        # Add user vote
+        delib_session.add_vote(delib_session.user_name, option)
+        
+        # Calculate majority
+        majority_option = delib_session.calculate_majority(policy_area.name)
+        delib_session.final_package[policy_area.name] = majority_option
+        
+        emit('vote_result', {
+            'message': f"Majority selected Option {majority_option}.",
+            'policyArea': policy_area.name,
+            'selectedOption': majority_option
+        }, room=session_id)
+        
+        # Move to next policy
+        socketio.sleep(2)
+        discuss_policy_area(session_id, policy_index + 1)
+    
+    @socketio_instance.on('disconnect')
+    def handle_disconnect():
+        """Clean up deliberation session on disconnect"""
+        session_id = request.sid
+        if session_id in deliberation_sessions:
+            del deliberation_sessions[session_id]
+            logging.info(f"Cleaned up deliberation session: {session_id}")
 
 def start_moderator_intro(session_id):
     """Step 1: Moderator introduces the session"""
@@ -382,108 +486,3 @@ def start_final_recommendations(session_id):
     
     # Store final package in session
     session['final_package'] = delib_session.final_package
-
-    @socketio_instance.on('user_message')
-    def handle_user_message(data):
-        """Handle user messages during deliberation"""
-        session_id = request.sid
-        delib_session = deliberation_sessions.get(session_id)
-        if not delib_session:
-            return
-        
-        message = data.get('message', '')
-        step = data.get('step', 0)
-        policy_index = data.get('policyIndex', 0)
-        
-        # Record message in conversation history
-        delib_session.conversation_history.append({
-            'sender': delib_session.user_name,
-            'message': message,
-            'timestamp': time.time()
-        })
-        
-        current_step = delib_session.get_current_step()
-        
-        if current_step == 'user_introduction':
-            # User has introduced themselves, move to policy deliberation
-            try:
-                socketio.sleep(1)
-                start_policy_deliberation(session_id)
-            except Exception as e:
-                logging.error(f"Error starting policy deliberation: {e}")
-                emit('system_message', {
-                    'message': f"Error starting policy deliberation: {str(e)}. Please refresh the page."
-                }, room=session_id)
-            
-        elif current_step == 'policy_deliberation':
-            # User explained their choice, check if we need voting
-            policy_area = delib_session.get_policy_area(policy_index)
-            if not policy_area:
-                return
-            
-            # Get all choices for this policy
-            user_choice = delib_session.get_user_choice(policy_area.name)
-            agent_choices = {}
-            for agent_name in delib_session.agent_names:
-                agent_choices[agent_name] = delib_session.get_agent_choice(agent_name, policy_area.name)
-            
-            all_choices = list(agent_choices.values()) + [user_choice]
-            unique_choices = set(all_choices)
-            
-            if len(unique_choices) == 1:
-                # Everyone agreed
-                agreed_option = list(unique_choices)[0]
-                delib_session.final_package[policy_area.name] = agreed_option
-                
-                emit('moderator_message', {
-                    'message': f"All agreed on Option {agreed_option}. Moving on.",
-                    'step': 4
-                }, room=session_id)
-                
-                # Move to next policy
-                socketio.sleep(2)
-                discuss_policy_area(session_id, policy_index + 1)
-            else:
-                # Need voting
-                socketio.sleep(1)
-                start_voting(session_id, policy_area)
-
-    @socketio_instance.on('cast_vote')
-    def handle_cast_vote(data):
-        """Handle user vote during policy deliberation"""
-        session_id = request.sid
-        delib_session = deliberation_sessions.get(session_id)
-        if not delib_session:
-            return
-        
-        option = data.get('option', 1)
-        policy_index = data.get('policyIndex', 0)
-        
-        policy_area = delib_session.get_policy_area(policy_index)
-        if not policy_area:
-            return
-        
-        # Add user vote
-        delib_session.add_vote(delib_session.user_name, option)
-        
-        # Calculate majority
-        majority_option = delib_session.calculate_majority(policy_area.name)
-        delib_session.final_package[policy_area.name] = majority_option
-        
-        emit('vote_result', {
-            'message': f"Majority selected Option {majority_option}.",
-            'policyArea': policy_area.name,
-            'selectedOption': majority_option
-        }, room=session_id)
-        
-        # Move to next policy
-        socketio.sleep(2)
-        discuss_policy_area(session_id, policy_index + 1)
-
-    @socketio_instance.on('disconnect')
-    def handle_disconnect():
-        """Clean up deliberation session on disconnect"""
-        session_id = request.sid
-        if session_id in deliberation_sessions:
-            del deliberation_sessions[session_id]
-            logging.info(f"Cleaned up deliberation session: {session_id}")
