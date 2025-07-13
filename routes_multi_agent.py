@@ -43,7 +43,8 @@ def phase2_multi_agent():
     # Initialize agent names and policies for structured deliberation
     import random
     
-    if 'agent_names' not in session:
+    # Always regenerate agent names for diversity (remove persistent session storage)
+    if True:  # Force regeneration each time
         # Pool of available agent names
         available_names = [
             'Alex', 'Maya', 'Jordan', 'Sam', 'Casey', 'Taylor', 'Morgan', 'Riley',
