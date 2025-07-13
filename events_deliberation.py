@@ -387,17 +387,60 @@ def get_agent_policy_responses(session_id, policy_area):
         agent_choice = delib_session.get_agent_choice(agent_name, policy_area.name)
         agent_choices[agent_name] = agent_choice
         
-        # Generate rationale using AI (temporarily disabled for debugging)
+        # Generate rationale using AI for diversity
         agent_profile = delib_session.simulation.agents[agent_name]
         
-        # Use simple fallback responses for now to test the flow
-        fallback_responses = {
-            1: "because it provides a cost-effective, focused approach that makes efficient use of our limited resources.",
-            2: "because it strikes a good balance between comprehensive support and budget constraints.",
-            3: "because it offers comprehensive, well-funded support that addresses the full scope of refugee student needs."
+        # Create agent dict for AI generation
+        agent_dict = {
+            'name': agent_name,
+            'age': 35 + (delib_session.agent_names.index(agent_name) * 5),
+            'occupation': agent_profile.background,
+            'education_level': 'Bachelor\'s Degree',  # Default for now
+            'socioeconomic_status': 'Middle Class',   # Default for now
+            'ideology': agent_profile.ideology,
+            'llm_model': agent_profile.model_type
         }
         
-        response_text = f"I selected Option {agent_choice} {fallback_responses.get(agent_choice, 'based on my experience and the needs of refugee students.')} As someone with experience in {agent_profile.background.lower()}, I believe this approach aligns with my {agent_profile.ideology.lower()} perspective."
+        # Use AI to generate diverse, personality-driven responses
+        from ai_agents import agent_justify
+        try:
+            response_text = agent_justify(
+                policy_domain=policy_area.name,
+                option_chosen=agent_choice,
+                agent=agent_dict,
+                user_message="",
+                recent_messages=[],
+                responding_to_agent=None
+            )
+        except Exception as e:
+            logging.error(f"Error generating AI response for {agent_name}: {e}")
+            # More diverse fallback responses as backup
+            diverse_fallbacks = {
+                1: {
+                    'conservative': f"I chose Option 1 because fiscal responsibility is key. We can't overspend on programs that might not deliver results.",
+                    'moderate': f"Option 1 makes sense - it's a pragmatic start that we can build upon once we see what works.",
+                    'liberal': f"While I'd prefer more support, Option 1 at least gets us moving in the right direction.",
+                    'humanitarian': f"Option 1 provides essential basics. Sometimes simple solutions work best for urgent needs."
+                },
+                2: {
+                    'conservative': f"Option 2 offers reasonable investment without excessive government expansion.",
+                    'moderate': f"I believe Option 2 strikes the right balance between helping students and managing costs.",
+                    'liberal': f"Option 2 provides meaningful support while staying politically feasible.",
+                    'humanitarian': f"Option 2 addresses core needs comprehensively - it's what these students deserve."
+                },
+                3: {
+                    'conservative': f"Though expensive, Option 3 could prevent larger social costs down the road.",
+                    'moderate': f"Option 3 represents a significant commitment, but some issues require bold action.",
+                    'liberal': f"Option 3 is essential - we cannot shortchange refugee students' futures.",
+                    'humanitarian': f"Option 3 is the only ethical choice. These students have already suffered enough."
+                }
+            }
+            
+            ideology_key = agent_profile.ideology.lower()
+            if ideology_key not in diverse_fallbacks[agent_choice]:
+                ideology_key = 'moderate'
+            
+            response_text = diverse_fallbacks[agent_choice][ideology_key]
         
         logging.info(f"Generated response for {agent_name}: {response_text[:50]}...")
         

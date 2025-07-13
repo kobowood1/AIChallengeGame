@@ -168,28 +168,50 @@ def agent_justify(policy_domain, option_chosen, agent, user_message='', recent_m
     elif user_message:
         interaction_context = "You are responding to the human policy advisor who just shared their perspective."
     
+    # Create diverse personality-driven prompts
+    personality_traits = {
+        'conservative': 'cautious, practical, focused on proven solutions and fiscal responsibility',
+        'moderate': 'balanced, diplomatic, seeking middle-ground solutions',
+        'liberal': 'progressive, idealistic, prioritizing equity and comprehensive support',
+        'humanitarian': 'compassionate, student-focused, emphasizing human dignity and wellbeing',
+        'socialist': 'systemic, collective-focused, emphasizing structural change'
+    }
+    
+    speaking_styles = {
+        'conservative': 'speak directly and matter-of-factly, often citing practical concerns',
+        'moderate': 'speak thoughtfully and diplomatically, acknowledging multiple perspectives',
+        'liberal': 'speak passionately about social justice, using inclusive language',
+        'humanitarian': 'speak with empathy and personal anecdotes, focusing on individual impact',
+        'socialist': 'speak analytically about systems and collective solutions'
+    }
+    
+    agent_personality = personality_traits.get(agent['ideology'], 'thoughtful and professional')
+    agent_style = speaking_styles.get(agent['ideology'], 'speak clearly and professionally')
+    
     # Construct a prompt for the LLM with more detail and context
     prompt = f"""
     You are {agent['name']}, a {agent['age']}-year-old {agent['occupation']} with a {agent['education_level']} education.
     You identify as {agent['socioeconomic_status']} and have {agent['ideology']} political views.
+    
+    Your personality is {agent_personality}. When you speak, you {agent_style}.
     
     You're discussing refugee education policy in the Republic of Bean, specifically about {policy_domain}, which involves {policy_description}.
     
     You've chosen option {option_chosen} for this policy area, which is a {option_description}.
     
     {conversation_context}
-    
     {interaction_context}
     
     Their message: "{user_message}"
     
-    Respond to their message about {policy_domain}. If they asked a question or shared an opinion, address it directly.
-    Focus on why you believe option {option_chosen} is the right approach, drawing on your professional experience,
-    educational background, socioeconomic perspective, and political ideology.
+    Explain why you chose option {option_chosen} for {policy_domain}. Draw on your professional experience as a {agent['occupation']}, 
+    your {agent['ideology']} worldview, and your {agent['socioeconomic_status']} perspective.
     
-    Be specific and realistic in your response, with concrete examples of how this policy affects your life or community.
-    Keep your response concise (3-4 sentences) and conversational in tone.
-    Don't mention race, ethnicity, gender, or sexuality. Focus on your occupation, education, economic status, and political views.
+    Make your response unique and personal. Avoid generic phrases like "strikes a good balance" or "comprehensive support."
+    Instead, use specific language that reflects your background and ideology.
+    
+    Keep your response concise (2-3 sentences) and authentic to your character.
+    Focus on your occupation, education, economic status, and political views - not demographics.
     """
     
     try:
@@ -221,29 +243,40 @@ def agent_justify(policy_domain, option_chosen, agent, user_message='', recent_m
         logging.error(f"Error using {agent_llm} API for agent {agent['name']}: {e}")
         # Fall through to fallback response
     
-    # Fallback responses - now more conversational
-    ideologies = {
-        "conservative": "I believe in traditional values and limited government spending.",
-        "moderate": "I think balanced approaches usually work best.",
-        "liberal": "I support progressive policies that help those in need.",
-        "socialist": "I believe in stronger government programs to ensure equality.",
-        "neoliberal": "I favor free market solutions with minimal regulation."
-    }
-    
-    option_attitudes = {
-        1: "This basic approach is fiscally responsible without overreaching.",
-        2: "This middle-ground solution provides a good balance of benefits and costs.",
-        3: "This comprehensive approach, while more expensive, addresses the issue properly."
+    # Diverse fallback responses if no API is available
+    diverse_responses = {
+        ("conservative", 1): "As a fiscal conservative, I picked Option 1 because we need to prove programs work before expanding them.",
+        ("conservative", 2): "Option 2 makes financial sense - it's substantial enough to help without breaking the budget.",
+        ("conservative", 3): "Though costly, Option 3 could save money long-term by preventing bigger social problems.",
+        
+        ("moderate", 1): "Option 1 is a sensible starting point - we can always expand successful programs later.",
+        ("moderate", 2): "I chose Option 2 because it addresses key needs while remaining politically feasible.",
+        ("moderate", 3): "Option 3 represents the bold investment these students deserve, despite the higher cost.",
+        
+        ("liberal", 1): "While I'd prefer more, Option 1 at least establishes the principle that we must help.",
+        ("liberal", 2): "Option 2 provides meaningful support that could transform these students' lives.",
+        ("liberal", 3): "Option 3 is the only ethical choice - anything less fails our moral obligations.",
+        
+        ("humanitarian", 1): "Option 1 focuses on immediate needs - sometimes simple solutions work best.",
+        ("humanitarian", 2): "Option 2 addresses the whole child, not just academic needs.",
+        ("humanitarian", 3): "These students have suffered enough - Option 3 gives them what they truly need.",
+        
+        ("socialist", 1): "Option 1 is a first step toward systemic change in how we support marginalized students.",
+        ("socialist", 2): "Option 2 shows we're serious about addressing structural inequalities in education.",
+        ("socialist", 3): "Option 3 represents the kind of comprehensive support that transforms society."
     }
     
     # If we have a user message, acknowledge it in the response
     acknowledgment = ""
     if user_message:
         if responding_to_agent:
-            acknowledgment = f"I hear what {responding_to_agent['name']} is saying, but I have a different perspective. "
+            acknowledgment = f"I hear what {responding_to_agent['name']} is saying, but I disagree. "
         else:
-            acknowledgment = "I understand your perspective, though I have a different view. "
+            acknowledgment = "I understand your point, though I see it differently. "
     
-    occupation_relevance = f"As a {agent['occupation']}, I see how this directly affects my work and community."
+    ideology_key = agent['ideology'].lower()
+    response_key = (ideology_key, option_chosen)
     
-    return f"{acknowledgment}{ideologies.get(agent['ideology'], 'I have well-considered views on this issue.')} {option_attitudes.get(option_chosen, 'This option aligns with my values.')} {occupation_relevance}"
+    base_response = diverse_responses.get(response_key, f"I chose Option {option_chosen} based on my experience and values.")
+    
+    return f"{acknowledgment}{base_response}"
