@@ -145,6 +145,11 @@ This is a Flask-based web application that simulates policy-making processes for
 ✓ Integrated multi-agent system to replace existing Phase 2 completely
 ✓ Multi-agent discussion now serves as the main Phase 2 experience
 ✓ Seamless flow from Phase 1 card selection to multi-agent deliberation to Phase 3
+✓ Fixed structured deliberation system with proper event handler registration (July 13, 2025)
+✓ Resolved "Someone is typing..." blocking issue in policy deliberation flow
+✓ Implemented step-by-step moderated deliberation: intro → agent introductions → user introduction → policy-by-policy discussions → final recommendations
+✓ Added fallback response system for agent rationales when AI generation fails
+✓ System now properly progresses through all deliberation phases
 
 ## Changelog
 - June 21, 2025. Initial setup and card interface implementation
