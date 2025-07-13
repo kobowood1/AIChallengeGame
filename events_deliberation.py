@@ -221,8 +221,10 @@ def start_user_introduction(session_id):
 
 def start_policy_deliberation(session_id):
     """Step 4: Begin policy-by-policy deliberation"""
+    logging.info(f"Starting policy deliberation for session {session_id}")
     delib_session = deliberation_sessions.get(session_id)
     if not delib_session:
+        logging.error(f"No deliberation session found for {session_id}")
         return
     
     delib_session.advance_step()
@@ -236,6 +238,7 @@ def start_policy_deliberation(session_id):
     
     # Start with first policy area
     socketio.sleep(1)
+    logging.info(f"Starting discussion of policy area 0 for session {session_id}")
     discuss_policy_area(session_id, 0)
 
 def discuss_policy_area(session_id, policy_index):
@@ -265,38 +268,34 @@ def discuss_policy_area(session_id, policy_index):
 
 def get_agent_policy_responses(session_id, policy_area):
     """Get each agent's policy choice and rationale"""
+    logging.info(f"Getting agent policy responses for session {session_id}, policy {policy_area.name}")
     delib_session = deliberation_sessions.get(session_id)
     if not delib_session:
+        logging.error(f"No deliberation session found for {session_id}")
         return
     
     agent_choices = {}
     
     for agent_name in delib_session.agent_names:
+        logging.info(f"Getting response from agent {agent_name}")
         socketio.sleep(1)  # Natural delay
         
         agent_choice = delib_session.get_agent_choice(agent_name, policy_area.name)
         agent_choices[agent_name] = agent_choice
         
-        # Generate rationale using AI
+        # Generate rationale using AI (temporarily disabled for debugging)
         agent_profile = delib_session.simulation.agents[agent_name]
         
-        # Create a simple context for the rationale
-        context = f"Policy area: {policy_area.name}\nYour choice: Option {agent_choice}\nBriefly explain your rationale in 1-2 sentences."
+        # Use simple fallback responses for now to test the flow
+        fallback_responses = {
+            1: "because it provides a cost-effective, focused approach that makes efficient use of our limited resources.",
+            2: "because it strikes a good balance between comprehensive support and budget constraints.",
+            3: "because it offers comprehensive, well-funded support that addresses the full scope of refugee student needs."
+        }
         
-        try:
-            # Set the policy context for the agent
-            delib_session.simulation.set_policy_context(policy_area.name, {}, agent_choice)
-            rationale = delib_session.simulation.generate_agent_response(agent_name, context)
-            response_text = f"I selected Option {agent_choice}. {rationale}"
-        except Exception as e:
-            logging.error(f"Error generating agent response for {agent_name}: {e}")
-            # Use fallback based on agent profile
-            if 'cost-effective' in agent_profile.ideology.lower():
-                response_text = f"I selected Option {agent_choice} because it provides a cost-effective approach that fits our budget constraints."
-            elif 'comprehensive' in agent_profile.ideology.lower():
-                response_text = f"I selected Option {agent_choice} because it offers comprehensive support for refugee students."
-            else:
-                response_text = f"I selected Option {agent_choice} based on my experience and the needs of refugee students."
+        response_text = f"I selected Option {agent_choice} {fallback_responses.get(agent_choice, 'based on my experience and the needs of refugee students.')} As someone with experience in {agent_profile.background.lower()}, I believe this approach aligns with my {agent_profile.ideology.lower()} perspective."
+        
+        logging.info(f"Generated response for {agent_name}: {response_text[:50]}...")
         
         agent_profile = delib_session.simulation.agents[agent_name]
         emit('agent_message', {
