@@ -1,0 +1,69 @@
+**Replit Prompt – “Implement Stepwise, Moderated Multi-Agent Policy Deliberation”**
+
+> **Role:** You are a senior full-stack engineer using Flask, Jinja2, Socket.IO, and Tailwind CSS.
+> **Objective:** Restructure the `/phase2_multi_agent` page into a step-by-step, moderator-led policy deliberation with AI agents and the player, including voting, timer, and a “Next” button.
+>
+> **Background:**
+>
+> * Phase I (already done): Player + 4 AI agents each chose one option (1–3) in seven policy areas under a 14-unit budget.
+> * Phase II: 30-minute group dialogue (this page) leading to a final team policy package.
+> * Policy definitions and each participant’s selections are loaded in `session["user_policy"]` and `session["agent_policy"][agentName]` (see attached `Refugee policy choices.pdf`).
+>
+> **Deliverables:** A revised `templates/phase2_multi_agent.html`, updated Flask route and Socket.IO logic, and any supporting JS/CSS.
+>
+> **Tasks:**
+>
+> 1. **Countdown Timer**
+>
+>    * Display a 30:00 → 00:00 countdown at the top right. Use Tailwind for style (`text-lg font-semibold`).
+>    * When the timer hits zero or the player clicks “End Discussion,” disable inputs and show “Time’s up!”
+> 2. **Step One – Moderator Intro**
+>
+>    * On page load, the Moderator posts a single bubble:
+>
+>      > “Welcome to the Republic of Bean policy simulation. Today we will review how your choices impact refugee education, social cohesion, and resources. We have four stakeholders (list random agent names from `session["agent_names"]`) plus you, \[PlayerName]. Let us begin with introductions.”
+> 3. **Step Two – Agents Introduce Themselves**
+>
+>    * Sequentially emit each agent’s intro message:
+>
+>      > “\[AgentName], \[Age], a \[Occupation] who chose \[PolicySummary for each area or short tagline]. Hello!”
+>    * Delay \~1 s between each so chat feels natural.
+> 4. **Step Three – Player Intro**
+>
+>    * Moderator asks: “Now, \[PlayerName], please introduce yourself — your background and what guided your policy choices.”
+>    * Enable the player input; wait for their message before proceeding.
+> 5. **Step Four – Policy-by-Policy Deliberation**
+>
+>    * For each of the seven areas in order:
+>      a. Moderator posts: “Policy #N: \[AreaName]. Agents, please state your chosen Option and one-sentence rationale.”
+>      b. Each agent quickly posts: “\[AgentName]: I selected Option X because …”
+>      c. Moderator then asks: “\[PlayerName], why did you choose Option Y?” and waits for the player’s input.
+>      d. **If all five choices match**, Moderator declares: “All agreed on Option Z. Moving on.”
+>      e. **If there is no majority**, trigger an in-chat vote:
+>
+>      * Moderator: “We have a split. Please vote by typing the Option number.”
+>      * Collect votes from all agents and the player.
+>      * Tally and determine majority (random tie-break by Moderator).
+>      * Moderator announces: “Majority selected Option M.”
+>    * Repeat for all policy areas in sequence.
+> 6. **Step Five – Final Recommendations & Next**
+>
+>    * After area 7, Moderator posts: “Final group policy package: \[list AreaName: Option]. Congratulations.”
+>    * Render a “Next: Reflection Phase” button below the chat that navigates to `/phase3`.
+> 7. **UX & Technical Details**
+>
+>    * Chat bubbles: Moderator (`bg-gray-200`), Player (`bg-yellow-300`), OpenAI agents (`bg-blue-200`), Gemini agents (`bg-purple-200`).
+>    * Use `socket.emit`/`socket.on` to drive each step—Moderator prompts, agent replies, player input, votes.
+>    * Ensure each prompt waits for required inputs (e.g., player intro, player rationale, votes) before advancing.
+>    * Maintain full `history` context for AI calls (policy selections + prior dialogue).
+>    * Style “Next” button with Tailwind (`mt-4 px-6 py-2 bg-green-600 text-white rounded`).
+>
+> **Acceptance Criteria:**
+>
+> * A clear 5-step moderator-driven flow.
+> * Agents and player take turns in the prescribed order.
+> * Voting occurs only when needed and results are declared.
+> * Timer runs for 30 minutes, then locks chat.
+> * “Next” button appears only after completion.
+>
+> Paste this prompt into Replit AI to generate the revised template, route handlers, and client-side logic for `/phase2_multi_agent`.

@@ -1,0 +1,548 @@
+{% extends "base.html" %}
+
+{% block title %}Republic of Bean - Policy Deliberation{% endblock %}
+
+{% block head %}
+<style>
+    body {
+        background: #f8f9fa;
+        min-height: 100vh;
+        color: #374151;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .header {
+        background: #28a745;
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .timer {
+        font-size: 1.2rem;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        min-width: 80px;
+        text-align: center;
+    }
+
+    .timer.warning {
+        background: #dc3545;
+        animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.7; }
+        100% { opacity: 1; }
+    }
+
+    .chat-container {
+        height: calc(100vh - 140px);
+        display: flex;
+        flex-direction: column;
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        background: #f8f9fa;
+    }
+
+    .message {
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        opacity: 0;
+        animation: fadeIn 0.3s forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message-bubble {
+        max-width: 70%;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        position: relative;
+    }
+
+    .message-bubble::before {
+        content: attr(data-sender);
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.25rem;
+        opacity: 0.8;
+    }
+
+    .message-bubble.moderator {
+        background: #e9ecef;
+        color: #495057;
+        border-left: 4px solid #28a745;
+    }
+
+    .message-bubble.user {
+        background: #fef3c7;
+        color: #92400e;
+        border-left: 4px solid #f59e0b;
+    }
+
+    .message-bubble.openai {
+        background: #dbeafe;
+        color: #1e40af;
+        border-left: 4px solid #3b82f6;
+    }
+
+    .message-bubble.gemini {
+        background: #f3e8ff;
+        color: #7c3aed;
+        border-left: 4px solid #8b5cf6;
+    }
+
+    .input-area {
+        padding: 1rem;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+    }
+
+    .input-area input {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .input-area input:focus {
+        border-color: #3b82f6;
+    }
+
+    .input-area button {
+        padding: 0.75rem 1.5rem;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .input-area button:hover {
+        background: #2563eb;
+    }
+
+    .input-area button:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+    }
+
+    .next-button {
+        margin: 1rem auto;
+        display: none;
+        padding: 0.75rem 2rem;
+        background: #10b981;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .next-button:hover {
+        background: #059669;
+    }
+
+    .voting-area {
+        background: #f0f9ff;
+        border: 1px solid #0ea5e9;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+        display: none;
+    }
+
+    .vote-options {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .vote-option {
+        padding: 0.5rem 1rem;
+        background: #0ea5e9;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+    .vote-option:hover {
+        background: #0284c7;
+    }
+
+    .progress-indicator {
+        padding: 0.5rem 1rem;
+        background: #f3f4f6;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .typing-indicator {
+        background: #e5e7eb;
+        padding: 0.5rem 1rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        display: none;
+        font-style: italic;
+        color: #6b7280;
+    }
+
+    .typing-dots {
+        display: inline-block;
+        animation: typing 1.5s infinite;
+    }
+
+    @keyframes typing {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-10px); }
+    }
+
+    @media (max-width: 768px) {
+        .header {
+            padding: 1rem;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .chat-container {
+            height: calc(100vh - 160px);
+            margin: 0.5rem;
+        }
+        
+        .message-bubble {
+            max-width: 85%;
+        }
+        
+        .input-area {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .input-area input {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Republic of Bean - Policy Deliberation</h1>
+    <div class="timer" id="timer">30:00</div>
+</div>
+
+<div class="container mx-auto p-4">
+    <div class="progress-indicator" id="progress">
+        Preparing discussion...
+    </div>
+    
+    <div class="chat-container">
+        <div class="chat-messages" id="messages">
+            <!-- Messages will be populated here -->
+        </div>
+        
+        <div class="typing-indicator" id="typing">
+            <span class="typing-dots">●●●</span> Someone is typing...
+        </div>
+        
+        <div class="voting-area" id="voting">
+            <div class="font-semibold mb-2">Vote for your preferred option:</div>
+            <div class="vote-options">
+                <button class="vote-option" onclick="castVote(1)">Option 1</button>
+                <button class="vote-option" onclick="castVote(2)">Option 2</button>
+                <button class="vote-option" onclick="castVote(3)">Option 3</button>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Type your message..." disabled>
+            <button onclick="sendMessage()" id="sendButton" disabled>Send</button>
+        </div>
+    </div>
+    
+    <button class="next-button" id="nextButton" onclick="goToPhase3()">
+        Next: Reflection Phase
+    </button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+<script>
+    const socket = io();
+    let currentStep = 0;
+    let waitingForInput = false;
+    let discussionComplete = false;
+    let timeRemaining = 30 * 60; // 30 minutes in seconds
+    let timerInterval;
+    let currentPolicyIndex = 0;
+    let finalPackage = {};
+    let votingActive = false;
+    let userVoted = false;
+    
+    const policyAreas = [
+        'Access to Education',
+        'Language Instruction', 
+        'Teacher Training',
+        'Curriculum Adaptation',
+        'Psychosocial Support',
+        'Financial Support',
+        'Certification & Accreditation'
+    ];
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Page loaded, starting deliberation...');
+        
+        // Start timer
+        startTimer();
+        
+        // Join the deliberation room
+        socket.emit('join_deliberation_room');
+        
+        // Set up message input
+        const messageInput = document.getElementById('messageInput');
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !messageInput.disabled) {
+                sendMessage();
+            }
+        });
+    });
+    
+    function startTimer() {
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            updateTimerDisplay();
+            
+            if (timeRemaining <= 0) {
+                endDiscussion();
+            }
+        }, 1000);
+    }
+    
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+        const timer = document.getElementById('timer');
+        timer.textContent = display;
+        
+        if (timeRemaining <= 300) { // Last 5 minutes
+            timer.classList.add('warning');
+        }
+    }
+    
+    function endDiscussion() {
+        clearInterval(timerInterval);
+        document.getElementById('messageInput').disabled = true;
+        document.getElementById('sendButton').disabled = true;
+        document.getElementById('timer').textContent = "Time's up!";
+        
+        addMessage('System', "Time's up! Discussion has ended.", 'moderator');
+        
+        if (!discussionComplete) {
+            // If not completed naturally, show next button
+            document.getElementById('nextButton').style.display = 'block';
+        }
+    }
+    
+    function addMessage(sender, text, type = 'user') {
+        const messagesDiv = document.getElementById('messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message';
+        
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = `message-bubble ${type}`;
+        bubbleDiv.setAttribute('data-sender', sender);
+        bubbleDiv.textContent = text;
+        
+        messageDiv.appendChild(bubbleDiv);
+        messagesDiv.appendChild(messageDiv);
+        
+        // Auto-scroll to bottom
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    
+    function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const message = input.value.trim();
+        
+        if (message && !input.disabled) {
+            // Add user message immediately
+            addMessage('You', message, 'user');
+            
+            // Send to server
+            socket.emit('user_message', {
+                message: message,
+                step: currentStep,
+                policyIndex: currentPolicyIndex
+            });
+            
+            // Clear input and disable until response
+            input.value = '';
+            input.disabled = true;
+            document.getElementById('sendButton').disabled = true;
+            
+            showTyping();
+        }
+    }
+    
+    function castVote(option) {
+        if (votingActive && !userVoted) {
+            userVoted = true;
+            document.getElementById('voting').style.display = 'none';
+            
+            addMessage('You', `I vote for Option ${option}`, 'user');
+            
+            socket.emit('cast_vote', {
+                option: option,
+                policyIndex: currentPolicyIndex
+            });
+        }
+    }
+    
+    function showTyping() {
+        document.getElementById('typing').style.display = 'block';
+    }
+    
+    function hideTyping() {
+        document.getElementById('typing').style.display = 'none';
+    }
+    
+    function enableInput() {
+        document.getElementById('messageInput').disabled = false;
+        document.getElementById('sendButton').disabled = false;
+        document.getElementById('messageInput').focus();
+    }
+    
+    function showVoting() {
+        votingActive = true;
+        userVoted = false;
+        document.getElementById('voting').style.display = 'block';
+    }
+    
+    function updateProgress(text) {
+        document.getElementById('progress').textContent = text;
+    }
+    
+    function goToPhase3() {
+        window.location.href = '/phase3';
+    }
+    
+    // Socket event handlers
+    socket.on('connect', function() {
+        console.log('Connected to server');
+    });
+    
+    socket.on('moderator_message', function(data) {
+        hideTyping();
+        addMessage('Moderator', data.message, 'moderator');
+        
+        if (data.enableInput) {
+            enableInput();
+        }
+        
+        if (data.step) {
+            currentStep = data.step;
+            updateProgress(data.progress || `Step ${currentStep}`);
+        }
+        
+        if (data.policyIndex !== undefined) {
+            currentPolicyIndex = data.policyIndex;
+        }
+    });
+    
+    socket.on('agent_message', function(data) {
+        hideTyping();
+        const agentType = data.agentType || 'openai';
+        addMessage(data.sender, data.message, agentType);
+    });
+    
+    socket.on('start_voting', function(data) {
+        addMessage('Moderator', data.message, 'moderator');
+        showVoting();
+    });
+    
+    socket.on('vote_result', function(data) {
+        addMessage('Moderator', data.message, 'moderator');
+        votingActive = false;
+        finalPackage[data.policyArea] = data.selectedOption;
+    });
+    
+    socket.on('deliberation_complete', function(data) {
+        discussionComplete = true;
+        addMessage('Moderator', data.message, 'moderator');
+        document.getElementById('nextButton').style.display = 'block';
+        document.getElementById('messageInput').disabled = true;
+        document.getElementById('sendButton').disabled = true;
+        updateProgress('Discussion Complete');
+    });
+    
+    socket.on('next_step', function(data) {
+        if (data.enableInput) {
+            enableInput();
+        }
+        
+        if (data.step) {
+            currentStep = data.step;
+            updateProgress(data.progress);
+        }
+        
+        if (data.policyIndex !== undefined) {
+            currentPolicyIndex = data.policyIndex;
+        }
+    });
+    
+    socket.on('system_message', function(data) {
+        addMessage('System', data.message, 'moderator');
+    });
+    
+    // Handle disconnection
+    socket.on('disconnect', function() {
+        console.log('Disconnected from server');
+        addMessage('System', 'Connection lost. Please refresh the page.', 'moderator');
+    });
+</script>
+{% endblock %}

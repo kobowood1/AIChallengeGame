@@ -64,7 +64,7 @@ def create_app():
     from routes import main as main_blueprint
     app.register_blueprint(main_blueprint)
     
-    # Register multi-agent routes
+    # Register multi-agent blueprint
     try:
         from routes_multi_agent import multi_agent_bp
         app.register_blueprint(multi_agent_bp)
@@ -76,5 +76,9 @@ def create_app():
     
     # Import Socket.IO event handlers
     import events
+    
+    # Register new structured deliberation events
+    from events_deliberation import register_deliberation_events
+    register_deliberation_events(socketio)
     
     return app

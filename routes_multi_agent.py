@@ -12,9 +12,9 @@ multi_agent_bp = Blueprint('multi_agent', __name__)
 @multi_agent_bp.route('/phase2_multi_agent')
 @login_required
 def phase2_multi_agent():
-    """Enhanced Phase 2 with multi-agent simulation"""
+    """Structured Phase 2 with stepwise moderated multi-agent deliberation"""
     
-    # Get user's policy selections from session (try multiple possible keys)
+    # Get user's policy selections from session
     selections = session.get('policy_selections', {})
     if not selections:
         selections = session.get('selections', {})
@@ -36,77 +36,39 @@ def phase2_multi_agent():
     # Store selections in consistent format for multi-agent system
     session['policy_selections'] = selections
     
-    # Initialize multi-agent simulation with randomized names
+    # Get user name for personalization
+    user_name = current_user.username if current_user.is_authenticated else 'Participant'
+    session['user_name'] = user_name
+    
+    # Initialize agent names and policies for structured deliberation
     import random
     
-    if 'multi_agent_sim' not in session:
+    if 'agent_names' not in session:
         # Pool of available agent names
         available_names = ['Amir', 'Salma', 'Lila', 'Leila', 'Rashid', 'Mara', 'Yasmin', 'Omar', 'Fatima', 'Hassan']
         
         # Randomly select 4 names for this session
         agent_names = random.sample(available_names, 4)
-        
-        session['multi_agent_sim'] = {
-            'initialized': True,
-            'current_agent_index': 0,
-            'agents_order': agent_names,
-            'user_responses': [],
-            'conversation_history': [],
-            'waiting_for_user': False,
-            'phase_complete': False
-        }
-        
-        # Store agent names for easy access
         session['agent_names'] = agent_names
         
-        # Create randomized agent policy packages
-        session['agent_policies'] = {}
-        for name in agent_names:
-            # Create slightly varied policy packages for each agent
-            agent_package = {}
-            for policy_name in selections.keys():
-                # Randomly vary some selections while keeping others same as user
-                if random.random() < 0.3:  # 30% chance to differ
-                    agent_package[policy_name] = random.choice([1, 2, 3])
-                else:
-                    agent_package[policy_name] = selections[policy_name]
-            session['agent_policies'][name] = agent_package
+        # Generate agent policy choices (simplified for demo)
+        agent_policies = {}
+        for agent_name in agent_names:
+            agent_policies[agent_name] = {
+                'Access to Education': random.randint(1, 3),
+                'Language Instruction': random.randint(1, 3),
+                'Teacher Training': random.randint(1, 3),
+                'Curriculum Adaptation': random.randint(1, 3),
+                'Psychosocial Support': random.randint(1, 3),
+                'Financial Support': random.randint(1, 3),
+                'Certification & Accreditation': random.randint(1, 3)
+            }
+        session['agent_policies'] = agent_policies
     
-    # Create simulation instance
-    simulation = MultiAgentSimulation()
-    
-    # Set up policy context (focusing on Access to Education for demo)
-    policy_data = create_policy_simulation_data()
-    user_vote = session.get('user_policy_reasoning', {}).get('Access to Education', 
-                           'Integration with Quotas because it balances resource costs and inclusivity')
-    
-    simulation.set_policy_context(
-        policy_data["policy_area"],
-        policy_data["options"],
-        user_vote
-    )
-    
-    # Get current simulation state
-    sim_state = session['multi_agent_sim']
-    
-    # Generate initial moderator message if starting
-    if not sim_state.get('moderator_intro_sent'):
-        intro = simulation.generate_moderator_intro()
-        sim_state['moderator_intro'] = intro
-        sim_state['moderator_intro_sent'] = True
-        session['multi_agent_sim'] = sim_state
-    
-    # Get policy data for template rendering
-    from game_data import POLICIES
-    
-    return render_template('phase2_multi_agent.html',
+    # Return the new structured deliberation template
+    return render_template('phase2_multi_agent_new.html',
                          user_selections=selections,
-                         policy_data=POLICIES,
-                         selections=selections,
-                         policy_options=policy_data["options"],
-                         user_vote=user_vote,
-                         sim_state=sim_state,
-                         moderator_intro=sim_state.get('moderator_intro', ''),
+                         user_name=user_name,
                          agent_names=session.get('agent_names', []),
                          agent_policies=session.get('agent_policies', {}))
 
