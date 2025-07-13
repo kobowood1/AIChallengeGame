@@ -1,663 +1,340 @@
 {% extends "base.html" %}
 
-{% block title %}Republic of Bean - Education Policy Implementation & Reflection{% endblock %}
+{% block title %}Republic of Bean - Policy Implementation Results{% endblock %}
 
 {% block head %}
 <style>
+    body {
+        background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+        min-height: 100vh;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    .glass-container {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
     .policy-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 16px;
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
     
     .policy-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
     
-    .comparison-arrow {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto;
+    .policy-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #f59e0b, #d97706);
     }
     
-    .text-gradient {
-        background: linear-gradient(90deg, #3b82f6, #10b981);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    
-    /* Dropdown styling */
-    .dropdown-menu {
-        width: 250px;
-        z-index: 50;
-        max-height: 250px;
-        overflow-y: auto;
-    }
-    
-    .dropdown {
-        position: relative;
+    .option-badge {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
         display: inline-block;
     }
     
-    .dropdown-active .dropdown-menu {
-        display: block;
-    }
-    
-    .firework {
-        position: absolute;
-        width: 5px;
-        height: 5px;
+    .cost-indicator {
+        width: 24px;
+        height: 24px;
         border-radius: 50%;
-        animation: firework-animation 1s forwards;
-        z-index: 10;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-left: 8px;
     }
     
-    @keyframes firework-animation {
-        0% {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(-100px) scale(0);
-            opacity: 0;
-        }
+    .cost-1 { background-color: #22c55e; }
+    .cost-2 { background-color: #f59e0b; }
+    .cost-3 { background-color: #ef4444; }
+    
+    .budget-bar {
+        height: 20px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
     }
     
-    textarea {
-        min-height: 120px;
+    .budget-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #22c55e, #16a34a);
+        border-radius: 10px;
+        transition: width 0.6s ease;
     }
     
-    /* Tab styling */
-    .tab {
-        display: none;
+    .budget-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.875rem;
     }
     
-    .tab.active {
-        display: block;
+    .profile-section {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-top: 2rem;
     }
     
-    .tab-button {
-        padding: 10px 15px;
-        background-color: rgba(75, 85, 99, 0.5);
-        border-top-left-radius: 0.5rem;
-        border-top-right-radius: 0.5rem;
+    .profile-content {
+        line-height: 1.6;
+        color: #374151;
+        font-size: 1rem;
+    }
+    
+    .congratulations-banner {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .congratulations-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
         transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
     }
     
-    .tab-button.active {
-        background-color: rgb(55, 65, 81);
-        font-weight: bold;
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .section-title {
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-bottom: 0.5rem;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+        border-radius: 2px;
+    }
+    
+    .implementation-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 1rem;
+    }
+    
+    .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #10b981;
+    }
+    
+    .status-text {
+        color: #059669;
+        font-weight: 600;
+        font-size: 0.875rem;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto">
-    <!-- Tab Buttons -->
-    <div class="flex mb-0 border-b border-gray-700">
-        <button class="tab-button active" data-tab="results-tab">
-            <i class="fas fa-chart-bar mr-2"></i>Policy Results
-        </button>
-        <button class="tab-button" data-tab="reflection-tab">
-            <i class="fas fa-pen-fancy mr-2"></i>Reflection Form
-        </button>
-    </div>
-    
-    <!-- Results Tab -->
-    <div id="results-tab" class="tab active">
-        <div class="bg-gray-800 p-6 rounded-t-none rounded-b-lg shadow-lg mb-8">
-            <h1 class="text-3xl font-bold mb-2 text-center text-blue-400">Refugee Education Policy Implementation</h1>
-            <p class="text-center text-gray-400 mb-6">The citizens of Bean have approved your education policy package for refugee integration</p>
-            
-            <div class="bg-blue-900 bg-opacity-30 p-4 rounded-lg border-l-4 border-blue-500 mb-6">
-                <p class="text-sm text-gray-200 m-0">
-                    The following implementation plan outlines how your refugee education policies will be executed across Bean's school system. These policies will directly impact the educational outcomes and integration of newly arrived refugee children.
-                </p>
-            </div>
-            
-            <div class="bg-gray-700 p-6 rounded-lg shadow-lg mb-8">
-                <h2 class="text-xl font-bold mb-4 flex items-center">
-                    <i class="fas fa-chart-bar mr-2"></i>Budget Breakdown
-                </h2>
-                
-                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div class="bg-gray-800 p-4 rounded-lg w-full md:w-1/2">
-                        <h3 class="font-bold mb-2">Original Proposal</h3>
-                        <div class="flex justify-between items-center mb-2">
-                            <span>Budget Used:</span>
-                            <span class="text-blue-400 font-bold">{{ session.package_cost }} / {{ max_budget }}</span>
-                        </div>
-                        <div class="w-full bg-gray-600 rounded-full h-4 mb-2">
-                            <div class="bg-blue-500 h-4 rounded-full" style="width: {{ (session.package_cost / max_budget) * 100 }}%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="comparison-arrow bg-gray-600">
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
-                    
-                    <div class="bg-gray-800 p-4 rounded-lg w-full md:w-1/2">
-                        <h3 class="font-bold mb-2">Final Approved</h3>
-                        <div class="flex justify-between items-center mb-2">
-                            <span>Budget Used:</span>
-                            <span class="text-green-400 font-bold">{{ final_cost }} / {{ max_budget }}</span>
-                        </div>
-                        <div class="w-full bg-gray-600 rounded-full h-4 mb-2">
-                            <div class="bg-green-500 h-4 rounded-full" style="width: {{ (final_cost / max_budget) * 100 }}%"></div>
-                        </div>
-                    </div>
+<div class="min-h-screen py-8">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                Policy Implementation Results
+            </h1>
+            <p class="text-gray-600 text-lg">
+                Republic of Bean Refugee Education Policy Framework
+            </p>
+        </div>
+        
+        <!-- Congratulations Banner -->
+        <div class="congratulations-banner">
+            <h2 class="text-2xl font-bold mb-2">🎉 Congratulations!</h2>
+            <p class="text-lg opacity-90">
+                You've successfully created a comprehensive education policy framework for refugee integration in the Republic of Bean.
+            </p>
+        </div>
+        
+        <!-- Budget Overview -->
+        <div class="glass-container p-6 mb-8">
+            <h2 class="section-title">Budget Overview</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-gray-800 mb-2">{{ final_cost }}</div>
+                    <div class="text-gray-600">Total Cost</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-gray-800 mb-2">{{ max_budget }}</div>
+                    <div class="text-gray-600">Budget Limit</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-green-600 mb-2">{{ max_budget - final_cost }}</div>
+                    <div class="text-gray-600">Remaining</div>
                 </div>
             </div>
-            
-            <div class="bg-gray-700 p-6 rounded-lg shadow-lg mb-8">
-                <h2 class="text-xl font-bold mb-6 flex items-center">
-                    <i class="fas fa-file-contract mr-2"></i>Final Policy Package
-                </h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {% for policy_name, final_level in final_package.items() %}
-                        {% set player_level = player_package[policy_name] %}
-                        {% set changed = player_level != final_level %}
-                        
-                        <div class="bg-gray-800 p-4 rounded-lg policy-card" data-policy="{{ policy_name }}">
-                            <h3 class="font-bold mb-3 flex items-center justify-between">
-                                {{ policy_name }}
-                                {% if changed %}
-                                    <span class="text-yellow-400 text-sm">
-                                        <i class="fas fa-exchange-alt"></i> Modified
-                                    </span>
-                                {% else %}
-                                    <span class="text-green-400 text-sm">
-                                        <i class="fas fa-check"></i> Approved
-                                    </span>
-                                {% endif %}
-                            </h3>
-                            
-                            <div class="mb-3">
-                                {% if changed %}
-                                    <div class="flex items-center justify-between text-sm mb-1">
-                                        <span class="text-gray-400">Your proposal:</span>
-                                        <div class="dropdown inline-block relative">
-                                            <button class="text-blue-400 hover:text-blue-300 focus:outline-none flex items-center">
-                                                Option {{ player_level }}
-                                                <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                                                </svg>
-                                            </button>
-                                            <div class="dropdown-menu absolute hidden bg-gray-800 text-white rounded shadow-lg p-2 mt-1 z-10 w-64">
-                                                {% for policy in policies %}
-                                                    {% if policy.name == policy_name %}
-                                                        {% for option in policy.options %}
-                                                            {% if loop.index == player_level|int %}
-                                                                <div class="p-2 border-b border-gray-700">
-                                                                    <div class="font-semibold mb-1">
-                                                                        Option {{ loop.index }}: {{ option.summary }}
-                                                                    </div>
-                                                                    <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
-                                                                </div>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center justify-between text-sm">
-                                        <span class="text-gray-400">Final approved:</span>
-                                        <div class="dropdown inline-block relative">
-                                            <button class="text-green-400 hover:text-green-300 focus:outline-none flex items-center">
-                                                Option {{ final_level }}
-                                                <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                                                </svg>
-                                            </button>
-                                            <div class="dropdown-menu absolute hidden bg-gray-800 text-white rounded shadow-lg p-2 mt-1 z-10 w-64">
-                                                {% for policy in policies %}
-                                                    {% if policy.name == policy_name %}
-                                                        {% for option in policy.options %}
-                                                            {% if option.level == final_level %}
-                                                                <div class="p-2 border-b border-gray-700">
-                                                                    <div class="font-semibold mb-1">Option {{ option.level }}</div>
-                                                                    <div class="text-xs">{{ option.summary }}</div>
-                                                                    <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
-                                                                </div>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% else %}
-                                    <div class="text-center py-2 mb-2 bg-green-900 bg-opacity-20 rounded">
-                                        <div class="dropdown inline-block relative">
-                                            <button class="text-green-400 hover:text-green-300 focus:outline-none font-semibold flex items-center justify-center w-full">
-                                                Option {{ final_level }}
-                                                <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                                                </svg>
-                                            </button>
-                                            <div class="dropdown-menu absolute hidden bg-gray-800 text-white rounded shadow-lg p-2 mt-1 z-10 w-64">
-                                                {% for policy in policies %}
-                                                    {% if policy.name == policy_name %}
-                                                        {% for option in policy.options %}
-                                                            {% if option.level == final_level %}
-                                                                <div class="p-2 border-b border-gray-700">
-                                                                    <div class="font-semibold mb-1">Option {{ option.level }}</div>
-                                                                    <div class="text-xs">{{ option.summary }}</div>
-                                                                    <div class="text-xs text-gray-400 mt-1">Cost: {{ option.cost }}</div>
-                                                                </div>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            
-                            <div class="text-sm text-gray-300">
-                                <p class="mb-2">Implementation phases:</p>
-                                <ul class="list-disc pl-5 space-y-1">
-                                    <li>Planning & resource allocation</li>
-                                    <li>Stakeholder engagement</li>
-                                    <li>Phased deployment</li>
-                                    <li>Monitoring & evaluation</li>
-                                </ul>
-                            </div>
-                        </div>
-                    {% endfor %}
+            <div class="mt-6">
+                <div class="budget-bar">
+                    <div class="budget-fill" style="width: {{ (final_cost / max_budget * 100) }}%"></div>
+                    <div class="budget-text">{{ final_cost }}/{{ max_budget }} Units Used</div>
                 </div>
-            </div>
-            
-            <div class="bg-gray-700 p-6 rounded-lg shadow-lg mb-8">
-                <h2 class="text-xl font-bold mb-4 flex items-center">
-                    <i class="fas fa-calendar-alt mr-2"></i>Implementation Timeline
-                </h2>
-                
-                <div class="relative pt-6">
-                    <!-- Timeline Line -->
-                    <div class="absolute top-0 left-6 bottom-0 w-1 bg-blue-900 z-0"></div>
-                    
-                    <!-- Timeline Items -->
-                    <div class="relative z-10">
-                        <!-- Item 1 -->
-                        <div class="mb-10 ml-10 relative">
-                            <div class="absolute -left-14 mt-1.5">
-                                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-file-signature text-white"></i>
-                                </div>
-                            </div>
-                            <div class="bg-gray-800 p-4 rounded-lg">
-                                <h3 class="font-bold">Phase 1: Education Policy Approval</h3>
-                                <p class="text-green-400 text-sm mb-2">Completed</p>
-                                <p class="text-sm text-gray-300">The citizens of Bean have approved the refugee education policy package through democratic voting.</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Item 2 -->
-                        <div class="mb-10 ml-10 relative">
-                            <div class="absolute -left-14 mt-1.5">
-                                <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-clipboard-list text-white"></i>
-                                </div>
-                            </div>
-                            <div class="bg-gray-800 p-4 rounded-lg">
-                                <h3 class="font-bold">Phase 2: School System Planning</h3>
-                                <p class="text-yellow-400 text-sm mb-2">In Progress</p>
-                                <p class="text-sm text-gray-300">Education department is developing detailed implementation plans for each school with refugee students.</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Item 3 -->
-                        <div class="mb-10 ml-10 relative">
-                            <div class="absolute -left-14 mt-1.5">
-                                <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-people-arrows text-white"></i>
-                                </div>
-                            </div>
-                            <div class="bg-gray-800 p-4 rounded-lg">
-                                <h3 class="font-bold">Phase 3: Teacher Training & Support</h3>
-                                <p class="text-gray-400 text-sm mb-2">Upcoming</p>
-                                <p class="text-sm text-gray-300">Teachers will receive specialized training on refugee education needs and cultural sensitivity.</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Item 4 -->
-                        <div class="mb-10 ml-10 relative">
-                            <div class="absolute -left-14 mt-1.5">
-                                <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-rocket text-white"></i>
-                                </div>
-                            </div>
-                            <div class="bg-gray-800 p-4 rounded-lg">
-                                <h3 class="font-bold">Phase 4: Classroom Integration</h3>
-                                <p class="text-gray-400 text-sm mb-2">Upcoming</p>
-                                <p class="text-sm text-gray-300">Refugee students will begin attending classes with appropriate language and psychosocial support.</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Item 5 -->
-                        <div class="ml-10 relative">
-                            <div class="absolute -left-14 mt-1.5">
-                                <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-chart-line text-white"></i>
-                                </div>
-                            </div>
-                            <div class="bg-gray-800 p-4 rounded-lg">
-                                <h3 class="font-bold">Phase 5: Monitoring & Adaptation</h3>
-                                <p class="text-gray-400 text-sm mb-2">Upcoming</p>
-                                <p class="text-sm text-gray-300">Ongoing assessment of student progress and policy effectiveness will inform refinements.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold mb-4 text-gradient">Congratulations!</h2>
-                <p class="text-xl text-gray-300 mb-6">You've successfully created an education policy framework for refugee integration in the Republic of Bean</p>
-                <div class="max-w-2xl mx-auto bg-gray-900 p-4 rounded-lg mb-6">
-                    <p class="text-sm text-gray-300">
-                        Your education policies will have a profound impact on thousands of refugee children seeking to build new lives in Bean. Through careful deliberation and compromise, you've balanced competing priorities to create a sustainable education system that works for all students.
-                    </p>
-                </div>
-                <button class="switch-tab-btn bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-lg transition inline-flex items-center" data-tab="reflection-tab">
-                    <i class="fas fa-pen-fancy mr-2"></i>Complete Your Reflection
-                </button>
             </div>
         </div>
-    </div>
-    
-    <!-- Reflection Tab -->
-    <div id="reflection-tab" class="tab">
-        <div class="bg-gray-800 p-6 rounded-t-none rounded-b-lg shadow-lg">
-            <h1 class="text-3xl font-bold mb-2 text-center text-blue-400">Refugee Education Policy Reflection</h1>
-            <p class="text-center text-gray-400 mb-6">Share your insights on refugee education policy-making and the deliberative process</p>
+        
+        <!-- Final Policy Package -->
+        <div class="glass-container p-6 mb-8">
+            <h2 class="section-title">Final Policy Package</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for policy in policies %}
+                    {% set selected_option = final_package.get(policy.name, 1) %}
+                    {% set option_data = policy.options[selected_option - 1] %}
+                    <div class="policy-card p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">{{ policy.name }}</h3>
+                            <div class="flex items-center">
+                                <span class="option-badge">Option {{ selected_option }}</span>
+                                <span class="cost-indicator cost-{{ option_data.cost }}">{{ option_data.cost }}</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 text-sm mb-4">{{ policy.description }}</p>
+                        
+                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                            <h4 class="font-medium text-gray-800 mb-2">Selected Approach:</h4>
+                            <p class="text-sm text-gray-700">{{ option_data.summary }}</p>
+                        </div>
+                        
+                        <div class="implementation-status">
+                            <div class="status-indicator"></div>
+                            <span class="status-text">Ready for Implementation</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Policy Profile -->
+        {% if policy_profile %}
+        <div class="profile-section">
+            <h2 class="section-title">Your Policy Profile</h2>
+            <div class="profile-content">
+                {{ policy_profile|safe }}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Comparison Section -->
+        {% if player_package != final_package %}
+        <div class="glass-container p-6 mb-8">
+            <h2 class="section-title">Policy Evolution</h2>
+            <p class="text-gray-600 mb-6">
+                See how your initial policy choices evolved through the deliberation process:
+            </p>
             
-            <form id="reflection-form" class="space-y-6" action="{{ url_for('main.submit_reflection') }}" method="POST">
-                <!-- Participant Information -->
-                <div class="bg-gray-700 p-6 rounded-lg shadow-lg">
-                    <h2 class="text-xl font-bold mb-4">Participant Information</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="age" class="block mb-2 text-sm font-medium">Age</label>
-                            <input type="number" id="age" name="age" min="18" max="100" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-                        </div>
-                        
-                        <div>
-                            <label for="gender" class="block mb-2 text-sm font-medium">Gender</label>
-                            <select id="gender" name="gender" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-                                <option value="" selected disabled>Select gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="non-binary">Non-binary</option>
-                                <option value="other">Other</option>
-                                <option value="prefer-not-to-say">Prefer not to say</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label for="nationality" class="block mb-2 text-sm font-medium">Nationality</label>
-                            <input type="text" id="nationality" name="nationality" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-                        </div>
-                        
-                        <div>
-                            <label for="education" class="block mb-2 text-sm font-medium">Highest Level of Education</label>
-                            <select id="education" name="education" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-                                <option value="" selected disabled>Select education level</option>
-                                <option value="high-school">High School</option>
-                                <option value="associates">Associate's Degree</option>
-                                <option value="bachelors">Bachelor's Degree</option>
-                                <option value="masters">Master's Degree</option>
-                                <option value="doctorate">Doctorate</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Your Initial Choices</h3>
+                    <div class="space-y-3">
+                        {% for policy in policies %}
+                            {% set initial_option = player_package.get(policy.name, 1) %}
+                            <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                                <span class="text-sm font-medium text-gray-700">{{ policy.name }}</span>
+                                <span class="option-badge bg-blue-500">Option {{ initial_option }}</span>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
                 
-                <!-- Reflection Questions -->
-                <div class="bg-gray-700 p-6 rounded-lg shadow-lg">
-                    <h2 class="text-xl font-bold mb-4">Reflection on Refugee Education Policy</h2>
-                    
-                    <div class="mb-6 bg-blue-900 bg-opacity-30 p-4 rounded-lg border-l-4 border-blue-500">
-                        <p class="text-gray-200 m-0">
-                            This reflection is a critical part of understanding the complexity of refugee education policy-making. Your thoughtful responses will help generate a personalized report on your policy journey.
-                        </p>
-                    </div>
-                    
-                    <div class="space-y-6">
-                        <div>
-                            <label for="q1" class="block mb-2 text-sm font-medium">1. What values and priorities guided your initial refugee education policy selections?</label>
-                            <textarea id="q1" name="q1" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
-                        </div>
-                        
-                        <div>
-                            <label for="q2" class="block mb-2 text-sm font-medium">2. How did you weigh the needs of refugee students against the constraints of Bean's education budget?</label>
-                            <textarea id="q2" name="q2" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
-                        </div>
-                        
-                        <div>
-                            <label for="q3" class="block mb-2 text-sm font-medium">3. What strategies did you use to advocate for your education policy positions during the deliberation?</label>
-                            <textarea id="q3" name="q3" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
-                        </div>
-                        
-                        <div>
-                            <label for="q4" class="block mb-2 text-sm font-medium">4. How did different ideological perspectives from citizens affect your thinking about refugee education?</label>
-                            <textarea id="q4" name="q4" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
-                        </div>
-                        
-                        <div>
-                            <label for="q5" class="block mb-2 text-sm font-medium">5. What trade-offs were most difficult to make when designing an education system for both citizen and refugee students?</label>
-                            <textarea id="q5" name="q5" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
-                        </div>
-                        
-                        <div>
-                            <label for="q6" class="block mb-2 text-sm font-medium">6. How did you prioritize between access, language support, teacher training, curriculum, and psychosocial needs?</label>
-                            <textarea id="q6" name="q6" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
-                        </div>
-                        
-                        <div>
-                            <label for="q7" class="block mb-2 text-sm font-medium">7. What did you learn about consensus-building on contentious issues like education for displaced populations?</label>
-                            <textarea id="q7" name="q7" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
-                        </div>
-                        
-                        <div>
-                            <label for="q8" class="block mb-2 text-sm font-medium">8. How did your perspective on refugee education change throughout this simulation?</label>
-                            <textarea id="q8" name="q8" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
-                        </div>
-                        
-                        <div>
-                            <label for="q9" class="block mb-2 text-sm font-medium">9. How do you think the final education policy package will impact the lives of refugee children in Bean?</label>
-                            <textarea id="q9" name="q9" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
-                        </div>
-                        
-                        <div>
-                            <label for="q10" class="block mb-2 text-sm font-medium">10. How might insights from this simulation inform real-world approaches to refugee education policy?</label>
-                            <textarea id="q10" name="q10" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
-                        </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Final Group Decision</h3>
+                    <div class="space-y-3">
+                        {% for policy in policies %}
+                            {% set final_option = final_package.get(policy.name, 1) %}
+                            <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                                <span class="text-sm font-medium text-gray-700">{{ policy.name }}</span>
+                                <span class="option-badge bg-green-500">Option {{ final_option }}</span>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
-                
-                <div class="flex justify-between">
-                    <button type="button" class="switch-tab-btn bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition" data-tab="results-tab">
-                        <i class="fas fa-arrow-left mr-2"></i>Back to Results
-                    </button>
-                    
-                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg transition">
-                        <i class="fas fa-paper-plane mr-2"></i>Submit & Generate Report
-                    </button>
-                </div>
-            </form>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Next Steps -->
+        <div class="text-center mt-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">What's Next?</h2>
+            <p class="text-gray-600 mb-6">
+                Your policy framework is now ready for implementation. Thank you for participating in this simulation!
+            </p>
+            <a href="{{ url_for('main.thank_you') }}" class="btn-primary">
+                Complete Your Reflection
+            </a>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    // Tab switching functionality
-    document.addEventListener('DOMContentLoaded', () => {
-        // Create firework animation
-        createFireworks();
-        
-        // Tab switching
-        const tabs = document.querySelectorAll('.tab');
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const switchTabButtons = document.querySelectorAll('.switch-tab-btn');
-        
-        // Tab button click handler
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                switchToTab(tabId);
-            });
-        });
-        
-        // Switch tab button click handler
-        switchTabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                switchToTab(tabId);
-            });
-        });
-        
-        // Function to switch to a tab
-        function switchToTab(tabId) {
-            // Hide all tabs
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Deactivate all tab buttons
-            tabButtons.forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show the selected tab
-            document.getElementById(tabId).classList.add('active');
-            
-            // Activate the corresponding tab button
-            document.querySelector(`.tab-button[data-tab="${tabId}"]`).classList.add('active');
-            
-            // Scroll to top
-            window.scrollTo(0, 0);
-        }
-        
-        // Handle dropdown functionality
-        const dropdownButtons = document.querySelectorAll('.dropdown button');
-        
-        // No dropdown processing needed
-        
-        dropdownButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation(); // Prevent clicks from propagating
-                
-                // Toggle dropdown visibility
-                const dropdownMenu = this.nextElementSibling;
-                dropdownMenu.classList.toggle('hidden');
-                
-                // No processing needed
-                
-                // Close all other dropdowns
-                document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                    if (menu !== dropdownMenu) {
-                        menu.classList.add('hidden');
-                    }
-                });
-            });
-        });
-        
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function() {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                menu.classList.add('hidden');
-            });
-        });
-        
-        // Prevent dropdown menus from closing when clicking inside them
-        document.querySelectorAll('.dropdown-menu').forEach(menu => {
-            menu.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-        });
-        
-        // Form submission handler for AJAX
-        const reflectionForm = document.getElementById('reflection-form');
-        reflectionForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(reflectionForm);
-            
-            try {
-                const response = await fetch(reflectionForm.action, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = 'policy_reflection_report.md';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    
-                    // Redirect to thank you page
-                    window.location.href = '/thank-you';
-                } else {
-                    alert('There was an error submitting your reflection. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('There was an error submitting your reflection. Please try again.');
-            }
-        });
-    });
-    
-    // Function to create fireworks
-    function createFireworks() {
-        const colors = ['#3b82f6', '#10b981', '#ec4899', '#f59e0b', '#8b5cf6'];
-        const container = document.querySelector('body');
-        
-        // Create 50 fireworks
-        for (let i = 0; i < 50; i++) {
-            setTimeout(() => {
-                const firework = document.createElement('div');
-                firework.classList.add('firework');
-                
-                // Random position
-                const x = Math.random() * window.innerWidth;
-                const y = window.innerHeight;
-                
-                // Random color
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                
-                firework.style.left = `${x}px`;
-                firework.style.top = `${y}px`;
-                firework.style.backgroundColor = color;
-                
-                // Random animation duration
-                const duration = 0.5 + Math.random() * 1;
-                firework.style.animationDuration = `${duration}s`;
-                
-                // Append to container and remove after animation
-                container.appendChild(firework);
-                setTimeout(() => {
-                    firework.remove();
-                }, duration * 1000);
-            }, i * 100); // Stagger the fireworks
-        }
-    }
-    
-    // Fireworks animation continues to run on this page
-</script>
 {% endblock %}

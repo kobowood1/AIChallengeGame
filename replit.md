@@ -150,6 +150,13 @@ This is a Flask-based web application that simulates policy-making processes for
 ✓ Implemented step-by-step moderated deliberation: intro → agent introductions → user introduction → policy-by-policy discussions → final recommendations
 ✓ Added fallback response system for agent rationales when AI generation fails
 ✓ System now properly progresses through all deliberation phases
+✓ Updated agent name generation to use 40 diverse names from different cultural backgrounds (July 13, 2025)
+✓ Fixed agent name session caching to generate fresh names each session
+✓ Enhanced agent response diversity with personality-driven prompts and unique speaking styles
+✓ Enabled AI-generated responses using OpenAI and Gemini APIs for authentic agent personalities
+✓ Redesigned Phase 3 UI to match modern yellow card-based aesthetic with comprehensive policy details
+✓ Added detailed final policy package display showing all selected options and costs
+✓ Implemented budget overview and policy evolution comparison in Phase 3
 
 ## Changelog
 - June 21, 2025. Initial setup and card interface implementation

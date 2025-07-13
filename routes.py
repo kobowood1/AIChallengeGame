@@ -391,7 +391,7 @@ def phase3():
         participant_info
     )
     
-    return render_template('phase3.html',
+    return render_template('phase3_new.html',
                          final_package=session['final_package'],
                          final_cost=session['final_cost'],
                          player_package=session['player_package'],
