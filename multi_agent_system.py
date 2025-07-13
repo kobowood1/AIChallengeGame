@@ -67,7 +67,7 @@ class MultiAgentSimulation:
         
         # Initialize agents with provided names or defaults
         if agent_names is None:
-            agent_names = ['Amir', 'Salma', 'Lila', 'Leila']
+            agent_names = ['Alex', 'Maya', 'Jordan', 'Sam']
             
         self.agents = {}
         for i, name in enumerate(agent_names[:4]):  # Limit to 4 agents

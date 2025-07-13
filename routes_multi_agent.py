@@ -45,7 +45,13 @@ def phase2_multi_agent():
     
     if 'agent_names' not in session:
         # Pool of available agent names
-        available_names = ['Amir', 'Salma', 'Lila', 'Leila', 'Rashid', 'Mara', 'Yasmin', 'Omar', 'Fatima', 'Hassan']
+        available_names = [
+            'Alex', 'Maya', 'Jordan', 'Sam', 'Casey', 'Taylor', 'Morgan', 'Riley',
+            'Priya', 'Chen', 'Fatima', 'Kofi', 'Elena', 'Hiroshi', 'Amara', 'Luca',
+            'Zara', 'Kai', 'Noor', 'Diego', 'Anya', 'Tomas', 'Leila', 'Jin',
+            'Sofia', 'Arjun', 'Mia', 'Omar', 'Chloe', 'Ravi', 'Zoe', 'Malik',
+            'Luna', 'Hassan', 'Isla', 'Yuki', 'Emilia', 'Kwame', 'Sienna', 'Liam'
+        ]
         
         # Randomly select 4 names for this session
         agent_names = random.sample(available_names, 4)
