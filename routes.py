@@ -505,6 +505,23 @@ def submit_reflection():
     # Store the report in the session so we can access it later
     session['reflection_report'] = md_report
     
+    # Mark the game session as completed
+    from models import GameSession, db
+    from flask_login import current_user
+    if current_user.is_authenticated:
+        # Find the active game session and mark it as completed
+        game_session = GameSession.query.filter_by(
+            user_id=current_user.id,
+            is_active=True
+        ).first()
+        
+        if game_session:
+            game_session.is_active = False
+            game_session.current_phase = 'completed'
+            game_session.completed_at = datetime.utcnow()
+            game_session.reflection_responses = str(form_data)  # Store the reflection responses
+            db.session.commit()
+    
     # Convert markdown to HTML
     html_content = markdown.markdown(md_report, extensions=['tables', 'fenced_code', 'nl2br'])
     
