@@ -174,6 +174,7 @@
         
         <!-- Reflection Form -->
         <form method="POST" action="{{ url_for('main.submit_reflection') }}" id="reflectionForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             {% for question in questions %}
             <div class="question-card" data-question="{{ loop.index }}">
                 <div class="question-number">{{ loop.index }}</div>
