@@ -538,7 +538,7 @@ def thank_you():
     if not get_flashed_messages():
         flash('Your report has been successfully generated and recorded in our system. Thank you for your participation!', 'success')
         
-    return render_template('thank_you.html')
+    return render_template('thank_you_new.html')
 
 def create_styled_html(html_content):
     """
