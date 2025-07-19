@@ -460,9 +460,9 @@ function addMessage(sender, message, type = 'agent', agentType = null) {
         containerClasses += ' flex justify-end';
     } else if (sender === 'Moderator' || type === 'system' || type === 'moderator') {
         bubbleClasses += ' bg-gray-200 text-gray-800';
-    } else if (agentType === 'openai') {
+    } else if (agentType === 'participant1') {
         bubbleClasses += ' bg-blue-200 text-gray-800';
-    } else if (agentType === 'gemini') {
+    } else if (agentType === 'participant2') {
         bubbleClasses += ' bg-purple-200 text-gray-800';
     } else {
         bubbleClasses += ' bg-gray-100 text-gray-800';

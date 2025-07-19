@@ -107,13 +107,13 @@
         border-left: 4px solid #f59e0b;
     }
 
-    .message-bubble.openai {
+    .message-bubble.participant1 {
         background: #dbeafe;
         color: #1e40af;
         border-left: 4px solid #3b82f6;
     }
 
-    .message-bubble.gemini {
+    .message-bubble.participant2 {
         background: #f3e8ff;
         color: #7c3aed;
         border-left: 4px solid #8b5cf6;
@@ -496,7 +496,7 @@
     
     socket.on('agent_message', function(data) {
         hideTyping();
-        const agentType = data.agentType || 'openai';
+        const agentType = data.agentType === 'gemini' ? 'participant2' : 'participant1';
         addMessage(data.sender, data.message, agentType);
     });
     

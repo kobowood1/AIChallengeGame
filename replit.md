@@ -160,6 +160,10 @@ This is a Flask-based web application that simulates policy-making processes for
 ✓ Created reflection page with 10 thoughtful questions and progress tracking (July 19, 2025)
 ✓ Fixed CSRF token issue preventing reflection form submission
 ✓ Updated thank you page with modern yellow card design and achievement grid
+✓ Fixed Experience Summary counter to properly track completed simulations
+✓ Removed all AI technology references visible to users (July 19, 2025)
+✓ Replaced "AI agents" with "participants" to maintain simulation authenticity
+✓ Updated templates to hide OpenAI/Gemini technical implementation details
 ✓ Complete user flow now: Phase 1 → Phase 2 → Phase 3 → Reflection → Thank You
 
 ## Changelog

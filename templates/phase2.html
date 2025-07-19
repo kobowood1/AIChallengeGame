@@ -1002,10 +1002,7 @@
                 `;
             } else if (data.agent) {
                 const agentColor = getAgentColor(data.agent.ideology);
-                const llmModel = data.llm_model || 'openai';
-                const llmBadge = llmModel === 'gemini' ? 
-                    '<span class="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded ml-2">Gemini</span>' : 
-                    '<span class="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded ml-2">OpenAI</span>';
+                const llmBadge = '';
 
                 let interactionType = '';
                 if (data.responding_to) {
