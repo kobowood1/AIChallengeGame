@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}Republic of Bean - Reflection Questions{% endblock %}
+
+{% block head %}
+<style>
+    body {
+        background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+        min-height: 100vh;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    .glass-container {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .question-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 16px;
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        padding: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .question-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    
+    .question-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        border-radius: 50%;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .question-text {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #374151;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+    
+    .response-textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 1rem;
+        border: 2px solid rgba(251, 191, 36, 0.3);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.8);
+        color: #374151;
+        font-size: 1rem;
+        line-height: 1.5;
+        resize: vertical;
+        transition: all 0.3s ease;
+    }
+    
+    .response-textarea:focus {
+        outline: none;
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .submit-button {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+    }
+    
+    .submit-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .section-title {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: #1f2937;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #6b7280;
+        text-align: center;
+        margin-bottom: 3rem;
+        line-height: 1.6;
+    }
+    
+    .progress-indicator {
+        position: sticky;
+        top: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        z-index: 10;
+    }
+    
+    .progress-bar {
+        height: 8px;
+        background: rgba(251, 191, 36, 0.2);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+        border-radius: 4px;
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+    
+    .progress-text {
+        text-align: center;
+        font-weight: 600;
+        color: #374151;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="section-title">
+                Reflection Questions
+            </h1>
+            <p class="section-subtitle">
+                Take a moment to reflect on your experience in the policy simulation. Your thoughtful responses will help generate your personalized policy report and contribute to our research understanding.
+            </p>
+        </div>
+        
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 of 10 questions completed</div>
+        </div>
+        
+        <!-- Reflection Form -->
+        <form method="POST" action="{{ url_for('main.submit_reflection') }}" id="reflectionForm">
+            {% for question in questions %}
+            <div class="question-card" data-question="{{ loop.index }}">
+                <div class="question-number">{{ loop.index }}</div>
+                <div class="question-text">{{ question }}</div>
+                <textarea 
+                    name="q{{ loop.index }}" 
+                    class="response-textarea" 
+                    placeholder="Share your thoughts and reflections here..."
+                    required
+                    oninput="updateProgress()"
+                ></textarea>
+            </div>
+            {% endfor %}
+            
+            <!-- Submit Section -->
+            <div class="text-center mt-8">
+                <div class="glass-container p-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Ready to Complete Your Reflection?</h3>
+                    <p class="text-gray-600 mb-6">
+                        Once you submit your reflections, we'll generate your personalized policy report and send it to our research team.
+                    </p>
+                    <button type="submit" class="submit-button" id="submitButton" disabled>
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Submit Reflection & Generate Report
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function updateProgress() {
+    const textareas = document.querySelectorAll('.response-textarea');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const submitButton = document.getElementById('submitButton');
+    
+    let completed = 0;
+    textareas.forEach(textarea => {
+        if (textarea.value.trim().length > 0) {
+            completed++;
+        }
+    });
+    
+    const percentage = (completed / textareas.length) * 100;
+    progressFill.style.width = percentage + '%';
+    progressText.textContent = `${completed} of ${textareas.length} questions completed`;
+    
+    // Enable submit button only when all questions are answered
+    if (completed === textareas.length) {
+        submitButton.disabled = false;
+        submitButton.style.opacity = '1';
+    } else {
+        submitButton.disabled = true;
+        submitButton.style.opacity = '0.6';
+    }
+}
+
+// Initialize progress on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateProgress();
+    
+    // Add smooth scrolling when clicking on question cards
+    const questionCards = document.querySelectorAll('.question-card');
+    questionCards.forEach(card => {
+        const textarea = card.querySelector('textarea');
+        textarea.addEventListener('focus', function() {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
+});
+
+// Form submission with loading state
+document.getElementById('reflectionForm').addEventListener('submit', function(e) {
+    const submitButton = document.getElementById('submitButton');
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating Report...';
+    submitButton.disabled = true;
+});
+</script>
+{% endblock %}
