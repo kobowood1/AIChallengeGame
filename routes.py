@@ -524,6 +524,18 @@ def submit_reflection():
             game_session.completed_at = datetime.utcnow()
             game_session.reflection_responses = str(form_data)  # Store the reflection responses
             db.session.commit()
+        else:
+            # No active session found - create a completed session for tracking
+            # This handles cases where users bypassed the /start route
+            completed_session = GameSession(
+                user_id=current_user.id,
+                current_phase='completed',
+                is_active=False,
+                completed_at=datetime.utcnow(),
+                reflection_responses=str(form_data)
+            )
+            db.session.add(completed_session)
+            db.session.commit()
     
     # Convert markdown to HTML
     html_content = markdown.markdown(md_report, extensions=['tables', 'fenced_code', 'nl2br'])
