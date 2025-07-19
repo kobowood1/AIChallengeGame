@@ -164,6 +164,8 @@ This is a Flask-based web application that simulates policy-making processes for
 ✓ Removed all AI technology references visible to users (July 19, 2025)
 ✓ Replaced "AI agents" with "participants" to maintain simulation authenticity
 ✓ Updated templates to hide OpenAI/Gemini technical implementation details
+✓ Fixed reflection form responses not appearing in downloaded reports (July 19, 2025)
+✓ Added proper session storage for reflection responses to persist across downloads
 ✓ Complete user flow now: Phase 1 → Phase 2 → Phase 3 → Reflection → Thank You
 
 ## Changelog
