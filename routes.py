@@ -447,9 +447,9 @@ def submit_reflection():
     
     # Handle GET request from thank-you page for downloading report again
     if request.method == 'GET' and request.args.get('download') == 'true':
-        # Build the markdown report using the stored session data
+        # Build the markdown report using the stored reflection responses
         # This works if the user navigates back to thank-you page and downloads again
-        form_data = {}
+        form_data = session.get('reflection_responses', {})
         md_report = generate_markdown_report(form_data)
         html_content = markdown.markdown(md_report, extensions=['tables', 'fenced_code', 'nl2br'])
         
@@ -464,6 +464,9 @@ def submit_reflection():
     
     # Extract form data for POST requests
     form_data = request.form
+    
+    # Store reflection responses in session for future downloads
+    session['reflection_responses'] = dict(form_data)
     
     # Build the markdown report
     md_report = generate_markdown_report(form_data)
