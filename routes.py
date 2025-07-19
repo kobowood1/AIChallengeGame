@@ -486,23 +486,12 @@ def submit_reflection():
                 'current_location_country': participant.current_location_country
             }
     
-    # Send the reflection report via email
+    # Send the reflection report via email (silently - popup notification handles user feedback)
     try:
         email_sent = send_reflection_report(participant_info, md_report, participant_id)
-        if email_sent:
-            # Message for successful email delivery
-            flash('Your report has been successfully generated and sent to the research team via email. ' +
-                  'A copy has also been saved to the database for research purposes. ' +
-                  'You can download your personal copy using the button below.', 'success')
-        else:
-            # Error message that explains emails may have failed but data is still saved
-            flash('There was an issue sending the report via email, but your report has been generated and saved. ' +
-                  'The research team will still receive your submissions through the database.', 'warning')
+        if not email_sent:
             logging.warning("Email couldn't be sent, but report was generated and stored in database")
     except Exception as e:
-        # General error message
-        flash('Your report has been successfully generated and saved in our system. ' +
-              'There was an unexpected issue with email delivery, but your data is securely stored.', 'info')
         logging.error(f"Email error: {str(e)}", exc_info=True)
     
     # Store the report in the session so we can access it later
