@@ -387,23 +387,40 @@ def get_agent_policy_responses(session_id, policy_area):
     
     agent_choices = {}
     
-    for agent_name in delib_session.agent_names:
+    # Process agents with shorter delays for better responsiveness
+    for i, agent_name in enumerate(delib_session.agent_names):
         logging.info(f"Getting response from agent {agent_name}")
-        socketio.sleep(1)  # Natural delay
         
         agent_choice = delib_session.get_agent_choice(agent_name, policy_area.name)
         agent_choices[agent_name] = agent_choice
         
-        # Generate rationale using AI for diversity
+        # Generate response in background and emit immediately
+        socketio.start_background_task(generate_and_emit_agent_response, 
+                                     session_id, agent_name, policy_area, agent_choice, i)
+    
+    # Wait for all responses to be generated, then ask user
+    socketio.sleep(3)  # Allow time for background tasks to complete
+    ask_user_policy_choice(session_id, policy_area, agent_choices)
+
+def generate_and_emit_agent_response(session_id, agent_name, policy_area, agent_choice, agent_index):
+    """Generate and emit agent response in background task"""
+    try:
+        delib_session = deliberation_sessions.get(session_id)
+        if not delib_session:
+            return
+            
+        # Add a natural delay before this agent speaks
+        time.sleep(agent_index * 0.8)  # Stagger by 0.8 seconds each
+        
         agent_profile = delib_session.simulation.agents[agent_name]
         
         # Create agent dict for AI generation
         agent_dict = {
             'name': agent_name,
-            'age': 35 + (delib_session.agent_names.index(agent_name) * 5),
+            'age': 35 + (agent_index * 5),
             'occupation': agent_profile.background,
-            'education_level': 'Bachelor\'s Degree',  # Default for now
-            'socioeconomic_status': 'Middle Class',   # Default for now
+            'education_level': 'Bachelor\'s Degree',
+            'socioeconomic_status': 'Middle Class',
             'ideology': agent_profile.ideology,
             'llm_model': agent_profile.model_type
         }
@@ -451,16 +468,15 @@ def get_agent_policy_responses(session_id, policy_area):
         
         logging.info(f"Generated response for {agent_name}: {response_text[:50]}...")
         
-        agent_profile = delib_session.simulation.agents[agent_name]
-        emit('agent_message', {
+        # Emit the agent message
+        socketio.emit('agent_message', {
             'sender': agent_name,
             'message': response_text,
             'agentType': agent_profile.model_type
         }, room=session_id)
-    
-    # Ask user for their choice
-    socketio.sleep(2)
-    ask_user_policy_choice(session_id, policy_area, agent_choices)
+        
+    except Exception as e:
+        logging.error(f"Error in background agent response generation: {e}")
 
 def ask_user_policy_choice(session_id, policy_area, agent_choices):
     """Ask user to explain their policy choice"""
