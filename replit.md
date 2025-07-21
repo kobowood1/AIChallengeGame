@@ -147,6 +147,9 @@ This is a Flask-based web application that simulates policy-making processes for
 ✓ Seamless flow from Phase 1 card selection to multi-agent deliberation to Phase 3
 ✓ Fixed structured deliberation system with proper event handler registration (July 13, 2025)
 ✓ Resolved "Someone is typing..." blocking issue in policy deliberation flow
+✓ Successfully implemented "Someone is typing..." overlay with professional styling and animations (July 21, 2025)
+✓ Added Socket.IO events 'agent_typing' and 'agent_stop_typing' for real-time typing indicators
+✓ Enhanced user experience with animated dots and fade effects during agent response generation
 ✓ Implemented step-by-step moderated deliberation: intro → agent introductions → user introduction → policy-by-policy discussions → final recommendations
 ✓ Added fallback response system for agent rationales when AI generation fails
 ✓ System now properly progresses through all deliberation phases
