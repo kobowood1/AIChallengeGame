@@ -177,6 +177,9 @@ def register_deliberation_events(socketio_instance):
                 agreed_option = list(unique_choices)[0]
                 delib_session.final_package[policy_area.name] = agreed_option
                 
+                logging.info(f"Agreement reached for {policy_area.name}: Option {agreed_option}")
+                logging.info(f"Current final package: {delib_session.final_package}")
+                
                 emit('moderator_message', {
                     'message': f"All agreed on Option {agreed_option}. Moving on.",
                     'step': 4
@@ -211,6 +214,9 @@ def register_deliberation_events(socketio_instance):
         # Calculate majority
         majority_option = delib_session.calculate_majority(policy_area.name)
         delib_session.final_package[policy_area.name] = majority_option
+        
+        logging.info(f"Vote completed for {policy_area.name}: Option {majority_option}")
+        logging.info(f"Current final package: {delib_session.final_package}")
         
         emit('vote_result', {
             'message': f"Majority selected Option {majority_option}.",
@@ -540,5 +546,24 @@ def start_final_recommendations(session_id):
         'finalPackage': delib_session.final_package
     }, room=session_id)
     
-    # Store final package in session
-    session['final_package'] = delib_session.final_package
+    # Store final package in session with proper cost calculation
+    session['final_package'] = delib_session.final_package.copy()
+    
+    # Calculate the cost of the final package using POLICY_AREAS
+    total_cost = 0
+    for policy_name, option_level in delib_session.final_package.items():
+        for policy_area in POLICY_AREAS:
+            if policy_area.name == policy_name:
+                total_cost += policy_area.options[option_level - 1].cost
+                break
+    session['final_cost'] = total_cost
+    
+    # Also store as policy_selections for backup compatibility
+    session['policy_selections'] = delib_session.final_package.copy()
+    
+    # Debug logging
+    logging.info(f"Stored final package in session: {session['final_package']}")
+    logging.info(f"Final cost: {total_cost}")
+    
+    # Ensure session is committed
+    session.modified = True

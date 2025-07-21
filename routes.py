@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash, Response, get_flashed_messages
 from flask_login import login_user, logout_user, login_required, current_user
-from game_data import POLICIES, validate_package, MAX_BUDGET
+from game_data import validate_package, MAX_BUDGET
+from challenge_content import POLICY_AREAS
 from ai_agents import generate_agents, agent_justify
 import markdown
 import json
@@ -317,7 +318,22 @@ def card_selection():
             return {'success': False, 'error': error_message}, 400
     
     # GET request - show card selection interface
-    return render_template('card_selection.html', policies=POLICIES, max_budget=MAX_BUDGET)
+    # Convert POLICY_AREAS to POLICIES format for backward compatibility
+    policies_compat = []
+    for policy_area in POLICY_AREAS:
+        policies_compat.append({
+            'name': policy_area.name,
+            'options': [
+                {
+                    'level': i+1,
+                    'description': f"{option.label}: {option.summary}",
+                    'cost': option.cost
+                }
+                for i, option in enumerate(policy_area.options)
+            ]
+        })
+    
+    return render_template('card_selection.html', policies=policies_compat, max_budget=MAX_BUDGET)
 
 @main.route('/phase1', methods=['GET', 'POST'])
 def phase1():
@@ -371,12 +387,12 @@ def phase3():
             # User didn't go through deliberation, use their original selections
             session['final_package'] = session['player_package'].copy()
         
-        # Calculate the cost of the final package
+        # Calculate the cost of the final package using POLICY_AREAS
         total_cost = 0
         for policy_name, option_level in session['final_package'].items():
-            for policy in POLICIES:
-                if policy['name'] == policy_name:
-                    total_cost += policy['options'][option_level - 1]['cost']
+            for policy_area in POLICY_AREAS:
+                if policy_area.name == policy_name:
+                    total_cost += policy_area.options[option_level - 1].cost
                     break
         session['final_cost'] = total_cost
     
@@ -412,7 +428,7 @@ def phase3():
                          final_cost=session['final_cost'],
                          player_package=session['player_package'],
                          max_budget=MAX_BUDGET,
-                         policies=POLICIES,
+                         policies=POLICY_AREAS,
                          policy_profile=policy_profile,
                          show_comparison=show_comparison)
 
