@@ -359,13 +359,21 @@ def phase3():
         flash('Please complete the policy selections first', 'error')
         return redirect(url_for('main.phase1'))
     
-    # If final_package is not in session, use the player's package as a fallback
+    # If final_package is not in session, check if user went through multi-agent deliberation
     # This can happen if Socket.IO events didn't properly update the session
     if 'final_package' not in session:
-        session['final_package'] = session['player_package'].copy()
-        # Calculate the cost of the player's package
+        # Check if user went through phase 2 (has policy_selections which indicates multi-agent participation)
+        if 'policy_selections' in session:
+            # User participated in deliberation but final package wasn't stored
+            # Use policy_selections as final_package (this came from the deliberation system)
+            session['final_package'] = session['policy_selections'].copy()
+        else:
+            # User didn't go through deliberation, use their original selections
+            session['final_package'] = session['player_package'].copy()
+        
+        # Calculate the cost of the final package
         total_cost = 0
-        for policy_name, option_level in session['player_package'].items():
+        for policy_name, option_level in session['final_package'].items():
             for policy in POLICIES:
                 if policy['name'] == policy_name:
                     total_cost += policy['options'][option_level - 1]['cost']
@@ -391,13 +399,22 @@ def phase3():
         participant_info
     )
     
+    # Determine if we should show the comparison panel
+    # Show it if packages are different OR if user went through multi-agent deliberation
+    show_comparison = (
+        session['player_package'] != session['final_package'] or 
+        'policy_selections' in session or
+        'agent_names' in session  # Additional check for multi-agent participation
+    )
+    
     return render_template('phase3_new.html',
                          final_package=session['final_package'],
                          final_cost=session['final_cost'],
                          player_package=session['player_package'],
                          max_budget=MAX_BUDGET,
                          policies=POLICIES,
-                         policy_profile=policy_profile)
+                         policy_profile=policy_profile,
+                         show_comparison=show_comparison)
 
 @main.route('/reflection')
 def reflection():
