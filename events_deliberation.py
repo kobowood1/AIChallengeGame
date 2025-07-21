@@ -277,8 +277,13 @@ def start_agent_introductions(session_id):
     
     # Generate agent introductions with minimal delays
     for i, agent_name in enumerate(delib_session.agent_names):
+        # Show typing indicator before each introduction
+        emit('agent_typing', {'agent': agent_name}, room=session_id)
+        
         if i > 0:  # Small delay only between agents, not before first
-            socketio.sleep(0.5)
+            socketio.sleep(1)
+        else:
+            socketio.sleep(0.5)  # Initial delay to show typing
         
         # Generate agent profile intro
         agent_profile = delib_session.simulation.agents[agent_name]
@@ -292,6 +297,8 @@ def start_agent_introductions(session_id):
             f"My policy approach focuses on {policy_summary}."
         )
         
+        # Hide typing and emit agent message
+        emit('agent_stop_typing', {}, room=session_id)
         emit('agent_message', {
             'sender': agent_name,
             'message': intro_text,
@@ -396,9 +403,14 @@ def get_agent_policy_responses(session_id, policy_area):
     for i, agent_name in enumerate(delib_session.agent_names):
         logging.info(f"Getting response from agent {agent_name}")
         
-        # Show typing indicator for realism
-        if i > 0:  # Small delay between agents, but not on first
+        # Show typing indicator before each agent responds
+        emit('agent_typing', {'agent': agent_name}, room=session_id)
+        
+        # Small delay between agents for realism
+        if i > 0:
             socketio.sleep(0.5)
+        else:
+            socketio.sleep(1)  # Longer delay before first agent to show typing
         
         agent_choice = delib_session.get_agent_choice(agent_name, policy_area.name)
         agent_choices[agent_name] = agent_choice
@@ -464,6 +476,8 @@ def get_agent_policy_responses(session_id, policy_area):
         
         logging.info(f"Generated response for {agent_name}: {response_text[:50]}...")
         
+        # Hide typing and emit agent message
+        emit('agent_stop_typing', {}, room=session_id)
         emit('agent_message', {
             'sender': agent_name,
             'message': response_text,

@@ -249,22 +249,29 @@
 
     .typing-indicator {
         background: #e5e7eb;
-        padding: 0.5rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 12px;
         margin-bottom: 1rem;
         display: none;
         font-style: italic;
         color: #6b7280;
+        border-left: 4px solid #9ca3af;
+        animation: fadeIn 0.3s ease-in-out;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .typing-dots {
-        display: inline-block;
-        animation: typing 1.5s infinite;
+        font-size: 1.2rem;
+        color: #6b7280;
+        animation: typingPulse 1.4s infinite;
+        margin-right: 0.5rem;
     }
 
-    @keyframes typing {
-        0%, 60%, 100% { transform: translateY(0); }
-        30% { transform: translateY(-10px); }
+    @keyframes typingPulse {
+        0%, 20% { opacity: 0.4; }
+        50% { opacity: 1; }
+        80%, 100% { opacity: 0.4; }
     }
 
     @media (max-width: 768px) {
@@ -533,6 +540,14 @@
         }
     });
     
+    socket.on('agent_typing', function(data) {
+        showTyping();
+    });
+
+    socket.on('agent_stop_typing', function(data) {
+        hideTyping();
+    });
+
     socket.on('agent_message', function(data) {
         hideTyping();
         const agentType = data.agentType === 'gemini' ? 'participant2' : 'participant1';
