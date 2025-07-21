@@ -145,10 +145,15 @@ def register_deliberation_events(socketio_instance):
         if current_step == 'user_introduction':
             # User has introduced themselves, move to policy deliberation
             try:
-                socketio.sleep(1)
                 start_policy_deliberation(session_id)
             except Exception as e:
                 logging.error(f"Error starting policy deliberation: {e}")
+                # Continue anyway to prevent blocking
+                emit('moderator_message', {
+                    'message': "Let's begin our policy discussion.",
+                    'step': 4,
+                    'progress': 'Step 4: Policy Deliberation'
+                }, room=session_id)
                 emit('system_message', {
                     'message': f"Error starting policy deliberation: {str(e)}. Please refresh the page."
                 }, room=session_id)
@@ -177,8 +182,8 @@ def register_deliberation_events(socketio_instance):
                     'step': 4
                 }, room=session_id)
                 
-                # Move to next policy
-                socketio.sleep(2)
+                # Move to next policy with minimal delay
+                socketio.sleep(1)
                 discuss_policy_area(session_id, policy_index + 1)
             else:
                 # Need voting
@@ -213,8 +218,8 @@ def register_deliberation_events(socketio_instance):
             'selectedOption': majority_option
         }, room=session_id)
         
-        # Move to next policy
-        socketio.sleep(2)
+        # Move to next policy with minimal delay
+        socketio.sleep(1)
         discuss_policy_area(session_id, policy_index + 1)
     
     @socketio_instance.on('disconnect')
@@ -264,9 +269,10 @@ def start_agent_introductions(session_id):
         'progress': 'Step 2: Expert Introductions'
     }, room=session_id)
     
-    # Generate agent introductions sequentially
+    # Generate agent introductions with minimal delays
     for i, agent_name in enumerate(delib_session.agent_names):
-        socketio.sleep(1)  # Natural delay between introductions
+        if i > 0:  # Small delay only between agents, not before first
+            socketio.sleep(0.5)
         
         # Generate agent profile intro
         agent_profile = delib_session.simulation.agents[agent_name]
@@ -286,8 +292,8 @@ def start_agent_introductions(session_id):
             'agentType': agent_profile.model_type
         }, room=session_id)
     
-    # Move to user introduction
-    socketio.sleep(2)
+    # Move to user introduction with minimal delay
+    socketio.sleep(1)
     start_user_introduction(session_id)
 
 def generate_policy_summary(agent_name, agent_policy):
@@ -380,14 +386,18 @@ def get_agent_policy_responses(session_id, policy_area):
     
     agent_choices = {}
     
-    for agent_name in delib_session.agent_names:
+    # Generate all agent responses more efficiently 
+    for i, agent_name in enumerate(delib_session.agent_names):
         logging.info(f"Getting response from agent {agent_name}")
-        socketio.sleep(1)  # Natural delay
+        
+        # Show typing indicator for realism
+        if i > 0:  # Small delay between agents, but not on first
+            socketio.sleep(0.5)
         
         agent_choice = delib_session.get_agent_choice(agent_name, policy_area.name)
         agent_choices[agent_name] = agent_choice
         
-        # Generate rationale using AI for diversity
+        # Generate rationale using AI with timeout protection
         agent_profile = delib_session.simulation.agents[agent_name]
         
         # Create agent dict for AI generation
@@ -395,15 +405,39 @@ def get_agent_policy_responses(session_id, policy_area):
             'name': agent_name,
             'age': 35 + (delib_session.agent_names.index(agent_name) * 5),
             'occupation': agent_profile.background,
-            'education_level': 'Bachelor\'s Degree',  # Default for now
-            'socioeconomic_status': 'Middle Class',   # Default for now
+            'education_level': 'Bachelor\'s Degree',
+            'socioeconomic_status': 'Middle Class',
             'ideology': agent_profile.ideology,
             'llm_model': agent_profile.model_type
         }
         
-        # Use AI to generate diverse, personality-driven responses
-        from ai_agents import agent_justify
+        # Define fallback responses upfront for faster access
+        diverse_fallbacks = {
+            1: {
+                'conservative': f"I chose Option 1 because fiscal responsibility is key. We can't overspend on programs that might not deliver results.",
+                'moderate': f"Option 1 makes sense - it's a pragmatic start that we can build upon once we see what works.",
+                'liberal': f"While I'd prefer more support, Option 1 at least gets us moving in the right direction.",
+                'humanitarian': f"Option 1 provides essential basics. Sometimes simple solutions work best for urgent needs."
+            },
+            2: {
+                'conservative': f"Option 2 offers reasonable investment without excessive government expansion.",
+                'moderate': f"I believe Option 2 strikes the right balance between helping students and managing costs.",
+                'liberal': f"Option 2 provides meaningful support while staying politically feasible.",
+                'humanitarian': f"Option 2 addresses core needs comprehensively - it's what these students deserve."
+            },
+            3: {
+                'conservative': f"Though expensive, Option 3 could prevent larger social costs down the road.",
+                'moderate': f"Option 3 represents a significant commitment, but some issues require bold action.",
+                'liberal': f"Option 3 is essential - we cannot shortchange refugee students' futures.",
+                'humanitarian': f"Option 3 is the only ethical choice. These students have already suffered enough."
+            }
+        }
+        
+        # Use AI with fallback on any issue to prevent blocking
+        response_text = None
         try:
+            from ai_agents import agent_justify
+            
             response_text = agent_justify(
                 policy_domain=policy_area.name,
                 option_chosen=agent_choice,
@@ -412,29 +446,9 @@ def get_agent_policy_responses(session_id, policy_area):
                 recent_messages=[],
                 responding_to_agent=None
             )
+            
         except Exception as e:
-            logging.error(f"Error generating AI response for {agent_name}: {e}")
-            # More diverse fallback responses as backup
-            diverse_fallbacks = {
-                1: {
-                    'conservative': f"I chose Option 1 because fiscal responsibility is key. We can't overspend on programs that might not deliver results.",
-                    'moderate': f"Option 1 makes sense - it's a pragmatic start that we can build upon once we see what works.",
-                    'liberal': f"While I'd prefer more support, Option 1 at least gets us moving in the right direction.",
-                    'humanitarian': f"Option 1 provides essential basics. Sometimes simple solutions work best for urgent needs."
-                },
-                2: {
-                    'conservative': f"Option 2 offers reasonable investment without excessive government expansion.",
-                    'moderate': f"I believe Option 2 strikes the right balance between helping students and managing costs.",
-                    'liberal': f"Option 2 provides meaningful support while staying politically feasible.",
-                    'humanitarian': f"Option 2 addresses core needs comprehensively - it's what these students deserve."
-                },
-                3: {
-                    'conservative': f"Though expensive, Option 3 could prevent larger social costs down the road.",
-                    'moderate': f"Option 3 represents a significant commitment, but some issues require bold action.",
-                    'liberal': f"Option 3 is essential - we cannot shortchange refugee students' futures.",
-                    'humanitarian': f"Option 3 is the only ethical choice. These students have already suffered enough."
-                }
-            }
+            logging.warning(f"AI generation failed for {agent_name}, using fallback: {e}")
             
             ideology_key = agent_profile.ideology.lower()
             if ideology_key not in diverse_fallbacks[agent_choice]:
@@ -444,15 +458,14 @@ def get_agent_policy_responses(session_id, policy_area):
         
         logging.info(f"Generated response for {agent_name}: {response_text[:50]}...")
         
-        agent_profile = delib_session.simulation.agents[agent_name]
         emit('agent_message', {
             'sender': agent_name,
             'message': response_text,
             'agentType': agent_profile.model_type
         }, room=session_id)
     
-    # Ask user for their choice
-    socketio.sleep(2)
+    # Ask user for their choice with minimal delay
+    socketio.sleep(1)
     ask_user_policy_choice(session_id, policy_area, agent_choices)
 
 def ask_user_policy_choice(session_id, policy_area, agent_choices):
