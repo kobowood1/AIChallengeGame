@@ -14,8 +14,8 @@ reload = True
 loglevel = 'info'
 
 # Timeout settings for long-polling
-timeout = 120         # Increase worker timeout to 2 minutes
-keepalive = 120        # Keep connections alive for 2 minutes
+timeout = 60
+keepalive = 60
 
 # Worker settings
 workers = 1
