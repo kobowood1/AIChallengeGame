@@ -224,6 +224,13 @@ def register_deliberation_events(socketio_instance):
         if session_id in deliberation_sessions:
             del deliberation_sessions[session_id]
             logging.info(f"Cleaned up deliberation session: {session_id}")
+    
+    @socketio_instance.on('heartbeat')
+    def handle_heartbeat():
+        """Handle client heartbeat to keep connection alive"""
+        # Simply acknowledge the heartbeat - no response needed
+        # This prevents timeouts during inactive periods
+        pass
 
 def start_moderator_intro(session_id):
     """Step 1: Moderator introduces the session"""

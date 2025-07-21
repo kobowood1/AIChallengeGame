@@ -22,6 +22,37 @@
         align-items: center;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+    
+    .connection-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.875rem;
+        margin-left: 20px;
+    }
+    
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22c55e;
+        animation: pulse 2s infinite;
+    }
+    
+    .status-dot.disconnected {
+        background: #ef4444;
+        animation: blink 1s infinite;
+    }
+    
+    .status-dot.reconnecting {
+        background: #f59e0b;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0.3; }
+    }
 
     .timer {
         font-size: 1.2rem;
@@ -298,7 +329,13 @@
 {% block content %}
 <div class="header">
     <h1>Republic of Bean - Policy Deliberation</h1>
-    <div class="timer" id="timer">30:00</div>
+    <div style="display: flex; align-items: center;">
+        <div class="connection-status">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Connected</span>
+        </div>
+        <div class="timer" id="timer">30:00</div>
+    </div>
 </div>
 
 <div class="container mx-auto p-4">
@@ -337,7 +374,15 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
 <script>
-    const socket = io();
+    // Configure Socket.IO with reconnection settings
+    const socket = io({
+        reconnection: true,           // Enable automatic reconnection
+        reconnectionAttempts: 10,     // Try to reconnect up to 10 times
+        reconnectionDelay: 1000,      // Wait 1 second before first reconnection
+        reconnectionDelayMax: 5000,   // Maximum delay between attempts
+        timeout: 20000,               // Connection timeout
+        forceNew: false               // Reuse existing connection if possible
+    });
     let currentStep = 0;
     let waitingForInput = false;
     let discussionComplete = false;
@@ -347,6 +392,7 @@
     let finalPackage = {};
     let votingActive = false;
     let userVoted = false;
+    let heartbeatInterval;  // For keeping connection alive
     
     const policyAreas = [
         'Access to Education',
@@ -367,6 +413,9 @@
         
         // Join the deliberation room
         socket.emit('join_deliberation_room');
+        
+        // Start heartbeat to keep connection alive during inactive periods
+        startHeartbeat();
         
         // Set up message input
         const messageInput = document.getElementById('messageInput');
@@ -495,9 +544,52 @@
         document.getElementById('progress').textContent = text;
     }
     
+    function startHeartbeat() {
+        // Clear existing heartbeat if any
+        if (heartbeatInterval) {
+            clearInterval(heartbeatInterval);
+        }
+        
+        // Send a heartbeat every 20 seconds to keep connection alive
+        heartbeatInterval = setInterval(() => {
+            if (socket.connected) {
+                socket.emit('heartbeat');
+            }
+        }, 20000);
+    }
+    
+    function stopHeartbeat() {
+        if (heartbeatInterval) {
+            clearInterval(heartbeatInterval);
+            heartbeatInterval = null;
+        }
+    }
+    
+    function updateConnectionStatus(status, text) {
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        
+        // Remove existing status classes
+        statusDot.classList.remove('disconnected', 'reconnecting');
+        
+        // Add new status class and update text
+        if (status === 'connected') {
+            statusText.textContent = text || 'Connected';
+        } else if (status === 'disconnected') {
+            statusDot.classList.add('disconnected');
+            statusText.textContent = text || 'Disconnected';
+        } else if (status === 'reconnecting') {
+            statusDot.classList.add('reconnecting');
+            statusText.textContent = text || 'Reconnecting...';
+        }
+    }
+    
     function goToPhase3() {
         const button = document.getElementById('nextButton');
         const originalText = button.innerHTML;
+        
+        // Stop heartbeat before leaving
+        stopHeartbeat();
         
         // Add loading animation
         button.innerHTML = '<div class="loading-spinner"></div> Loading...';
@@ -578,10 +670,58 @@
         addMessage('System', data.message, 'moderator');
     });
     
-    // Handle disconnection
-    socket.on('disconnect', function() {
-        console.log('Disconnected from server');
-        addMessage('System', 'Connection lost. Please refresh the page.', 'moderator');
+    // Handle disconnection and reconnection
+    socket.on('disconnect', function(reason) {
+        console.log('Disconnected from server:', reason);
+        updateConnectionStatus('disconnected', 'Connection Lost');
+        
+        if (reason === 'transport close' || reason === 'transport error') {
+            addMessage('System', 'Connection lost. Attempting to reconnect...', 'moderator');
+        } else {
+            addMessage('System', 'Connection lost. Please refresh the page.', 'moderator');
+        }
+    });
+    
+    socket.on('connect', function() {
+        console.log('Connected to server');
+        updateConnectionStatus('connected', 'Connected');
+        
+        // Remove any "connection lost" messages when reconnecting
+        const messages = document.getElementById('messages');
+        const systemMessages = messages.querySelectorAll('.message .message-bubble.moderator');
+        systemMessages.forEach(msg => {
+            if (msg.textContent.includes('Connection lost') || msg.textContent.includes('Attempting to reconnect')) {
+                msg.closest('.message').remove();
+            }
+        });
+        
+        // Rejoin the deliberation room if we were in one
+        if (currentStep > 0) {
+            socket.emit('join_deliberation_room');
+        }
+        
+        // Restart heartbeat after reconnection
+        startHeartbeat();
+    });
+    
+    socket.on('reconnect', function(attemptNumber) {
+        console.log('Reconnected after', attemptNumber, 'attempts');
+        updateConnectionStatus('connected', 'Reconnected');
+        addMessage('System', 'Connection restored!', 'moderator');
+        
+        // Rejoin the deliberation room
+        socket.emit('join_deliberation_room');
+    });
+    
+    socket.on('reconnecting', function(attemptNumber) {
+        console.log('Attempting reconnection:', attemptNumber);
+        updateConnectionStatus('reconnecting', `Reconnecting... (${attemptNumber})`);
+    });
+    
+    socket.on('reconnect_error', function(error) {
+        console.log('Reconnection failed:', error);
+        updateConnectionStatus('disconnected', 'Connection Failed');
+        addMessage('System', 'Unable to reconnect. Please refresh the page.', 'moderator');
     });
 </script>
 {% endblock %}
