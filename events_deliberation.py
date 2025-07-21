@@ -561,9 +561,15 @@ def start_final_recommendations(session_id):
     # Also store as policy_selections for backup compatibility
     session['policy_selections'] = delib_session.final_package.copy()
     
-    # Debug logging
-    logging.info(f"Stored final package in session: {session['final_package']}")
-    logging.info(f"Final cost: {total_cost}")
+    # Debug logging - detailed breakdown
+    logging.info(f"=== FINAL PACKAGE STORAGE ===")
+    logging.info(f"Session ID: {session_id}")
+    logging.info(f"Delib session final_package: {delib_session.final_package}")
+    logging.info(f"Stored in session['final_package']: {session['final_package']}")
+    logging.info(f"Stored in session['policy_selections']: {session['policy_selections']}")
+    logging.info(f"Player original package: {session.get('player_package', 'NOT SET')}")
+    logging.info(f"Final cost calculated: {total_cost}")
+    logging.info("=== END DEBUG ===")
     
     # Ensure session is committed
     session.modified = True

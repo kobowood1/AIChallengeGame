@@ -408,6 +408,12 @@ def phase3():
                 'education_level': participant.education_level
             }
     
+    # Debug logging to track what's being displayed
+    logging.info(f"DEBUG Phase 3: player_package = {session.get('player_package', {})}")
+    logging.info(f"DEBUG Phase 3: final_package = {session.get('final_package', {})}")
+    logging.info(f"DEBUG Phase 3: policy_selections = {session.get('policy_selections', {})}")
+    logging.info(f"DEBUG Phase 3: final_cost = {session.get('final_cost', 0)}")
+    
     # Generate a policy profile using OpenAI
     policy_profile = generate_policy_profile(
         session['player_package'], 
