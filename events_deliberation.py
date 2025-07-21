@@ -463,6 +463,10 @@ def ask_user_policy_choice(session_id, policy_area, agent_choices):
     
     user_choice = delib_session.get_user_choice(policy_area.name)
     
+    # Debug logging to check policy retrieval
+    logging.info(f"Policy area: {policy_area.name}, User choice retrieved: {user_choice}")
+    logging.info(f"User policy dict: {delib_session.user_policy}")
+    
     emit('moderator_message', {
         'message': f"{delib_session.user_name}, why did you choose Option {user_choice}?",
         'enableInput': True,
