@@ -172,11 +172,39 @@
         border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
-        transition: background-color 0.2s;
+        transition: all 0.3s ease;
+        min-width: 200px;
+        position: relative;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
     }
 
-    .next-button:hover {
+    .next-button:hover:not(:disabled) {
         background: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .next-button:disabled {
+        opacity: 0.8;
+        cursor: not-allowed;
+    }
+
+    .loading-spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 2px solid white;
+        animation: spin 1s linear infinite;
+        margin-right: 8px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 
     .voting-area {
@@ -327,7 +355,7 @@
         'Curriculum Adaptation',
         'Psychosocial Support',
         'Financial Support',
-        'Certification & Accreditation'
+        'Certification / Accreditation of Previous Education'
     ];
     
     // Initialize on page load
@@ -468,7 +496,18 @@
     }
     
     function goToPhase3() {
-        window.location.href = '/phase3';
+        const button = document.getElementById('nextButton');
+        const originalText = button.innerHTML;
+        
+        // Add loading animation
+        button.innerHTML = '<div class="loading-spinner"></div> Loading...';
+        button.disabled = true;
+        button.style.pointerEvents = 'none';
+        
+        // Navigate after brief delay to show animation
+        setTimeout(() => {
+            window.location.href = '/phase3';
+        }, 500);
     }
     
     // Socket event handlers

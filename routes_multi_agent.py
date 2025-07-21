@@ -29,7 +29,7 @@ def phase2_multi_agent():
             'Curriculum Adaptation': 2,
             'Psychosocial Support': 1,
             'Financial Support': 2,
-            'Certification & Accreditation': 1
+            'Certification / Accreditation of Previous Education': 1
         }
         print("No user selections found, using demo data for multi-agent discussion")
     
