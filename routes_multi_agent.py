@@ -36,8 +36,11 @@ def phase2_multi_agent():
     # Store selections in consistent format for multi-agent system
     session['policy_selections'] = selections
     
-    # Get user name for personalization
-    user_name = current_user.username if current_user.is_authenticated else 'Participant'
+    # Get user name for personalization - use first name if available, otherwise username
+    if current_user.is_authenticated:
+        user_name = current_user.first_name if current_user.first_name else current_user.username
+    else:
+        user_name = 'Participant'
     session['user_name'] = user_name
     
     # Initialize agent names and policies for structured deliberation
