@@ -7,6 +7,7 @@ from flask import session, request
 from flask_socketio import emit, join_room, leave_room
 from multi_agent_system import MultiAgentSimulation
 from challenge_content import POLICY_AREAS
+from content_moderation import content_moderator
 
 # Global socketio instance will be set when registering events
 socketio = None
@@ -123,7 +124,7 @@ def register_deliberation_events(socketio_instance):
     
     @socketio_instance.on('user_message')
     def handle_user_message(data):
-        """Handle user messages during deliberation"""
+        """Handle user messages during deliberation with content moderation"""
         session_id = request.sid
         delib_session = deliberation_sessions.get(session_id)
         if not delib_session:
@@ -133,7 +134,40 @@ def register_deliberation_events(socketio_instance):
         step = data.get('step', 0)
         policy_index = data.get('policyIndex', 0)
         
-        # Record message in conversation history
+        # Content moderation check
+        moderation_result = content_moderator.analyze_content(message)
+        
+        if moderation_result['is_harmful']:
+            # Send moderator intervention
+            moderator_response = moderation_result['response']
+            logging.warning(f"Content moderation triggered for user {delib_session.user_name}: {moderation_result['category']} - {moderation_result['severity']}")
+            
+            emit('moderator_intervention', {
+                'message': moderator_response,
+                'type': 'content_guidance',
+                'severity': moderation_result['severity']
+            }, room=session_id)
+            
+            # Record the intervention in conversation history
+            delib_session.conversation_history.append({
+                'sender': 'Moderator',
+                'message': f"[Moderation] {moderator_response}",
+                'timestamp': time.time(),
+                'type': 'moderation'
+            })
+            
+            # Also record the user's flagged message for context
+            delib_session.conversation_history.append({
+                'sender': delib_session.user_name,
+                'message': f"[Flagged] {message}",
+                'timestamp': time.time(),
+                'flagged': True
+            })
+            
+            # Don't process the harmful message further, wait for user to respond appropriately
+            return
+        
+        # Record message in conversation history (if not harmful)
         delib_session.conversation_history.append({
             'sender': delib_session.user_name,
             'message': message,
