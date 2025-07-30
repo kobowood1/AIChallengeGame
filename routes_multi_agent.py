@@ -61,18 +61,58 @@ def phase2_multi_agent():
         agent_names = random.sample(available_names, 4)
         session['agent_names'] = agent_names
         
-        # Generate agent policy choices (simplified for demo)
-        agent_policies = {}
-        for agent_name in agent_names:
-            agent_policies[agent_name] = {
-                'Access to Education': random.randint(1, 3),
-                'Language Instruction': random.randint(1, 3),
-                'Teacher Training': random.randint(1, 3),
-                'Curriculum Adaptation': random.randint(1, 3),
-                'Psychosocial Support': random.randint(1, 3),
-                'Financial Support': random.randint(1, 3),
-                'Certification & Accreditation': random.randint(1, 3)
+        # Generate strategic agent policy choices with guaranteed diversity
+        policy_areas = [
+            'Access to Education',
+            'Language Instruction', 
+            'Teacher Training',
+            'Curriculum Adaptation',
+            'Psychosocial Support',
+            'Financial Support',
+            'Certification & Accreditation'
+        ]
+        
+        # Define distinct agent archetypes with strategic preferences
+        agent_archetypes = [
+            {
+                'name': 'progressive',
+                'description': 'Progressive - believes in comprehensive support and integration',
+                'preferences': [3, 3, 2, 3, 3, 2, 2],  # High investment in most areas
+                'variations': [-1, 0, 1]  # Allow some variation
+            },
+            {
+                'name': 'pragmatic', 
+                'description': 'Pragmatic - focuses on practical implementation and measurable outcomes',
+                'preferences': [2, 2, 3, 2, 2, 1, 2],  # Balanced with emphasis on teacher training
+                'variations': [-1, 0, 1]
+            },
+            {
+                'name': 'collaborative',
+                'description': 'Collaborative - emphasizes community engagement and shared responsibility', 
+                'preferences': [2, 1, 2, 1, 3, 2, 3],  # Focus on support and recognition
+                'variations': [0, 1]
+            },
+            {
+                'name': 'humanitarian',
+                'description': 'Humanitarian - prioritizes individual student needs and wellbeing',
+                'preferences': [3, 2, 1, 2, 3, 3, 1],  # High on care, mixed on systems
+                'variations': [-1, 0, 1]
             }
+        ]
+        
+        agent_policies = {}
+        for i, agent_name in enumerate(agent_names):
+            archetype = agent_archetypes[i % len(agent_archetypes)]
+            agent_policy = {}
+            
+            for j, policy_area in enumerate(policy_areas):
+                base_choice = archetype['preferences'][j]
+                # Add variation to prevent identical choices
+                variation = random.choice(archetype['variations'])
+                final_choice = max(1, min(3, base_choice + variation))
+                agent_policy[policy_area] = final_choice
+            
+            agent_policies[agent_name] = agent_policy
         session['agent_policies'] = agent_policies
     
     # Return the new structured deliberation template

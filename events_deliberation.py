@@ -192,40 +192,21 @@ def register_deliberation_events(socketio_instance):
                     'message': f"Error starting policy deliberation: {str(e)}. Please refresh the page."
                 }, room=session_id)
         elif current_step == 'policy_deliberation':
-            # User explained their choice, check if we need voting
+            # User explained their choice, now always have a democratic vote
             policy_area = delib_session.get_policy_area(policy_index)
             if not policy_area:
                 return
             
-            # Get all choices for this policy
-            user_choice = delib_session.get_user_choice(policy_area.name)
-            agent_choices = {}
-            for agent_name in delib_session.agent_names:
-                agent_choices[agent_name] = delib_session.get_agent_choice(agent_name, policy_area.name)
+            # Always proceed to voting to maintain democratic deliberation
+            # This ensures every policy decision goes through the full democratic process
+            emit('moderator_message', {
+                'message': f"Thank you for that perspective. Now let's vote democratically on {policy_area.name}.",
+                'step': 4
+            }, room=session_id)
             
-            all_choices = list(agent_choices.values()) + [user_choice]
-            unique_choices = set(all_choices)
-            
-            if len(unique_choices) == 1:
-                # Everyone agreed
-                agreed_option = list(unique_choices)[0]
-                delib_session.final_package[policy_area.name] = agreed_option
-                
-                logging.info(f"Agreement reached for {policy_area.name}: Option {agreed_option}")
-                logging.info(f"Current final package: {delib_session.final_package}")
-                
-                emit('moderator_message', {
-                    'message': f"All agreed on Option {agreed_option}. Moving on.",
-                    'step': 4
-                }, room=session_id)
-                
-                # Move to next policy with minimal delay
-                socketio.sleep(1)
-                discuss_policy_area(session_id, policy_index + 1)
-            else:
-                # Need voting
-                socketio.sleep(1)
-                start_voting(session_id, policy_area)
+            # Start voting after brief delay
+            socketio.sleep(1)
+            start_voting(session_id, policy_area)
     
     @socketio_instance.on('cast_vote')
     def handle_cast_vote(data):
@@ -536,36 +517,62 @@ def ask_user_policy_choice(session_id, policy_area, agent_choices):
         'policyIndex': delib_session.current_policy_index
     }, room=session_id)
     
-    # Check if voting is needed
-    all_choices = list(agent_choices.values()) + [user_choice]
-    unique_choices = set(all_choices)
-    
-    if len(unique_choices) == 1:
-        # Everyone agreed
-        agreed_option = list(unique_choices)[0]
-        delib_session.final_package[policy_area.name] = agreed_option
-        
-        # Continue to next policy after user explains
-        # (handled in user_message event)
-    else:
-        # Voting will be needed after user explains
-        pass
+    # Always proceed to voting after user explains - this ensures democratic process
+    # and meaningful deliberation on every policy area
 
 def start_voting(session_id, policy_area):
-    """Start voting process for a policy area"""
+    """Start voting process for a policy area with strategic agent voting"""
     delib_session = deliberation_sessions.get(session_id)
     if not delib_session:
         return
     
     emit('start_voting', {
-        'message': f"We have different perspectives on {policy_area.name}. Please vote by selecting your preferred option.",
+        'message': f"Time to vote on {policy_area.name}. Each participant will cast their vote.",
         'policyArea': policy_area.name
     }, room=session_id)
     
-    # Collect agent votes
+    # Introduce strategic voting dynamics - agents might change their positions
+    # based on discussion or compromise for the sake of group consensus
+    import random
+    
     for agent_name in delib_session.agent_names:
-        agent_choice = delib_session.get_agent_choice(agent_name, policy_area.name)
-        delib_session.add_vote(agent_name, agent_choice)
+        original_choice = delib_session.get_agent_choice(agent_name, policy_area.name)
+        
+        # 30% chance an agent might shift their vote slightly for strategic reasons
+        if random.random() < 0.3:
+            # Agents might compromise toward more popular options or away from extreme positions
+            user_choice = delib_session.get_user_choice(policy_area.name)
+            other_agent_choices = [delib_session.get_agent_choice(other_name, policy_area.name) 
+                                 for other_name in delib_session.agent_names if other_name != agent_name]
+            
+            # Calculate what seems to be the emerging consensus
+            all_other_choices = [user_choice] + other_agent_choices
+            if all_other_choices:
+                avg_choice = sum(all_other_choices) / len(all_other_choices)
+                
+                # Agent might move slightly toward consensus (but not completely abandon their position)
+                if abs(original_choice - avg_choice) > 1:
+                    if original_choice < avg_choice:
+                        final_vote = min(3, original_choice + 1)
+                    else:
+                        final_vote = max(1, original_choice - 1)
+                else:
+                    final_vote = original_choice
+            else:
+                final_vote = original_choice
+        else:
+            final_vote = original_choice
+        
+        delib_session.add_vote(agent_name, final_vote)
+        
+        # Occasionally announce vote changes for realism
+        if final_vote != original_choice:
+            emit('agent_message', {
+                'sender': agent_name,
+                'message': f"After hearing everyone's perspectives, I'm voting for Option {final_vote}.",
+                'agentType': delib_session.simulation.agents[agent_name].model_type
+            }, room=session_id)
+            socketio.sleep(0.8)
     
     # Wait for user vote (handled in cast_vote event)
 

@@ -170,6 +170,12 @@ This is a Flask-based web application that simulates policy-making processes for
 ✓ Fixed reflection form responses not appearing in downloaded reports (July 19, 2025)
 ✓ Added proper session storage for reflection responses to persist across downloads
 ✓ Complete user flow now: Phase 1 → Phase 2 → Phase 3 → Reflection → Thank You
+✓ Enhanced deliberation system with strategic agent policy generation (July 30, 2025)
+✓ Fixed "all agents choose Option 2" problem by implementing distinct agent archetypes
+✓ Agents now have progressive, pragmatic, collaborative, and humanitarian perspectives
+✓ Always includes democratic voting phase for meaningful deliberation
+✓ Added strategic voting dynamics where agents may shift positions based on discussion
+✓ Comprehensive content moderation system for harmful/exclusionary comments
 
 ## Changelog
 - June 21, 2025. Initial setup and card interface implementation
