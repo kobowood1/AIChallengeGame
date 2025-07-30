@@ -8,6 +8,10 @@ from flask_socketio import emit, join_room, leave_room
 from multi_agent_system import MultiAgentSimulation
 from challenge_content import POLICY_AREAS
 from content_moderation import content_moderator
+from openai import OpenAI
+import os
+
+openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 # Global socketio instance will be set when registering events
 socketio = None
@@ -93,6 +97,50 @@ class DeliberationSession:
         # Random tie-breaking
         import random
         return random.choice(winners)
+
+def generate_moderator_followup(policy_area_name, user_choice, user_reasoning, user_name):
+    """Generate an engaging moderator follow-up that questions the user's reasoning"""
+    try:
+        system_prompt = f"""You are the Moderator of a refugee education policy simulation for the Republic of Bean. 
+        
+        A participant just explained why they chose a particular policy option. Your role is to:
+        1. Acknowledge their reasoning respectfully
+        2. Ask 1-2 thoughtful, challenging questions that make them think deeper
+        3. Encourage them to consider alternative perspectives or potential challenges
+        4. Keep it engaging and Socratic, not confrontational
+        
+        You should sound like an experienced policy facilitator who wants to deepen the discussion.
+        Keep your response to 2-3 sentences maximum."""
+
+        context_prompt = f"""Policy Area: {policy_area_name}
+        User's Choice: Option {user_choice}
+        User's Reasoning: "{user_reasoning}"
+        
+        Generate a moderator response that acknowledges {user_name}'s reasoning and asks probing questions to deepen their thinking about this policy choice. Make it conversational and engaging."""
+
+        response = openai_client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": context_prompt}
+            ],
+            max_tokens=150,
+            temperature=0.7
+        )
+        
+        return response.choices[0].message.content.strip()
+        
+    except Exception as e:
+        logging.error(f"Error generating moderator followup: {e}")
+        # Fallback to template-based responses
+        fallback_responses = [
+            f"Interesting perspective, {user_name}. What potential challenges might arise with that approach?",
+            f"Thank you for that reasoning, {user_name}. How do you think other stakeholders might view this choice?",
+            f"That's a thoughtful explanation, {user_name}. What evidence would you point to that supports this direction?",
+            f"I appreciate your reasoning, {user_name}. How might this choice impact different groups within our community?"
+        ]
+        import random
+        return random.choice(fallback_responses)
 
 def register_deliberation_events(socketio_instance):
     """Register all deliberation-related Socket.IO events"""
@@ -192,15 +240,29 @@ def register_deliberation_events(socketio_instance):
                     'message': f"Error starting policy deliberation: {str(e)}. Please refresh the page."
                 }, room=session_id)
         elif current_step == 'policy_deliberation':
-            # User explained their choice, now always have a democratic vote
+            # User explained their choice, moderator responds with follow-up questions
             policy_area = delib_session.get_policy_area(policy_index)
             if not policy_area:
                 return
             
-            # Always proceed to voting to maintain democratic deliberation
-            # This ensures every policy decision goes through the full democratic process
+            # Generate moderator response to user's reasoning
+            user_choice = delib_session.get_user_choice(policy_area.name)
+            moderator_response = generate_moderator_followup(
+                policy_area.name, 
+                user_choice, 
+                message, 
+                delib_session.user_name
+            )
+            
             emit('moderator_message', {
-                'message': f"Thank you for that perspective. Now let's vote democratically on {policy_area.name}.",
+                'message': moderator_response,
+                'step': 4
+            }, room=session_id)
+            
+            # After moderator questions, proceed to voting
+            socketio.sleep(2)
+            emit('moderator_message', {
+                'message': f"Now let's proceed to the democratic vote on {policy_area.name}.",
                 'step': 4
             }, room=session_id)
             
