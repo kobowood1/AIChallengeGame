@@ -17,6 +17,51 @@
         </p>
     </div>
 
+    <!-- Assembly Member Introduction Card -->
+    <div class="bg-gradient-to-r from-challenge-yellow/10 via-challenge-orange/10 to-challenge-red/10 rounded-3xl border-2 border-challenge-yellow/20 p-8 mb-12 relative overflow-hidden">
+        <!-- Background decoration -->
+        <div class="absolute inset-0 bg-gradient-to-br from-transparent via-white/30 to-transparent opacity-50"></div>
+        <div class="absolute top-4 right-4 text-challenge-yellow/20">
+            <i class="fas fa-flag text-6xl"></i>
+        </div>
+        
+        <div class="relative z-10">
+            <div class="flex items-start">
+                <div class="flex-shrink-0 mr-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-challenge-orange to-challenge-red rounded-2xl shadow-xl flex items-center justify-center">
+                        <i class="fas fa-user-tie text-white text-2xl"></i>
+                    </div>
+                </div>
+                
+                <div class="flex-1">
+                    <div class="flex items-center mb-4">
+                        <h3 class="text-2xl font-bold text-gray-900 mr-3">Your Role as Assembly Member</h3>
+                        <span class="px-3 py-1 bg-challenge-orange text-white text-sm font-medium rounded-full">
+                            Important
+                        </span>
+                    </div>
+                    
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/40 shadow-lg">
+                        <p class="text-gray-800 leading-relaxed text-lg font-medium mb-4">
+                            As a player, you will serve as an <strong class="text-challenge-orange">honorary assembly member of the Republic of Bean</strong>. Your role is to collaborate with other assembly members to design a policy package that addresses the educational needs of refugees in the country.
+                        </p>
+                        
+                        <div class="flex items-start bg-challenge-blue/10 rounded-xl p-4 border-l-4 border-challenge-blue">
+                            <div class="flex-shrink-0 mr-3">
+                                <i class="fas fa-lightbulb text-challenge-blue text-lg mt-1"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-700 font-medium">
+                                    In the next step, you will receive detailed background information about the Republic of Bean. Please take notes to help you remember important details throughout the game.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Game Status Cards -->
     <div class="grid md:grid-cols-2 gap-8 mb-12">
         {% if active_session %}
@@ -164,16 +209,6 @@
                 </div>
                 <h4 class="font-semibold text-gray-900 mb-2">Evidence-Based Decisions</h4>
                 <p class="text-gray-600 text-sm">Develop critical thinking skills through deliberative democracy processes.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-            <!-- Account Management -->
-            <div class="text-center">
-                <a href="{{ url_for('main.logout') }}" class="btn btn-outline-light">
-                    <i class="fas fa-sign-out-alt me-2"></i>Sign Out
-                </a>
             </div>
         </div>
     </div>
