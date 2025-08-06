@@ -34,6 +34,7 @@ class DeliberationSession:
         self.final_package = {}
         self.simulation = MultiAgentSimulation(agent_names)
         self.conversation_history = []
+        self.awaiting_followup_response = False  # Track if we're waiting for user response to moderator question
         
         # Steps in the deliberation process
         self.steps = [
@@ -241,35 +242,48 @@ def register_deliberation_events(socketio_instance):
                     'message': f"Error starting policy deliberation: {str(e)}. Please refresh the page."
                 }, room=session_id)
         elif current_step == 'policy_deliberation':
-            # User explained their choice, moderator responds with follow-up questions
-            policy_area = delib_session.get_policy_area(policy_index)
-            if not policy_area:
-                return
             
-            # Generate moderator response to user's reasoning
-            user_choice = delib_session.get_user_choice(policy_area.name)
-            moderator_response = generate_moderator_followup(
-                policy_area.name, 
-                user_choice, 
-                message, 
-                delib_session.user_name
-            )
-            
-            emit('moderator_message', {
-                'message': moderator_response,
-                'step': 4
-            }, room=session_id)
-            
-            # After moderator questions, proceed to voting
-            socketio.sleep(2)
-            emit('moderator_message', {
-                'message': f"Now let's proceed to the democratic vote on {policy_area.name}.",
-                'step': 4
-            }, room=session_id)
-            
-            # Start voting after brief delay
-            socketio.sleep(1)
-            start_voting(session_id, policy_area)
+            if not delib_session.awaiting_followup_response:
+                # First response: User explained their choice, moderator responds with follow-up questions
+                policy_area = delib_session.get_policy_area(policy_index)
+                if not policy_area:
+                    return
+                
+                # Generate moderator response to user's reasoning
+                user_choice = delib_session.get_user_choice(policy_area.name)
+                moderator_response = generate_moderator_followup(
+                    policy_area.name, 
+                    user_choice, 
+                    message, 
+                    delib_session.user_name
+                )
+                
+                emit('moderator_message', {
+                    'message': moderator_response,
+                    'step': 4,
+                    'enableInput': True  # Allow user to respond to moderator's question
+                }, room=session_id)
+                
+                # Set flag to expect follow-up response
+                delib_session.awaiting_followup_response = True
+                
+            else:
+                # Second response: User responded to moderator's follow-up, now proceed to voting
+                policy_area = delib_session.get_policy_area(policy_index)
+                if not policy_area:
+                    return
+                
+                emit('moderator_message', {
+                    'message': f"Thank you for that additional insight. Now let's proceed to the democratic vote on {policy_area.name}.",
+                    'step': 4
+                }, room=session_id)
+                
+                # Reset flag for next policy
+                delib_session.awaiting_followup_response = False
+                
+                # Start voting after brief delay
+                socketio.sleep(1)
+                start_voting(session_id, policy_area)
     
     @socketio_instance.on('cast_vote')
     def handle_cast_vote(data):
