@@ -125,7 +125,8 @@ def generate_moderator_followup(policy_area_name, user_choice, user_reasoning, u
                 {"role": "user", "content": context_prompt}
             ],
             max_tokens=150,
-            temperature=0.7
+            temperature=0.7,
+            timeout=10  # 10 second timeout to prevent socket issues
         )
         
         return response.choices[0].message.content.strip()
@@ -304,6 +305,32 @@ def register_deliberation_events(socketio_instance):
         # Move to next policy with minimal delay
         socketio.sleep(1)
         discuss_policy_area(session_id, policy_index + 1)
+    
+    @socketio_instance.on('connect')
+    def handle_connect():
+        """Handle client connection with improved error handling"""
+        session_id = request.sid
+        logging.debug(f"Client connected: {session_id}")
+        
+        # Send connection confirmation
+        emit('connection_status', {'status': 'connected'})
+    
+    @socketio_instance.on('ping')
+    def handle_ping():
+        """Handle ping to maintain connection"""
+        emit('pong')
+    
+    @socketio_instance.on('reconnect_session')
+    def handle_reconnect():
+        """Handle session reconnection"""
+        session_id = request.sid
+        logging.info(f"Session reconnect attempt: {session_id}")
+        
+        # Check if deliberation session exists
+        if session_id in deliberation_sessions:
+            emit('session_restored', {'status': 'success'})
+        else:
+            emit('session_restored', {'status': 'new_session'})
     
     @socketio_instance.on('disconnect')
     def handle_disconnect():

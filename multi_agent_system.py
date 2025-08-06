@@ -124,7 +124,8 @@ Be conversational, authentic, and draw on your background. Focus on the policy i
             model="gpt-4o",
             messages=messages,
             max_tokens=150,
-            temperature=0.7
+            temperature=0.7,
+            timeout=8  # Shorter timeout to prevent socket disconnection
         )
         
         return response.choices[0].message.content.strip()
@@ -274,7 +275,8 @@ Respond in character as {agent.name}. Be conversational, authentic, and referenc
                         {"role": "user", "content": prompt}
                     ],
                     max_tokens=150,
-                    temperature=0.7
+                    temperature=0.7,
+                    timeout=8  # Shorter timeout to prevent socket disconnection
                 )
                 return response.choices[0].message.content.strip()
             else:
@@ -291,7 +293,8 @@ Respond in character as {agent.name}. Be conversational, authentic, and referenc
                             {"role": "user", "content": prompt}
                         ],
                         max_tokens=150,
-                        temperature=0.7
+                        temperature=0.7,
+                        timeout=8  # Shorter timeout to prevent socket disconnection
                     )
                     return response.choices[0].message.content.strip()
         except Exception as e:

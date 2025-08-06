@@ -176,6 +176,10 @@ This is a Flask-based web application that simulates policy-making processes for
 ✓ Always includes democratic voting phase for meaningful deliberation
 ✓ Added strategic voting dynamics where agents may shift positions based on discussion
 ✓ Comprehensive content moderation system for harmful/exclusionary comments
+✓ Fixed socket timeout issues by adding shorter AI API timeouts (8 seconds) (August 6, 2025)
+✓ Enhanced connection recovery with ping/pong system and graceful reconnection handling
+✓ Added moderator follow-up questioning system that responds to user reasoning with AI-generated Socratic questions
+✓ Improved frontend connection management with automatic reconnection attempts and status indicators
 
 ## Changelog
 - June 21, 2025. Initial setup and card interface implementation
