@@ -120,10 +120,22 @@ def register_user():
 @main.route('/logout')
 @login_required
 def logout():
-    """User logout route"""
+    """User logout route with session termination"""
+    # Mark current game session as inactive if exists
+    if 'game_session_id' in session:
+        game_session = GameSession.query.get(session['game_session_id'])
+        if game_session:
+            game_session.is_active = False
+            game_session.end_time = datetime.utcnow()
+            db.session.commit()
+    
+    # Clear all session data to reset the game state
+    session.clear()
+    
+    # Log out the user
     logout_user()
-    flash('You have been logged out.', 'info')
-    return redirect(url_for('main.index'))
+    flash('You have been signed out and your session has been reset.', 'info')
+    return redirect(url_for('main.login'))
 
 
 @main.route('/start')

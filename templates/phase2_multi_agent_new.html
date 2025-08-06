@@ -556,7 +556,7 @@
     // Connection management
     let connectionLost = false;
     let reconnectAttempts = 0;
-    const maxReconnectAttempts = 5;
+    const maxReconnectAttempts = 10; // Increased from 5 to 10 for better recovery
     
     // Socket event handlers
     socket.on('connect', function() {
@@ -712,8 +712,6 @@
     
     // Add heartbeat check with exponential backoff reconnection
     let heartbeatInterval;
-    let reconnectAttempts = 0;
-    const maxReconnectAttempts = 10;
     
     function startHeartbeat() {
         clearInterval(heartbeatInterval);
