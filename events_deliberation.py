@@ -149,11 +149,45 @@ def register_deliberation_events(socketio_instance):
     global socketio
     socketio = socketio_instance
     
+    @socketio_instance.on('connect')
+    def handle_connect():
+        """Handle client connection with debugging"""
+        logging.debug(f"Client connected: {request.sid}")
+    
+    @socketio_instance.on('disconnect')
+    def handle_disconnect():
+        """Handle client disconnection and cleanup"""
+        session_id = request.sid
+        logging.debug(f"Client disconnected: {session_id}")
+        
+        # Clean up deliberation session if it exists
+        if session_id in deliberation_sessions:
+            logging.info(f"Cleaning up deliberation session: {session_id}")
+            del deliberation_sessions[session_id]
+    
+    @socketio_instance.on('ping')
+    def handle_ping():
+        """Handle ping requests to maintain connection"""
+        emit('pong')
+    
     @socketio_instance.on('join_deliberation_room')
     def handle_join_deliberation_room():
         """Initialize and join the structured deliberation session"""
         session_id = request.sid
         join_room(session_id)
+        
+        # Check if session already exists (reconnection case)
+        if session_id in deliberation_sessions:
+            logging.info(f"Reconnecting to existing deliberation session: {session_id}")
+            delib_session = deliberation_sessions[session_id]
+            
+            # Send current state to reconnected client
+            emit('moderator_message', {
+                'message': 'Welcome back! Continuing where we left off...',
+                'step': delib_session.current_step,
+                'enableInput': True
+            })
+            return
         
         # Get session data
         user_name = session.get('user_name', 'Participant')
@@ -572,19 +606,35 @@ def get_agent_policy_responses(session_id, policy_area):
         # Use AI with fallback on any issue to prevent blocking
         response_text = None
         try:
+            # Check if session is still active before generating AI response
+            if session_id not in deliberation_sessions:
+                logging.warning(f"Session {session_id} disconnected during agent generation")
+                return
+            
             from ai_agents import agent_justify
             
-            response_text = agent_justify(
-                policy_domain=policy_area.name,
-                option_chosen=agent_choice,
-                agent=agent_dict,
-                user_message="",
-                recent_messages=[],
-                responding_to_agent=None
-            )
+            # Use shorter timeout for faster fallback if needed
+            import signal
+            def timeout_handler(signum, frame):
+                raise TimeoutError("AI generation timeout")
             
-        except Exception as e:
-            logging.warning(f"AI generation failed for {agent_name}, using fallback: {e}")
+            signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(8)  # 8 second timeout
+            
+            try:
+                response_text = agent_justify(
+                    policy_domain=policy_area.name,
+                    option_chosen=agent_choice,
+                    agent=agent_dict,
+                    user_message="",
+                    recent_messages=[],
+                    responding_to_agent=None
+                )
+            finally:
+                signal.alarm(0)  # Cancel the alarm
+            
+        except (Exception, TimeoutError) as e:
+            logging.warning(f"AI generation failed/timed out for {agent_name}, using fallback: {e}")
             
             ideology_key = agent_profile.ideology.lower()
             if ideology_key not in diverse_fallbacks[agent_choice]:
@@ -593,6 +643,11 @@ def get_agent_policy_responses(session_id, policy_area):
             response_text = diverse_fallbacks[agent_choice][ideology_key]
         
         logging.info(f"Generated response for {agent_name}: {response_text[:50]}...")
+        
+        # Final check that session is still active before emitting
+        if session_id not in deliberation_sessions:
+            logging.warning(f"Session {session_id} disconnected, skipping agent message")
+            return
         
         # Hide typing and emit agent message
         emit('agent_stop_typing', {}, room=session_id)

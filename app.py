@@ -10,7 +10,15 @@ import logging
 from flask_wtf.csrf import CSRFProtect
 
 # Initialize SocketIO without an app instance yet
-socketio = SocketIO(cors_allowed_origins="*", async_mode='eventlet')
+# Increased timeouts to prevent mid-deliberation disconnections
+socketio = SocketIO(
+    cors_allowed_origins="*", 
+    async_mode='eventlet',
+    ping_timeout=120,  # 2 minutes before considering client disconnected
+    ping_interval=25,  # Send ping every 25 seconds to keep connection alive
+    logger=False,      # Reduce log noise
+    engineio_logger=False
+)
 
 # Initialize CSRF protection
 csrf = CSRFProtect()

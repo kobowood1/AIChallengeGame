@@ -703,11 +703,39 @@
         document.getElementById('sendButton').disabled = true;
     });
     
-    // Add ping to maintain connection
+    // Add ping to maintain connection with shorter interval
     setInterval(() => {
         if (socket.connected) {
             socket.emit('ping');
         }
-    }, 30000); // Ping every 30 seconds
+    }, 20000); // Ping every 20 seconds
+    
+    // Add heartbeat check with exponential backoff reconnection
+    let heartbeatInterval;
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 10;
+    
+    function startHeartbeat() {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = setInterval(() => {
+            if (!socket.connected && reconnectAttempts < maxReconnectAttempts) {
+                const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
+                setTimeout(() => {
+                    reconnectAttempts++;
+                    console.log(`Attempting reconnection ${reconnectAttempts}/${maxReconnectAttempts}`);
+                    socket.connect();
+                }, delay);
+            }
+        }, 5000);
+    }
+    
+    socket.on('connect', () => {
+        reconnectAttempts = 0;
+        startHeartbeat();
+    });
+    
+    socket.on('disconnect', () => {
+        clearInterval(heartbeatInterval);
+    });
 </script>
 {% endblock %}
