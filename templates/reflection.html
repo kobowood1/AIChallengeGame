@@ -76,6 +76,55 @@
         background: rgba(255, 255, 255, 0.95);
     }
     
+    .response-textarea.invalid {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+    
+    .response-textarea.valid {
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+    
+    .character-counter {
+        font-size: 0.875rem;
+        color: #6b7280;
+        text-align: right;
+        margin-top: 0.5rem;
+    }
+    
+    .character-counter.invalid {
+        color: #ef4444;
+        font-weight: 600;
+    }
+    
+    .character-counter.valid {
+        color: #10b981;
+        font-weight: 600;
+    }
+    
+    .validation-message {
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        border-radius: 6px;
+        display: none;
+    }
+    
+    .validation-message.error {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        display: block;
+    }
+    
+    .validation-message.success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        display: block;
+    }
+    
     .submit-button {
         background: linear-gradient(135deg, #10b981, #059669);
         color: white;
@@ -182,10 +231,14 @@
                 <textarea 
                     name="q{{ loop.index }}" 
                     class="response-textarea" 
-                    placeholder="Share your thoughts and reflections here..."
+                    placeholder="Share your thoughts and reflections here... (Minimum 500 characters required)"
                     required
-                    oninput="updateProgress()"
-                ></textarea>
+                    minlength="500"
+                    oninput="validateField(this); updateProgress()"
+                    data-question-number="{{ loop.index }}"
+                >{{ form_data.get('q' + loop.index|string, '') if form_data else '' }}</textarea>
+                <div class="character-counter" id="counter-q{{ loop.index }}">0 / 500 characters (minimum required)</div>
+                <div class="validation-message" id="validation-q{{ loop.index }}"></div>
             </div>
             {% endfor %}
             
@@ -207,6 +260,47 @@
 </div>
 
 <script>
+function validateField(textarea) {
+    const minLength = 500;
+    const currentLength = textarea.value.trim().length;
+    const questionNumber = textarea.dataset.questionNumber;
+    const counter = document.getElementById(`counter-q${questionNumber}`);
+    const validation = document.getElementById(`validation-q${questionNumber}`);
+    
+    // Update character counter
+    counter.textContent = `${currentLength} / ${minLength} characters`;
+    
+    // Remove previous validation classes
+    textarea.classList.remove('valid', 'invalid');
+    counter.classList.remove('valid', 'invalid');
+    validation.classList.remove('error', 'success');
+    validation.style.display = 'none';
+    
+    if (currentLength === 0) {
+        // Empty field
+        counter.textContent = `${currentLength} / ${minLength} characters (minimum required)`;
+        return false;
+    } else if (currentLength < minLength) {
+        // Below minimum
+        textarea.classList.add('invalid');
+        counter.classList.add('invalid');
+        counter.textContent = `${currentLength} / ${minLength} characters (${minLength - currentLength} more needed)`;
+        validation.classList.add('error');
+        validation.textContent = `Please write at least ${minLength - currentLength} more characters to provide a substantial response.`;
+        validation.style.display = 'block';
+        return false;
+    } else {
+        // Valid length
+        textarea.classList.add('valid');
+        counter.classList.add('valid');
+        counter.textContent = `${currentLength} characters ✓`;
+        validation.classList.add('success');
+        validation.textContent = 'Great! Your response meets the minimum length requirement.';
+        validation.style.display = 'block';
+        return true;
+    }
+}
+
 function updateProgress() {
     const textareas = document.querySelectorAll('.response-textarea');
     const progressFill = document.getElementById('progressFill');
@@ -214,9 +308,14 @@ function updateProgress() {
     const submitButton = document.getElementById('submitButton');
     
     let completed = 0;
+    let allValid = true;
+    
     textareas.forEach(textarea => {
-        if (textarea.value.trim().length > 0) {
+        const isValid = validateField(textarea);
+        if (isValid) {
             completed++;
+        } else {
+            allValid = false;
         }
     });
     
@@ -224,8 +323,8 @@ function updateProgress() {
     progressFill.style.width = percentage + '%';
     progressText.textContent = `${completed} of ${textareas.length} questions completed`;
     
-    // Enable submit button only when all questions are answered
-    if (completed === textareas.length) {
+    // Enable submit button only when all questions meet the minimum requirement
+    if (allValid && completed === textareas.length) {
         submitButton.disabled = false;
         submitButton.style.opacity = '1';
     } else {
@@ -248,11 +347,44 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Form submission with loading state
+// Form submission with validation
 document.getElementById('reflectionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const textareas = document.querySelectorAll('.response-textarea');
+    let allValid = true;
+    let firstInvalidField = null;
+    
+    // Validate all fields before submission
+    textareas.forEach(textarea => {
+        const isValid = validateField(textarea);
+        if (!isValid && !firstInvalidField) {
+            firstInvalidField = textarea;
+        }
+        if (!isValid) {
+            allValid = false;
+        }
+    });
+    
+    if (!allValid) {
+        // Scroll to first invalid field
+        if (firstInvalidField) {
+            firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstInvalidField.focus();
+        }
+        
+        // Show global error message
+        alert('Please ensure all responses meet the 500-character minimum requirement before submitting.');
+        return false;
+    }
+    
+    // All fields are valid, proceed with submission
     const submitButton = document.getElementById('submitButton');
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating Report...';
     submitButton.disabled = true;
+    
+    // Submit the form
+    this.submit();
 });
 </script>
 {% endblock %}

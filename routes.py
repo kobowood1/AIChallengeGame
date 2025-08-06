@@ -504,6 +504,39 @@ def submit_reflection():
     # Extract form data for POST requests
     form_data = request.form
     
+    # Validate that all responses meet the 500-character minimum requirement
+    validation_errors = []
+    for i in range(1, 11):  # Questions q1 through q10
+        field_name = f'q{i}'
+        response = form_data.get(field_name, '').strip()
+        
+        if not response:
+            validation_errors.append(f'Question {i}: Response is required')
+        elif len(response) < 500:
+            validation_errors.append(f'Question {i}: Response must be at least 500 characters (currently {len(response)} characters)')
+    
+    # If there are validation errors, return to the form with error messages
+    if validation_errors:
+        flash('Please address the following issues:', 'error')
+        for error in validation_errors:
+            flash(error, 'error')
+        
+        # Define the reflection questions again for the template
+        questions = [
+            "What emotions came up for you during the decision-making process—discomfort, frustration, detachment, guilt? What do those feelings reveal about your position in relation to refugee education?",
+            "Did anything about your role in the game feel familiar—either from your personal or professional life? If so, how?",
+            "What assumptions about refugees, policy, or education were challenged or reinforced during the game?",
+            "How did the group dynamics impact your ability to advocate for certain policies? Were there moments when you chose silence or compromise? Why?",
+            "Has your understanding of refugee education shifted from seeing it as a service 'for them' to a system embedded in broader struggles over power, identity, and justice? If so, how?",
+            "Whose interests did your decisions ultimately serve—refugees, citizens, or the state? Why?",
+            "What power did you assume you had as a policymaker—and who did you imagine was absent or voiceless in that process?",
+            "What compromises did you make for the sake of consensus, and who or what got erased in the process?",
+            "How did the structure of the game (budget, options, scenario) shape or limit your imagination of justice?",
+            "If refugee education wasn't about inclusion into existing systems—but about transforming those systems—what would that look like, and did your decisions move toward or away from that?"
+        ]
+        
+        return render_template('reflection.html', questions=questions, form_data=form_data)
+    
     # Store reflection responses in session for future downloads
     session['reflection_responses'] = dict(form_data)
     
