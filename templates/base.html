@@ -68,13 +68,12 @@
                     </div>
                     
                     <div class="flex items-center space-x-2">
-                        <button onclick="if(confirm('Are you sure you want to reset your progress?')) window.location.href='{{ url_for('main.reset') }}'" 
+                        <button onclick="showResetConfirm()" 
                                 class="px-4 py-2 bg-challenge-orange hover:bg-orange-600 text-white rounded-lg transition-all duration-200 flex items-center text-sm font-medium shadow-sm hover:shadow-md">
                             <i class="fas fa-redo mr-2"></i>
                             <span class="hidden sm:inline">Reset</span>
                         </button>
-                        <a href="{{ url_for('main.logout') }}" 
-                           onclick="return confirm('Are you sure you want to sign out? This will end your current session and return you to the beginning.')"
+                        <a href="#" onclick="showLogoutConfirm()" 
                            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-200 flex items-center text-sm font-medium">
                             <i class="fas fa-sign-out-alt mr-2"></i>
                             <span class="hidden sm:inline">Sign Out</span>
@@ -118,6 +117,99 @@
         
         {% block content %}{% endblock %}
     </main>
+
+    <!-- Custom Confirmation Modals -->
+    <div id="logoutModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-sign-out-alt text-blue-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Sign Out Confirmation</h3>
+            </div>
+            <p class="text-gray-600 mb-6">
+                Are you ready to finish up? Signing out will save your progress and take you back to the login page.
+            </p>
+            <div class="flex space-x-3">
+                <button onclick="confirmLogout()" 
+                        class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200">
+                    Yes, Sign Out
+                </button>
+                <button onclick="hideLogoutModal()" 
+                        class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200">
+                    Continue Playing
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="resetModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-redo text-orange-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Reset Progress</h3>
+            </div>
+            <p class="text-gray-600 mb-6">
+                This will clear your current progress and let you start fresh. Are you sure you want to reset?
+            </p>
+            <div class="flex space-x-3">
+                <button onclick="confirmReset()" 
+                        class="flex-1 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors duration-200">
+                    Yes, Reset
+                </button>
+                <button onclick="hideResetModal()" 
+                        class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors duration-200">
+                    Keep Progress
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLogoutConfirm() {
+            document.getElementById('logoutModal').classList.remove('hidden');
+        }
+
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').classList.add('hidden');
+        }
+
+        function confirmLogout() {
+            window.location.href = "{{ url_for('main.logout') }}";
+        }
+
+        function showResetConfirm() {
+            document.getElementById('resetModal').classList.remove('hidden');
+        }
+
+        function hideResetModal() {
+            document.getElementById('resetModal').classList.add('hidden');
+        }
+
+        function confirmReset() {
+            window.location.href = "{{ url_for('main.reset') }}";
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'logoutModal') {
+                hideLogoutModal();
+            }
+            if (e.target.id === 'resetModal') {
+                hideResetModal();
+            }
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideLogoutModal();
+                hideResetModal();
+            }
+        });
+    </script>
 
     <footer class="bg-white border-t border-gray-200 py-8 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
