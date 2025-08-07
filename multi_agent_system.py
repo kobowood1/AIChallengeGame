@@ -41,27 +41,27 @@ class MultiAgentSimulation:
     """Orchestrates the multi-agent policy simulation"""
     
     def __init__(self, agent_names=None):
-        # Default agent profiles that can be assigned to any names
+        # More diverse agent profiles with distinct backgrounds
         self.agent_profiles = [
             {
                 'model_type': 'openai',
-                'background': 'Former teacher and refugee advocate with 15 years experience in education',
-                'ideology': 'Progressive - believes in comprehensive support and integration'
+                'background': 'Former refugee who became a teacher, now advocates for inclusive education policies',
+                'ideology': 'Progressive'
             },
             {
                 'model_type': 'openai', 
-                'background': 'Education policy researcher and mother of three school-age children',
-                'ideology': 'Pragmatic - focuses on practical implementation and measurable outcomes'
+                'background': 'Education policy researcher and mother of three, focusing on implementation costs',
+                'ideology': 'Pragmatic'
             },
             {
                 'model_type': 'gemini',
-                'background': 'School principal with experience managing diverse student populations',
-                'ideology': 'Collaborative - emphasizes community engagement and shared responsibility'
+                'background': 'School principal managing diverse populations in an urban district',
+                'ideology': 'Collaborative'
             },
             {
                 'model_type': 'gemini',
-                'background': 'Social worker specializing in refugee family services and trauma-informed care',
-                'ideology': 'Humanitarian - prioritizes individual student needs and wellbeing'
+                'background': 'Clinical social worker specializing in refugee trauma and family services',
+                'ideology': 'Humanitarian'
             }
         ]
         

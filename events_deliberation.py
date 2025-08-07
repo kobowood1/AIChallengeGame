@@ -437,17 +437,45 @@ def start_agent_introductions(session_id):
         else:
             socketio.sleep(0.5)  # Initial delay to show typing
         
-        # Generate agent profile intro
+        # Generate diverse agent profile intro
         agent_profile = delib_session.simulation.agents[agent_name]
-        age = 35 + (i * 5)  # Simple age assignment
+        
+        # Create more diverse ages and personal details
+        base_ages = [32, 38, 45, 51]
+        age = base_ages[i % len(base_ages)]
         
         # Get agent's policy summary
         policy_summary = generate_policy_summary(agent_name, delib_session.agent_policies.get(agent_name, {}))
         
-        intro_text = (
-            f"Hello! I'm {agent_name}, {age}, {agent_profile.background}. "
-            f"My policy approach focuses on {policy_summary}."
-        )
+        # Create more personalized introductions based on agent ideology
+        personal_touches = {
+            'Progressive': [
+                f"Hello everyone! I'm {agent_name}, {age}. As someone who's dedicated my career to {agent_profile.background.lower()}, I believe in {policy_summary}.",
+                f"Hi there! {agent_name} here, {age} years old. My work in {agent_profile.background.lower()} has shown me the importance of {policy_summary}.",
+                f"Greetings! I'm {agent_name} ({age}). Through my experience with {agent_profile.background.lower()}, I've learned to champion {policy_summary}."
+            ],
+            'Pragmatic': [
+                f"Good morning. I'm {agent_name}, {age}. Based on my {len(agent_profile.background.split())} years of experience, I focus on {policy_summary}.",
+                f"Hello. {agent_name}, {age}. My background in {agent_profile.background.lower()} has taught me to prioritize {policy_summary}.",
+                f"Hi everyone. I'm {agent_name} ({age}). From my work as {agent_profile.background.lower()}, I've found success with {policy_summary}."
+            ],
+            'Collaborative': [
+                f"Hello all! I'm {agent_name}, {age}. Working as {agent_profile.background.lower()}, I've seen how {policy_summary} can bring us together.",
+                f"Hi everyone! {agent_name} here, {age}. My role in {agent_profile.background.lower()} has shown me the value of {policy_summary}.",
+                f"Greetings, colleagues! I'm {agent_name} ({age}). Through {agent_profile.background.lower()}, I've learned to build {policy_summary}."
+            ],
+            'Humanitarian': [
+                f"Hello, friends. I'm {agent_name}, {age}. Every day in {agent_profile.background.lower()}, I see why we need {policy_summary}.",
+                f"Hi there. {agent_name}, {age}. My heart for {agent_profile.background.lower()} drives my passion for {policy_summary}.",
+                f"Warm greetings! I'm {agent_name} ({age}). Working with {agent_profile.background.lower()}, I've witnessed the power of {policy_summary}."
+            ]
+        }
+        
+        # Select ideology-based intro
+        agent_ideologies = ['Progressive', 'Pragmatic', 'Collaborative', 'Humanitarian']
+        ideology = agent_ideologies[i % len(agent_ideologies)]
+        intro_templates = personal_touches[ideology]
+        intro_text = intro_templates[hash(agent_name) % len(intro_templates)]
         
         # Hide typing and emit agent message
         emit('agent_stop_typing', {}, room=session_id)
@@ -462,22 +490,57 @@ def start_agent_introductions(session_id):
     start_user_introduction(session_id)
 
 def generate_policy_summary(agent_name, agent_policy):
-    """Generate a brief summary of agent's policy choices"""
+    """Generate a diverse, personality-driven summary of agent's policy choices"""
     if not agent_policy:
-        return "comprehensive and balanced solutions"
+        return "evidence-based educational solutions"
     
     # Count option levels
     option_counts = {}
     for policy_name, level in agent_policy.items():
         option_counts[level] = option_counts.get(level, 0) + 1
     
-    # Generate summary based on predominant choices
-    if option_counts.get(3, 0) > option_counts.get(1, 0):
-        return "comprehensive, well-funded programs"
-    elif option_counts.get(1, 0) > option_counts.get(3, 0):
-        return "cost-effective, targeted interventions"
+    # Get total selections to calculate percentages
+    total_selections = sum(option_counts.values())
+    
+    # Determine agent's ideology-based approach
+    agent_ideologies = ['Progressive', 'Pragmatic', 'Collaborative', 'Humanitarian']
+    agent_index = hash(agent_name) % len(agent_ideologies)
+    ideology = agent_ideologies[agent_index]
+    
+    # Generate diverse summaries based on ideology and choices
+    high_cost_ratio = option_counts.get(3, 0) / total_selections if total_selections > 0 else 0
+    low_cost_ratio = option_counts.get(1, 0) / total_selections if total_selections > 0 else 0
+    
+    summaries_by_ideology = {
+        'Progressive': {
+            'high_cost': "transformative, equity-focused programs that address systemic barriers",
+            'balanced': "inclusive policies that ensure no refugee student is left behind",
+            'low_cost': "strategic interventions that maximize social justice outcomes within constraints"
+        },
+        'Pragmatic': {
+            'high_cost': "evidence-based investments in programs with proven track records",
+            'balanced': "data-driven solutions that balance effectiveness with fiscal responsibility", 
+            'low_cost': "targeted, cost-efficient strategies with measurable outcomes"
+        },
+        'Collaborative': {
+            'high_cost': "community-centered programs that bring stakeholders together",
+            'balanced': "partnership-based approaches that leverage collective resources",
+            'low_cost': "grassroots solutions that mobilize existing community strengths"
+        },
+        'Humanitarian': {
+            'high_cost': "holistic support systems that address trauma and individual needs",
+            'balanced': "compassionate policies that prioritize student wellbeing and dignity",
+            'low_cost': "essential services that protect vulnerable students' basic rights"
+        }
+    }
+    
+    # Select summary based on cost preference
+    if high_cost_ratio > 0.5:
+        return summaries_by_ideology[ideology]['high_cost']
+    elif low_cost_ratio > 0.5:
+        return summaries_by_ideology[ideology]['low_cost']
     else:
-        return "balanced, pragmatic approaches"
+        return summaries_by_ideology[ideology]['balanced']
 
 def start_user_introduction(session_id):
     """Step 3: Ask user to introduce themselves"""
@@ -581,25 +644,25 @@ def get_agent_policy_responses(session_id, policy_area):
             'llm_model': agent_profile.model_type
         }
         
-        # Define fallback responses upfront for faster access
+        # Define diverse, personality-driven fallback responses
         diverse_fallbacks = {
             1: {
-                'conservative': f"I chose Option 1 because fiscal responsibility is key. We can't overspend on programs that might not deliver results.",
-                'moderate': f"Option 1 makes sense - it's a pragmatic start that we can build upon once we see what works.",
-                'liberal': f"While I'd prefer more support, Option 1 at least gets us moving in the right direction.",
-                'humanitarian': f"Option 1 provides essential basics. Sometimes simple solutions work best for urgent needs."
+                'progressive': f"I support Option 1 because sometimes targeted action creates the foundation for broader systemic change. We need to start somewhere meaningful.",
+                'pragmatic': f"Option 1 makes fiscal sense - it's a cost-effective first step that we can evaluate and expand based on actual outcomes.",
+                'collaborative': f"Option 1 allows us to engage multiple stakeholders without overcommitting resources. It's about building consensus for future growth.",
+                'humanitarian': f"While modest, Option 1 addresses immediate needs. Every refugee student deserves at least this basic level of support."
             },
             2: {
-                'conservative': f"Option 2 offers reasonable investment without excessive government expansion.",
-                'moderate': f"I believe Option 2 strikes the right balance between helping students and managing costs.",
-                'liberal': f"Option 2 provides meaningful support while staying politically feasible.",
-                'humanitarian': f"Option 2 addresses core needs comprehensively - it's what these students deserve."
+                'progressive': f"Option 2 represents meaningful progress toward equity. It shows we're serious about addressing educational barriers these students face.",
+                'pragmatic': f"I believe Option 2 offers the best return on investment - substantial enough to make a difference, reasonable enough to implement well.",
+                'collaborative': f"Option 2 creates space for community partnerships while providing solid institutional support. It's a foundation for cooperation.",
+                'humanitarian': f"Option 2 addresses both immediate needs and longer-term wellbeing. These students deserve comprehensive care, not just basic services."
             },
             3: {
-                'conservative': f"Though expensive, Option 3 could prevent larger social costs down the road.",
-                'moderate': f"Option 3 represents a significant commitment, but some issues require bold action.",
-                'liberal': f"Option 3 is essential - we cannot shortchange refugee students' futures.",
-                'humanitarian': f"Option 3 is the only ethical choice. These students have already suffered enough."
+                'progressive': f"Option 3 is what true equity looks like. If we're serious about dismantling barriers, we need transformative investment, not incremental change.",
+                'pragmatic': f"Though expensive, Option 3 prevents costly problems later. The research shows comprehensive early intervention saves money long-term.",
+                'collaborative': f"Option 3 requires significant stakeholder buy-in, but it creates lasting partnerships and shared ownership of outcomes.",
+                'humanitarian': f"Option 3 honors the full humanity of these students. After everything they've endured, shouldn't we offer our absolute best support?"
             }
         }
         
@@ -638,7 +701,7 @@ def get_agent_policy_responses(session_id, policy_area):
             
             ideology_key = agent_profile.ideology.lower()
             if ideology_key not in diverse_fallbacks[agent_choice]:
-                ideology_key = 'moderate'
+                ideology_key = 'pragmatic'  # Changed from 'moderate' to match our new categories
             
             response_text = diverse_fallbacks[agent_choice][ideology_key]
         
