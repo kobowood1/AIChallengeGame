@@ -550,7 +550,11 @@ def submit_reflection():
         return render_template('reflection.html', questions=questions, form_data=form_data)
     
     # Store reflection responses in session for future downloads
-    session['reflection_responses'] = dict(form_data)
+    # Convert ImmutableMultiDict to regular dict properly
+    reflection_data = {}
+    for key in form_data.keys():
+        reflection_data[key] = form_data.get(key)
+    session['reflection_responses'] = reflection_data
     
     # Build the markdown report
     md_report = generate_markdown_report(form_data)
@@ -595,7 +599,11 @@ def submit_reflection():
             game_session.is_active = False
             game_session.current_phase = 'completed'
             game_session.completed_at = datetime.utcnow()
-            game_session.reflection_responses = str(form_data)  # Store the reflection responses
+            # Store reflection responses as JSON string for database
+            reflection_data = {}
+            for key in form_data.keys():
+                reflection_data[key] = form_data.get(key)
+            game_session.reflection_responses = json.dumps(reflection_data)
             db.session.commit()
         else:
             # No active session found - create a completed session for tracking
@@ -605,7 +613,8 @@ def submit_reflection():
                 current_phase='completed',
                 is_active=False,
                 completed_at=datetime.utcnow(),
-                reflection_responses=str(form_data)
+                # Store reflection responses as JSON string for database
+                reflection_responses=json.dumps(reflection_data)
             )
             db.session.add(completed_session)
             db.session.commit()
