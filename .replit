@@ -44,4 +44,4 @@ localPort = 5001
 externalPort = 3000
 
 [agent]
-integrations = ["python_openai==1.0.0", "flask_authentication==1.0.0", "python_sendgrid==1.0.0"]
+integrations = ["flask_authentication==1.0.0", "styling_replit==1.0.0", "python_openai==1.0.0", "python_sendgrid==1.0.0"]
