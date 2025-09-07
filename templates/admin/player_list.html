@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Player Management - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center">
+                    <a href="{{ url_for('admin.admin_dashboard') }}" class="text-blue-600 hover:text-blue-800 mr-4">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <div class="h-10 w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-users text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Player Management</h1>
+                        <p class="text-sm text-gray-600">View and manage all registered players</p>
+                    </div>
+                </div>
+                <a href="{{ url_for('admin.export_all_data') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-download mr-2"></i>Export All Data
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Search and Filters -->
+        <div class="bg-white shadow-lg rounded-xl p-6 mb-8">
+            <form method="GET" class="flex items-center space-x-4">
+                <div class="flex-1">
+                    <label for="search" class="sr-only">Search players</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <input id="search" name="search" type="text" placeholder="Search by username, email, or name..." 
+                               value="{{ search }}" 
+                               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                    Search
+                </button>
+                {% if search %}
+                    <a href="{{ url_for('admin.player_list') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        Clear
+                    </a>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Player List -->
+        <div class="bg-white shadow-lg rounded-xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    Players ({{ users.total }} total)
+                    {% if search %}
+                        - Search results for "{{ search }}"
+                    {% endif %}
+                </h3>
+            </div>
+            
+            {% if users.items %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Player</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sessions</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Activity</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for user in users.items %}
+                                {% set stats = user_stats[user.id] %}
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 bg-gray-300 rounded-full flex items-center justify-center mr-4">
+                                                <span class="text-sm font-medium text-gray-700">
+                                                    {{ user.first_name[0] if user.first_name else user.username[0] }}{{ user.last_name[0] if user.last_name else '' }}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <div class="text-sm font-medium text-gray-900">{{ user.full_name }}</div>
+                                                <div class="text-sm text-gray-500">{{ user.username }} • {{ user.email }}</div>
+                                                <div class="text-xs text-gray-400">Joined {{ user.created_at.strftime('%Y-%m-%d') }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">
+                                            <span class="font-medium">{{ stats.total_sessions }}</span> total
+                                        </div>
+                                        <div class="text-xs text-gray-500">
+                                            {{ stats.completed_sessions }} completed
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {% if stats.current_phase %}
+                                            {% if stats.current_phase == 'completed' %}
+                                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                            {% elif stats.current_phase == 'registration' %}
+                                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Registering</span>
+                                            {% else %}
+                                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">{{ stats.current_phase.replace('_', ' ').title() }}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">No Sessions</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {% if stats.last_activity %}
+                                            {{ stats.last_activity.strftime('%Y-%m-%d %H:%M') }}
+                                        {% else %}
+                                            Never
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <a href="{{ url_for('admin.player_detail', user_id=user.id) }}" 
+                                           class="text-blue-600 hover:text-blue-900 mr-3">
+                                            <i class="fas fa-eye mr-1"></i>View Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if users.pages > 1 %}
+                    <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1 flex justify-between sm:hidden">
+                                {% if users.has_prev %}
+                                    <a href="{{ url_for('admin.player_list', page=users.prev_num, search=search) }}" 
+                                       class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                        Previous
+                                    </a>
+                                {% endif %}
+                                {% if users.has_next %}
+                                    <a href="{{ url_for('admin.player_list', page=users.next_num, search=search) }}" 
+                                       class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                        Next
+                                    </a>
+                                {% endif %}
+                            </div>
+                            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-700">
+                                        Showing page <span class="font-medium">{{ users.page }}</span> of <span class="font-medium">{{ users.pages }}</span>
+                                    </p>
+                                </div>
+                                <div>
+                                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                                        {% if users.has_prev %}
+                                            <a href="{{ url_for('admin.player_list', page=users.prev_num, search=search) }}" 
+                                               class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        {% endif %}
+                                        
+                                        {% for page_num in range(1, users.pages + 1) %}
+                                            {% if page_num == users.page %}
+                                                <span class="relative inline-flex items-center px-4 py-2 border border-blue-500 bg-blue-50 text-sm font-medium text-blue-600">
+                                                    {{ page_num }}
+                                                </span>
+                                            {% elif page_num <= 3 or page_num > users.pages - 3 or (page_num >= users.page - 1 and page_num <= users.page + 1) %}
+                                                <a href="{{ url_for('admin.player_list', page=page_num, search=search) }}" 
+                                                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                                    {{ page_num }}
+                                                </a>
+                                            {% elif page_num == 4 or page_num == users.pages - 3 %}
+                                                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                                                    ...
+                                                </span>
+                                            {% endif %}
+                                        {% endfor %}
+                                        
+                                        {% if users.has_next %}
+                                            <a href="{{ url_for('admin.player_list', page=users.next_num, search=search) }}" 
+                                               class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        {% endif %}
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-12">
+                    <i class="fas fa-users text-gray-400 text-4xl mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No players found</h3>
+                    <p class="text-gray-600">
+                        {% if search %}
+                            No players match your search criteria. Try adjusting your search terms.
+                        {% else %}
+                            No players have registered yet.
+                        {% endif %}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -62,3 +62,11 @@ class ParticipantForm(FlaskForm):
     current_location_city = StringField('Current City', validators=[DataRequired(), Length(max=100)])
     current_location_country = StringField('Current Country', validators=[DataRequired(), Length(max=100)])
     submit = SubmitField('Continue to Scenario')
+
+
+class AdminLoginForm(FlaskForm):
+    """Administrator login form"""
+    username = StringField('Admin Username', validators=[DataRequired(), Length(min=3, max=80)])
+    password = PasswordField('Admin Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Admin Sign In')

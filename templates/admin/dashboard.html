@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Policy Jam{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center">
+                    <div class="h-10 w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-chart-bar text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+                        <p class="text-sm text-gray-600">Policy Jam Analytics & Management</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">Welcome, {{ current_user.full_name }}</span>
+                    <a href="{{ url_for('admin.admin_logout') }}" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white overflow-hidden shadow-lg rounded-xl">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-users text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Total Players</p>
+                            <p class="text-2xl font-semibold text-gray-900">{{ total_users }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-lg rounded-xl">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-play-circle text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Total Sessions</p>
+                            <p class="text-2xl font-semibold text-gray-900">{{ total_sessions }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-lg rounded-xl">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Completed</p>
+                            <p class="text-2xl font-semibold text-gray-900">{{ completed_sessions }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-lg rounded-xl">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-clock text-orange-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Active Sessions</p>
+                            <p class="text-2xl font-semibold text-gray-900">{{ active_sessions }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="lg:col-span-2">
+                <div class="bg-white shadow-lg rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <a href="{{ url_for('admin.player_list') }}" class="flex items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-users text-white"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900">View All Players</p>
+                                <p class="text-sm text-gray-600">Manage player accounts and sessions</p>
+                            </div>
+                        </a>
+                        
+                        <a href="{{ url_for('admin.export_all_data') }}" class="flex items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+                            <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-download text-white"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900">Export All Data</p>
+                                <p class="text-sm text-gray-600">Download complete player reports</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white shadow-lg rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Completion Rate</h3>
+                <div class="text-center">
+                    {% if total_sessions > 0 %}
+                        {% set completion_rate = (completed_sessions / total_sessions * 100) | round(1) %}
+                        <div class="text-3xl font-bold text-gray-900 mb-2">{{ completion_rate }}%</div>
+                        <p class="text-sm text-gray-600">{{ completed_sessions }} of {{ total_sessions }} sessions completed</p>
+                    {% else %}
+                        <div class="text-3xl font-bold text-gray-400 mb-2">0%</div>
+                        <p class="text-sm text-gray-600">No sessions yet</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white shadow-lg rounded-xl">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
+            </div>
+            <div class="p-6">
+                {% if recent_sessions %}
+                    <div class="space-y-4">
+                        {% for session in recent_sessions %}
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-user text-gray-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ session.user.full_name }}</p>
+                                        <p class="text-sm text-gray-600">
+                                            Phase: {{ session.current_phase.replace('_', ' ').title() }} • 
+                                            {{ session.last_activity.strftime('%Y-%m-%d %H:%M') }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-3 py-1 text-xs font-medium rounded-full 
+                                        {% if session.current_phase == 'completed' %}bg-green-100 text-green-800
+                                        {% elif session.is_active %}bg-blue-100 text-blue-800
+                                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                        {% if session.current_phase == 'completed' %}Completed
+                                        {% elif session.is_active %}Active
+                                        {% else %}Inactive{% endif %}
+                                    </span>
+                                    <a href="{{ url_for('admin.player_detail', user_id=session.user_id) }}" 
+                                       class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-gray-600 text-center py-4">No recent activity found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -58,11 +58,17 @@ def create_app():
     from models import db
     db.init_app(app)
     
-    # User loader callback for Flask-Login
+    # User loader callback for Flask-Login - supports both User and Admin models
     @login_manager.user_loader
     def load_user(user_id):
-        from models import User
-        return User.query.get(int(user_id))
+        from models import User, Admin
+        # Try to load as regular user first
+        user = User.query.get(int(user_id))
+        if user:
+            return user
+        # If not found, try admin user
+        admin = Admin.query.get(int(user_id))
+        return admin
     
     # Create all database tables
     with app.app_context():
@@ -71,6 +77,16 @@ def create_app():
     # Register blueprints
     from routes import main as main_blueprint
     app.register_blueprint(main_blueprint)
+    
+    # Register admin blueprint
+    try:
+        from admin_routes import admin as admin_blueprint
+        app.register_blueprint(admin_blueprint)
+        print("Admin blueprint registered successfully")
+    except ImportError as e:
+        print(f"Could not import admin routes: {e}")
+    except Exception as e:
+        print(f"Error registering admin blueprint: {e}")
     
     # Register multi-agent blueprint
     try:
