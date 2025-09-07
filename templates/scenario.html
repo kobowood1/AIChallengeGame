@@ -9,22 +9,6 @@
 
         <h1 class="text-3xl font-bold mb-4 text-center text-gray-800">Republic of Bean: Education Reform Challenge</h1>
         <div class="w-full h-1 bg-gradient-to-r from-challenge-orange via-challenge-blue to-challenge-green mb-6"></div>
-
-        <!-- News Anchor Video -->
-        <div class="mb-8 flex justify-center">
-            <div class="w-full max-w-3xl rounded-lg overflow-hidden shadow-lg">
-                <video 
-                    class="w-full h-auto" 
-                    autoplay 
-                    muted 
-                    controls 
-                    playsinline
-                    poster="">
-                    <source src="{{ url_for('static', filename='videos/news_anchor_video.mp4') }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-        </div>
         
         <!-- Progress Bar -->
         <div class="mb-8">
@@ -42,6 +26,22 @@
         
         <!-- Step 1: Background Quest -->
         <div class="step-panel" id="step-1">
+            <!-- News Anchor Video - Only on Step 1 -->
+            <div class="mb-8 flex justify-center">
+                <div class="w-full max-w-3xl rounded-lg overflow-hidden shadow-lg">
+                    <video 
+                        class="w-full h-auto" 
+                        autoplay 
+                        muted 
+                        controls 
+                        playsinline
+                        poster="">
+                        <source src="{{ url_for('static', filename='videos/news_anchor_video.mp4') }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+            
             <div class="bg-white p-6 rounded-lg shadow-lg mb-6 transform transition-all hover:shadow-xl border-l-4 border-challenge-blue">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-challenge-blue rounded-full flex items-center justify-center text-white mr-4 shadow-lg">
