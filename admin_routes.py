@@ -273,30 +273,45 @@ def generate_player_report(user, participant, session_obj):
     
     # Policy selections
     if session_obj.policy_selections:
-        policy_data = json.loads(session_obj.policy_selections)
-        report_lines.append("## Policy Selections")
-        for area, selection in policy_data.items():
-            report_lines.append(f"- **{area.replace('_', ' ').title()}:** {selection}")
-        report_lines.append("")
+        try:
+            policy_data = json.loads(session_obj.policy_selections)
+            report_lines.append("## Policy Selections")
+            for area, selection in policy_data.items():
+                report_lines.append(f"- **{area.replace('_', ' ').title()}:** {selection}")
+            report_lines.append("")
+        except (json.JSONDecodeError, TypeError):
+            report_lines.append("## Policy Selections")
+            report_lines.append("- Error parsing policy data")
+            report_lines.append("")
     
     # Final package
     if session_obj.final_package:
-        final_data = json.loads(session_obj.final_package)
-        report_lines.append("## Final Policy Package")
-        for area, selection in final_data.items():
-            if area != 'total_cost':
-                report_lines.append(f"- **{area.replace('_', ' ').title()}:** {selection}")
-        if 'total_cost' in final_data:
-            report_lines.append(f"- **Total Cost:** {final_data['total_cost']} units")
-        report_lines.append("")
+        try:
+            final_data = json.loads(session_obj.final_package)
+            report_lines.append("## Final Policy Package")
+            for area, selection in final_data.items():
+                if area != 'total_cost':
+                    report_lines.append(f"- **{area.replace('_', ' ').title()}:** {selection}")
+            if 'total_cost' in final_data:
+                report_lines.append(f"- **Total Cost:** {final_data['total_cost']} units")
+            report_lines.append("")
+        except (json.JSONDecodeError, TypeError):
+            report_lines.append("## Final Policy Package")
+            report_lines.append("- Error parsing final package data")
+            report_lines.append("")
     
     # Reflection responses
     if session_obj.reflection_responses:
-        reflection_data = json.loads(session_obj.reflection_responses)
-        report_lines.append("## Reflection Responses")
-        for question, answer in reflection_data.items():
-            report_lines.append(f"**{question}:**")
-            report_lines.append(f"{answer}")
+        try:
+            reflection_data = json.loads(session_obj.reflection_responses)
+            report_lines.append("## Reflection Responses")
+            for question, answer in reflection_data.items():
+                report_lines.append(f"**{question}:**")
+                report_lines.append(f"{answer}")
+                report_lines.append("")
+        except (json.JSONDecodeError, TypeError):
+            report_lines.append("## Reflection Responses")
+            report_lines.append("- Error parsing reflection data")
             report_lines.append("")
     
     return "\n".join(report_lines)
