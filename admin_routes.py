@@ -113,23 +113,24 @@ def player_list():
         )
     
     # Get paginated results
-    from flask_sqlalchemy import Pagination
     users_query = query.distinct()
     total = users_query.count()
     users = users_query.offset((page - 1) * 20).limit(20).all()
     
     # Create pagination object manually
-    users_pagination = type('obj', (object,), {
-        'items': users,
-        'page': page,
-        'per_page': 20,
-        'total': total,
-        'pages': (total + 19) // 20,
-        'has_prev': page > 1,
-        'has_next': page * 20 < total,
-        'prev_num': page - 1 if page > 1 else None,
-        'next_num': page + 1 if page * 20 < total else None
-    })()
+    class SimplePagination:
+        def __init__(self, items, page, per_page, total):
+            self.items = items
+            self.page = page
+            self.per_page = per_page
+            self.total = total
+            self.pages = (total + per_page - 1) // per_page
+            self.has_prev = page > 1
+            self.has_next = page * per_page < total
+            self.prev_num = page - 1 if self.has_prev else None
+            self.next_num = page + 1 if self.has_next else None
+    
+    users_pagination = SimplePagination(users, page, 20, total)
     
     # Get additional stats for each user
     user_stats = {}
@@ -161,11 +162,32 @@ def player_detail(user_id):
     for session in sessions:
         data = {
             'session': session,
-            'policy_selections': json.loads(session.policy_selections) if session.policy_selections else None,
-            'final_package': json.loads(session.final_package) if session.final_package else None,
-            'reflection_responses': json.loads(session.reflection_responses) if session.reflection_responses else None,
-            'ai_agents': json.loads(session.ai_agents) if session.ai_agents else None,
+            'policy_selections': None,
+            'final_package': None,
+            'reflection_responses': None,
+            'ai_agents': None,
         }
+        
+        # Safely parse JSON fields
+        try:
+            data['policy_selections'] = json.loads(session.policy_selections) if session.policy_selections else None
+        except (json.JSONDecodeError, TypeError):
+            pass
+            
+        try:
+            data['final_package'] = json.loads(session.final_package) if session.final_package else None
+        except (json.JSONDecodeError, TypeError):
+            pass
+            
+        try:
+            data['reflection_responses'] = json.loads(session.reflection_responses) if session.reflection_responses else None
+        except (json.JSONDecodeError, TypeError):
+            pass
+            
+        try:
+            data['ai_agents'] = json.loads(session.ai_agents) if session.ai_agents else None
+        except (json.JSONDecodeError, TypeError):
+            pass
         session_data.append(data)
     
     return render_template('admin/player_detail.html',
