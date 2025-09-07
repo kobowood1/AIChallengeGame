@@ -10,12 +10,15 @@ import logging
 from flask_wtf.csrf import CSRFProtect
 
 # Initialize SocketIO without an app instance yet
-# Increased timeouts to prevent mid-deliberation disconnections
+# Enhanced timeouts and reconnection settings for stable deliberation connections
 socketio = SocketIO(
     cors_allowed_origins="*", 
     async_mode='eventlet',
-    ping_timeout=120,  # 2 minutes before considering client disconnected
-    ping_interval=25,  # Send ping every 25 seconds to keep connection alive
+    ping_timeout=180,  # 3 minutes before considering client disconnected
+    ping_interval=30,  # Send ping every 30 seconds to keep connection alive
+    max_http_buffer_size=1e6,  # 1MB buffer for larger messages
+    allow_upgrades=True,
+    transports=['websocket', 'polling'],  # Allow fallback to polling
     logger=False,      # Reduce log noise
     engineio_logger=False
 )

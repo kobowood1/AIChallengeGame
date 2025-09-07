@@ -578,14 +578,60 @@
     // Policy selections from server
     const selections = {{ selections|tojson }};
 
+    // Enhanced connection handling with reconnection support
+    let reconnectAttempts = 0;
+    let maxReconnectAttempts = 5;
+    let connectionStatus = 'connecting';
+    let timerStarted = false;
+    
     // Connect to the server and join the policy room
     socket.on('connect', () => {
         console.log('Connected to server');
+        connectionStatus = 'connected';
+        reconnectAttempts = 0;
+        
+        // Remove any connection error messages
+        const errorMessages = document.querySelectorAll('.connection-error-message');
+        errorMessages.forEach(msg => msg.remove());
+        
         // Join the policy discussion room
         socket.emit('join_policy_room', { room_id: sessionId });
 
-        // Start the timer
-        startTimer();
+        // Start the timer only once
+        if (!timerStarted) {
+            startTimer();
+            timerStarted = true;
+        }
+    });
+
+    // Handle disconnection
+    socket.on('disconnect', (reason) => {
+        console.log('Disconnected from server:', reason);
+        connectionStatus = 'disconnected';
+        addSystemMessage('Connection lost. Reconnecting...');
+    });
+
+    // Handle successful reconnection
+    socket.on('reconnect', (attemptNumber) => {
+        console.log('Reconnected after', attemptNumber, 'attempts');
+        connectionStatus = 'connected';
+        addSystemMessage('Reconnected successfully!');
+        socket.emit('join_policy_room', { room_id: sessionId });
+    });
+
+    // Handle reconnection attempts
+    socket.on('reconnect_attempt', (attemptNumber) => {
+        console.log('Reconnection attempt:', attemptNumber);
+        if (attemptNumber <= maxReconnectAttempts) {
+            addSystemMessage(`Reconnecting... (attempt ${attemptNumber}/${maxReconnectAttempts})`);
+        }
+    });
+
+    // Handle failed reconnection
+    socket.on('reconnect_failed', () => {
+        console.log('Failed to reconnect');
+        connectionStatus = 'failed';
+        addSystemMessage('Unable to reconnect. Please refresh the page to continue.');
     });
 
     // Handle incoming chat messages
