@@ -10,6 +10,21 @@
         <h1 class="text-3xl font-bold mb-4 text-center text-gray-800">Republic of Bean: Education Reform Challenge</h1>
         <div class="w-full h-1 bg-gradient-to-r from-challenge-orange via-challenge-blue to-challenge-green mb-6"></div>
 
+        <!-- News Anchor Video -->
+        <div class="mb-8 flex justify-center">
+            <div class="w-full max-w-3xl rounded-lg overflow-hidden shadow-lg">
+                <video 
+                    class="w-full h-auto" 
+                    autoplay 
+                    muted 
+                    controls 
+                    playsinline
+                    poster="">
+                    <source src="{{ url_for('static', filename='videos/news_anchor_video.mp4') }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
         
         <!-- Progress Bar -->
         <div class="mb-8">
