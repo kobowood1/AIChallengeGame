@@ -70,6 +70,8 @@ def admin_login():
         if admin_user and admin_user.check_password(form.password.data):
             login_user(admin_user, remember=form.remember_me.data)
             admin_user.last_login = datetime.utcnow()
+            # Mark this as an admin session
+            session['user_type'] = 'admin'
             db.session.commit()
             
             next_page = request.args.get('next')
@@ -86,6 +88,8 @@ def admin_login():
 def admin_logout():
     """Admin logout route"""
     logout_user()
+    # Clear the admin session marker
+    session.pop('user_type', None)
     flash('You have been logged out from the admin panel.', 'info')
     return redirect(url_for('admin.admin_login'))
 

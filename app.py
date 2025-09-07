@@ -62,13 +62,19 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         from models import User, Admin
-        # Try to load as regular user first
+        from flask import session
+        
+        # Check if this is an admin session by looking at the session data
+        user_type = session.get('user_type', 'user')
+        
+        if user_type == 'admin':
+            admin = Admin.query.get(int(user_id))
+            if admin:
+                return admin
+        
+        # Try to load as regular user
         user = User.query.get(int(user_id))
-        if user:
-            return user
-        # If not found, try admin user
-        admin = Admin.query.get(int(user_id))
-        return admin
+        return user
     
     # Create all database tables
     with app.app_context():
