@@ -484,8 +484,25 @@ def submit_reflection():
     # Handle GET request from thank-you page for downloading report again
     if request.method == 'GET' and request.args.get('download') == 'true':
         # Build the markdown report using the stored reflection responses
-        # This works if the user navigates back to thank-you page and downloads again
+        # First try session, then fallback to database
         form_data = session.get('reflection_responses', {})
+        
+        # If no session data, try to retrieve from database
+        if not form_data and current_user.is_authenticated:
+            from models import GameSession
+            # Get the most recent completed session for this user
+            game_session = GameSession.query.filter_by(
+                user_id=current_user.id,
+                current_phase='completed'
+            ).order_by(GameSession.completed_at.desc()).first()
+            
+            if game_session and game_session.reflection_responses:
+                try:
+                    form_data = json.loads(game_session.reflection_responses)
+                    logging.info(f"Retrieved reflection responses from database for user {current_user.id}")
+                except json.JSONDecodeError:
+                    logging.error(f"Failed to decode reflection responses from database for user {current_user.id}")
+                    form_data = {}
         md_report = generate_markdown_report(form_data)
         html_content = markdown.markdown(md_report, extensions=['tables', 'fenced_code', 'nl2br'])
         
