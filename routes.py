@@ -151,24 +151,9 @@ def start():
     session['game_session_id'] = new_session.id
     session['session_token'] = new_session.session_token
     
-    # Check if user has participant info from previous sessions
-    existing_participant = Participant.query.filter_by(user_id=current_user.id).first()
-    if existing_participant:
-        # Copy participant info to session for game use
-        session['participant_registered'] = True
-        session['participant_info'] = {
-            'age': existing_participant.age,
-            'nationality': existing_participant.nationality,
-            'occupation': existing_participant.occupation,
-            'education_level': existing_participant.education_level,
-            'displacement_experience': existing_participant.displacement_experience,
-            'current_location_city': existing_participant.current_location_city,
-            'current_location_country': existing_participant.current_location_country
-        }
-        return redirect(url_for('main.scenario'))
-    else:
-        # Need to collect participant info
-        return redirect(url_for('main.register'))
+    # Always redirect to registration page to allow review/update of participant info
+    # The registration form will pre-populate with existing data if available
+    return redirect(url_for('main.register'))
 
 @main.route('/reset')
 @login_required
