@@ -478,6 +478,9 @@
                     Live Discussion
                 </div>
                 <div class="timer-display" id="timer">30:00</div>
+                <div id="connection-status" class="text-center mt-2 text-yellow-600 text-sm">
+                    <i class="fas fa-circle text-yellow-500 animate-pulse"></i> Connecting...
+                </div>
             </div>
 
             <div class="chat-messages scrollbar-thin" id="chat-container">
@@ -557,8 +560,19 @@
     // Get the session ID to use as room ID
     const sessionId = "{{ request.cookies.get('session', '') }}";
 
-    // Connect to Socket.IO
-    const socket = io();
+    // Connect to Socket.IO with enhanced stability settings
+    const socket = io({
+        timeout: 20000,          // 20 seconds connection timeout
+        forceNew: false,         // Reuse existing connections
+        reconnection: true,      // Enable automatic reconnection
+        reconnectionDelay: 1000, // Start with 1 second delay
+        reconnectionDelayMax: 5000, // Max 5 seconds between attempts
+        maxReconnectionAttempts: 10, // Try up to 10 times
+        transports: ['websocket', 'polling'], // Allow fallback to polling
+        upgrade: true,           // Allow transport upgrades
+        pingTimeout: 180000,     // 3 minutes (match server)
+        pingInterval: 30000      // 30 seconds (match server)
+    });
     let isVoting = false;
     let discussionTimer;
     let timeLeft = 30 * 60; // 30 minutes in seconds
@@ -580,15 +594,33 @@
 
     // Enhanced connection handling with reconnection support
     let reconnectAttempts = 0;
-    let maxReconnectAttempts = 5;
+    let maxReconnectAttempts = 10;
     let connectionStatus = 'connecting';
     let timerStarted = false;
     
+    // Update connection status indicator
+    function updateConnectionStatus(status) {
+        const statusElement = document.getElementById('connection-status');
+        if (statusElement) {
+            if (status === 'connected') {
+                statusElement.innerHTML = '<i class="fas fa-circle text-green-500"></i> Connected';
+                statusElement.className = 'text-green-600 text-sm';
+            } else if (status === 'connecting') {
+                statusElement.innerHTML = '<i class="fas fa-circle text-yellow-500 animate-pulse"></i> Connecting...';
+                statusElement.className = 'text-yellow-600 text-sm';
+            } else {
+                statusElement.innerHTML = '<i class="fas fa-circle text-red-500 animate-pulse"></i> Reconnecting...';
+                statusElement.className = 'text-red-600 text-sm';
+            }
+        }
+    }
+
     // Connect to the server and join the policy room
     socket.on('connect', () => {
         console.log('Connected to server');
         connectionStatus = 'connected';
         reconnectAttempts = 0;
+        updateConnectionStatus('connected');
         
         // Remove any connection error messages
         const errorMessages = document.querySelectorAll('.connection-error-message');
@@ -604,18 +636,41 @@
         }
     });
 
-    // Handle disconnection
+    // Handle disconnection with better error messages
     socket.on('disconnect', (reason) => {
         console.log('Disconnected from server:', reason);
         connectionStatus = 'disconnected';
-        addSystemMessage('Connection lost. Reconnecting...');
+        
+        // Provide more specific disconnect reasons
+        let message = 'Connection lost. Reconnecting...';
+        if (reason === 'ping timeout') {
+            message = 'Connection timed out. Reconnecting...';
+        } else if (reason === 'transport close') {
+            message = 'Network connection closed. Reconnecting...';
+        } else if (reason === 'transport error') {
+            message = 'Network error occurred. Reconnecting...';
+        }
+        
+        addSystemMessage(message);
+        updateConnectionStatus('disconnected');
+        
+        // Disable inputs during disconnection
+        if (messageInput) messageInput.disabled = true;
+        if (sendButton) sendButton.disabled = true;
     });
 
     // Handle successful reconnection
     socket.on('reconnect', (attemptNumber) => {
         console.log('Reconnected after', attemptNumber, 'attempts');
         connectionStatus = 'connected';
-        addSystemMessage('Reconnected successfully!');
+        addSystemMessage('Reconnected successfully! You can continue the discussion.');
+        updateConnectionStatus('connected');
+        
+        // Re-enable inputs
+        if (messageInput) messageInput.disabled = false;
+        if (sendButton) sendButton.disabled = false;
+        
+        // Rejoin the room
         socket.emit('join_policy_room', { room_id: sessionId });
     });
 
@@ -624,6 +679,7 @@
         console.log('Reconnection attempt:', attemptNumber);
         if (attemptNumber <= maxReconnectAttempts) {
             addSystemMessage(`Reconnecting... (attempt ${attemptNumber}/${maxReconnectAttempts})`);
+            updateConnectionStatus('connecting');
         }
     });
 
@@ -759,6 +815,12 @@
         const message = messageInput.value.trim();
         if (!message) return;
 
+        // Check connection status before sending
+        if (connectionStatus !== 'connected' || !socket.connected) {
+            addSystemMessage('Cannot send message: Connection lost. Please wait for reconnection.');
+            return;
+        }
+
         // Store the latest user message for context
         window.latestUserMessage = message;
 
@@ -770,11 +832,17 @@
             is_player: true
         });
 
-        // Send to server
-        socket.emit('send_message', {
-            message: message,
-            sender: 'You'
-        });
+        // Send to server with error handling
+        try {
+            socket.emit('send_message', {
+                message: message,
+                sender: 'You'
+            });
+        } catch (error) {
+            console.error('Error sending message:', error);
+            addSystemMessage('Failed to send message. Please try again.');
+            return;
+        }
 
         // Clear the input
         messageInput.value = '';
