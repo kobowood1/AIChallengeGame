@@ -38,7 +38,7 @@ def admin_dashboard():
     active_sessions = GameSession.query.filter_by(is_active=True).count()
     
     # Get recent activity
-    recent_sessions = GameSession.query.order_by(GameSession.last_activity.desc()).limit(10).all()
+    recent_sessions = GameSession.query.order_by(desc(GameSession.last_activity)).limit(10).all()
     
     # Get completion rate by day (last 30 days)
     thirty_days_ago = datetime.utcnow() - timedelta(days=30)
@@ -155,7 +155,7 @@ def player_detail(user_id):
     """Detailed view of a specific player"""
     user = User.query.get_or_404(user_id)
     participant = Participant.query.filter_by(user_id=user_id).first()
-    sessions = GameSession.query.filter_by(user_id=user_id).order_by(GameSession.started_at.desc()).all()
+    sessions = GameSession.query.filter_by(user_id=user_id).order_by(desc(GameSession.started_at)).all()
     
     # Parse JSON data for display
     session_data = []
