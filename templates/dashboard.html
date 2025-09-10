@@ -2,34 +2,80 @@
 
 {% block title %}Dashboard - The CHALLENGE: Policy Jam{% endblock %}
 
+{% block head %}
+<style>
+    /* Modern dashboard animations and effects */
+    .card-hover {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-hover:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+    .gradient-text {
+        background: linear-gradient(135deg, #F4D03F 0%, #FF7A00 50%, #8B1538 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .floating-element {
+        animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    .pulse-glow {
+        animation: pulse-glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes pulse-glow {
+        from { box-shadow: 0 0 20px rgba(244, 208, 63, 0.3); }
+        to { box-shadow: 0 0 30px rgba(244, 208, 63, 0.6); }
+    }
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .modern-gradient {
+        background: linear-gradient(135deg, rgba(244, 208, 63, 0.1) 0%, rgba(255, 122, 0, 0.05) 25%, rgba(139, 21, 56, 0.1) 100%);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Welcome Header -->
-    <div class="text-center mb-12">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-challenge-blue to-challenge-purple rounded-2xl shadow-lg mb-6">
-            <i class="fas fa-home text-white text-2xl"></i>
+    <div class="text-center mb-16 relative">
+        <div class="floating-element inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-challenge-blue via-challenge-purple to-challenge-teal rounded-3xl shadow-2xl mb-8 pulse-glow">
+            <i class="fas fa-home text-white text-3xl"></i>
         </div>
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+        <h1 class="text-5xl font-extrabold mb-6 gradient-text leading-tight">
             Welcome back, {{ current_user.first_name or current_user.username }}!
         </h1>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
             Ready to shape refugee policy in the Republic of Bean? Continue your journey or start a new policy simulation.
         </p>
+        <!-- Decorative elements -->
+        <div class="absolute -top-4 left-1/4 w-32 h-32 bg-challenge-yellow/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-4 right-1/4 w-40 h-40 bg-challenge-blue/5 rounded-full blur-3xl"></div>
     </div>
 
     <!-- Assembly Member Introduction Card -->
-    <div class="bg-gradient-to-r from-challenge-yellow/10 via-challenge-orange/10 to-challenge-red/10 rounded-3xl border-2 border-challenge-yellow/20 p-8 mb-12 relative overflow-hidden">
-        <!-- Background decoration -->
-        <div class="absolute inset-0 bg-gradient-to-br from-transparent via-white/30 to-transparent opacity-50"></div>
-        <div class="absolute top-4 right-4 text-challenge-yellow/20">
-            <i class="fas fa-flag text-6xl"></i>
+    <div class="modern-gradient rounded-3xl border border-white/30 p-10 mb-16 relative overflow-hidden glass-effect shadow-2xl">
+        <!-- Enhanced background decorations -->
+        <div class="absolute inset-0 bg-gradient-to-br from-transparent via-white/40 to-transparent opacity-60"></div>
+        <div class="absolute top-6 right-6 text-challenge-yellow/15 floating-element">
+            <i class="fas fa-flag text-7xl"></i>
         </div>
+        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-challenge-orange/10 rounded-full blur-2xl"></div>
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-challenge-blue/10 rounded-full blur-2xl"></div>
         
         <div class="relative z-10">
             <div class="flex items-start">
-                <div class="flex-shrink-0 mr-6">
-                    <div class="w-16 h-16 bg-gradient-to-br from-challenge-orange to-challenge-red rounded-2xl shadow-xl flex items-center justify-center">
-                        <i class="fas fa-user-tie text-white text-2xl"></i>
+                <div class="flex-shrink-0 mr-8">
+                    <div class="w-20 h-20 bg-gradient-to-br from-challenge-orange via-challenge-red to-challenge-purple rounded-3xl shadow-2xl flex items-center justify-center floating-element">
+                        <i class="fas fa-user-tie text-white text-3xl"></i>
                     </div>
                 </div>
                 
@@ -41,17 +87,19 @@
                         </span>
                     </div>
                     
-                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/40 shadow-lg">
-                        <p class="text-gray-800 leading-relaxed text-lg font-medium mb-4">
-                            As a player, you will serve as an <strong class="text-challenge-orange">honorary assembly member of the Republic of Bean</strong>. Your role is to collaborate with other assembly members to design a policy package that addresses the educational needs of refugees in the country.
+                    <div class="glass-effect rounded-3xl p-8 border border-white/50 shadow-xl">
+                        <p class="text-gray-800 leading-relaxed text-xl font-medium mb-6">
+                            As a player, you will serve as an <strong class="gradient-text text-xl">honorary assembly member of the Republic of Bean</strong>. Your role is to collaborate with other assembly members to design a policy package that addresses the educational needs of refugees in the country.
                         </p>
                         
-                        <div class="flex items-start bg-challenge-blue/10 rounded-xl p-4 border-l-4 border-challenge-blue">
-                            <div class="flex-shrink-0 mr-3">
-                                <i class="fas fa-lightbulb text-challenge-blue text-lg mt-1"></i>
+                        <div class="flex items-start bg-gradient-to-r from-challenge-blue/10 to-challenge-teal/10 rounded-2xl p-6 border border-challenge-blue/20 shadow-lg">
+                            <div class="flex-shrink-0 mr-4">
+                                <div class="w-10 h-10 bg-challenge-blue/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-lightbulb text-challenge-blue text-lg"></i>
+                                </div>
                             </div>
                             <div>
-                                <p class="text-gray-700 font-medium">
+                                <p class="text-gray-700 font-medium text-lg leading-relaxed">
                                     In the next step, you will receive detailed background information about the Republic of Bean. Please take notes to help you remember important details throughout the game.
                                 </p>
                             </div>
@@ -63,20 +111,21 @@
     </div>
 
     <!-- Game Status Cards -->
-    <div class="grid md:grid-cols-2 gap-8 mb-12">
+    <div class="grid md:grid-cols-2 gap-10 mb-16">
         {% if active_session %}
             <!-- Continue Game Card -->
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="w-12 h-12 bg-gradient-to-br from-challenge-orange to-challenge-red rounded-xl flex items-center justify-center">
-                        <i class="fas fa-play text-white text-lg"></i>
+            <div class="glass-effect rounded-3xl shadow-2xl border border-white/30 p-10 card-hover relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-challenge-orange/5 rounded-full blur-2xl"></div>
+                <div class="flex items-center justify-between mb-8 relative z-10">
+                    <div class="w-16 h-16 bg-gradient-to-br from-challenge-orange via-challenge-red to-challenge-purple rounded-2xl flex items-center justify-center shadow-xl floating-element">
+                        <i class="fas fa-play text-white text-xl"></i>
                     </div>
-                    <span class="px-3 py-1 bg-challenge-orange text-white text-sm font-medium rounded-full">
+                    <span class="px-4 py-2 bg-gradient-to-r from-challenge-orange to-challenge-red text-white text-sm font-bold rounded-full shadow-lg">
                         {{ active_session.current_phase|title }}
                     </span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Continue Your Journey</h3>
-                <p class="text-gray-600 mb-6 leading-relaxed">
+                <h3 class="text-3xl font-bold text-gray-900 mb-4 relative z-10">Continue Your Journey</h3>
+                <p class="text-gray-600 mb-8 leading-relaxed text-lg relative z-10">
                     Pick up where you left off in your policy simulation. Your progress has been saved automatically.
                 </p>
                 
@@ -104,16 +153,17 @@
             </div>
             
             <!-- Statistics Card -->
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="w-12 h-12 bg-gradient-to-br from-challenge-blue to-challenge-teal rounded-xl flex items-center justify-center">
-                        <i class="fas fa-chart-line text-white text-lg"></i>
+            <div class="glass-effect rounded-3xl shadow-2xl border border-white/30 p-10 card-hover relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-challenge-blue/5 rounded-full blur-2xl"></div>
+                <div class="flex items-center justify-between mb-8 relative z-10">
+                    <div class="w-16 h-16 bg-gradient-to-br from-challenge-blue via-challenge-teal to-challenge-purple rounded-2xl flex items-center justify-center shadow-xl floating-element">
+                        <i class="fas fa-chart-line text-white text-xl"></i>
                     </div>
-                    <span class="px-3 py-1 bg-challenge-blue text-white text-sm font-medium rounded-full">
+                    <span class="px-4 py-2 bg-gradient-to-r from-challenge-blue to-challenge-teal text-white text-sm font-bold rounded-full shadow-lg">
                         Progress
                     </span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Your Progress</h3>
+                <h3 class="text-3xl font-bold text-gray-900 mb-4 relative z-10">Your Progress</h3>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Sessions completed</span>
@@ -129,17 +179,18 @@
             </div>
         {% else %}
             <!-- Start New Game Card -->
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="w-12 h-12 bg-gradient-to-br from-challenge-green to-challenge-teal rounded-xl flex items-center justify-center">
-                        <i class="fas fa-rocket text-white text-lg"></i>
+            <div class="glass-effect rounded-3xl shadow-2xl border border-white/30 p-10 card-hover relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-challenge-green/5 rounded-full blur-2xl"></div>
+                <div class="flex items-center justify-between mb-8 relative z-10">
+                    <div class="w-16 h-16 bg-gradient-to-br from-challenge-green via-challenge-teal to-challenge-blue rounded-2xl flex items-center justify-center shadow-xl floating-element">
+                        <i class="fas fa-rocket text-white text-xl"></i>
                     </div>
-                    <span class="px-3 py-1 bg-challenge-green text-white text-sm font-medium rounded-full">
+                    <span class="px-4 py-2 bg-gradient-to-r from-challenge-green to-challenge-teal text-white text-sm font-bold rounded-full shadow-lg">
                         New
                     </span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Start New Challenge</h3>
-                <p class="text-gray-600 mb-6 leading-relaxed">
+                <h3 class="text-3xl font-bold text-gray-900 mb-4 relative z-10">Start New Challenge</h3>
+                <p class="text-gray-600 mb-8 leading-relaxed text-lg relative z-10">
                     Begin a new policy-making adventure in the Republic of Bean. Experience collaborative decision-making with fellow participants.
                 </p>
                 <a href="{{ url_for('main.start') }}" class="inline-flex items-center px-6 py-3 bg-challenge-green hover:bg-green-600 text-white font-medium rounded-xl transition-colors duration-200 shadow-sm hover:shadow-md">
@@ -148,16 +199,17 @@
             </div>
             
             <!-- Experience Summary Card -->
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="w-12 h-12 bg-gradient-to-br from-gray-400 to-gray-600 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-history text-white text-lg"></i>
+            <div class="glass-effect rounded-3xl shadow-2xl border border-white/30 p-10 card-hover relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gray-200/20 rounded-full blur-2xl"></div>
+                <div class="flex items-center justify-between mb-8 relative z-10">
+                    <div class="w-16 h-16 bg-gradient-to-br from-gray-400 via-gray-600 to-gray-800 rounded-2xl flex items-center justify-center shadow-xl floating-element">
+                        <i class="fas fa-history text-white text-xl"></i>
                     </div>
-                    <span class="px-3 py-1 bg-gray-500 text-white text-sm font-medium rounded-full">
+                    <span class="px-4 py-2 bg-gradient-to-r from-gray-500 to-gray-600 text-white text-sm font-bold rounded-full shadow-lg">
                         Summary
                     </span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Experience Summary</h3>
+                <h3 class="text-3xl font-bold text-gray-900 mb-4 relative z-10">Experience Summary</h3>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Challenges completed</span>
@@ -178,37 +230,39 @@
     </div>
 
     <!-- Game Information Section -->
-    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8">
-        <div class="flex items-center mb-6">
-            <div class="w-12 h-12 bg-gradient-to-br from-challenge-purple to-challenge-blue rounded-xl flex items-center justify-center mr-4">
-                <i class="fas fa-info-circle text-white text-lg"></i>
+    <div class="glass-effect rounded-3xl shadow-2xl border border-white/30 p-12 mb-12 relative overflow-hidden">
+        <div class="absolute -top-20 -left-20 w-40 h-40 bg-challenge-purple/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-20 -right-20 w-48 h-48 bg-challenge-blue/5 rounded-full blur-3xl"></div>
+        <div class="flex items-center mb-10 relative z-10">
+            <div class="w-16 h-16 bg-gradient-to-br from-challenge-purple via-challenge-blue to-challenge-teal rounded-2xl flex items-center justify-center mr-6 shadow-xl floating-element">
+                <i class="fas fa-info-circle text-white text-2xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-gray-900">About the Simulation</h3>
+            <h3 class="text-3xl font-bold text-gray-900">About the Simulation</h3>
         </div>
         
-        <div class="grid md:grid-cols-3 gap-6">
-            <div class="text-center">
-                <div class="w-16 h-16 bg-challenge-green/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-users text-challenge-green text-2xl"></i>
+        <div class="grid md:grid-cols-3 gap-8 relative z-10">
+            <div class="text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-challenge-green/20 to-challenge-teal/20 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300 floating-element">
+                    <i class="fas fa-users text-challenge-green text-3xl"></i>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-2">Collaborative Learning</h4>
-                <p class="text-gray-600 text-sm">Work with diverse participants representing different perspectives in policy-making decisions.</p>
+                <h4 class="font-bold text-gray-900 mb-3 text-lg">Collaborative Learning</h4>
+                <p class="text-gray-600 leading-relaxed">Work with diverse participants representing different perspectives in policy-making decisions.</p>
             </div>
             
-            <div class="text-center">
-                <div class="w-16 h-16 bg-challenge-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-balance-scale text-challenge-blue text-2xl"></i>
+            <div class="text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-challenge-blue/20 to-challenge-purple/20 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300 floating-element" style="animation-delay: -2s;">
+                    <i class="fas fa-balance-scale text-challenge-blue text-3xl"></i>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-2">Real Policy Challenges</h4>
-                <p class="text-gray-600 text-sm">Navigate budget constraints and competing interests in refugee education policy.</p>
+                <h4 class="font-bold text-gray-900 mb-3 text-lg">Real Policy Challenges</h4>
+                <p class="text-gray-600 leading-relaxed">Navigate budget constraints and competing interests in refugee education policy.</p>
             </div>
             
-            <div class="text-center">
-                <div class="w-16 h-16 bg-challenge-orange/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-lightbulb text-challenge-orange text-2xl"></i>
+            <div class="text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-challenge-orange/20 to-challenge-red/20 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300 floating-element" style="animation-delay: -4s;">
+                    <i class="fas fa-lightbulb text-challenge-orange text-3xl"></i>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-2">Evidence-Based Decisions</h4>
-                <p class="text-gray-600 text-sm">Develop critical thinking skills through deliberative democracy processes.</p>
+                <h4 class="font-bold text-gray-900 mb-3 text-lg">Evidence-Based Decisions</h4>
+                <p class="text-gray-600 leading-relaxed">Develop critical thinking skills through deliberative democracy processes.</p>
             </div>
         </div>
     </div>
