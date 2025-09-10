@@ -5,6 +5,8 @@ import time
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
 from flask_login import login_required, current_user
 from multi_agent_system import MultiAgentSimulation, create_policy_simulation_data
+from conversation_orchestrator import ConversationOrchestrator
+from ai_agents import generate_agents
 import json
 
 multi_agent_bp = Blueprint('multi_agent', __name__)
@@ -43,77 +45,61 @@ def phase2_multi_agent():
         user_name = 'Participant'
     session['user_name'] = user_name
     
-    # Initialize agent names and policies for structured deliberation
+    # Initialize orchestrator and enhanced agents for engaging deliberation
     import random
     
-    # Always regenerate agent names for diversity (remove persistent session storage)
-    if True:  # Force regeneration each time
-        # Pool of available agent names
-        available_names = [
-            'Alex', 'Maya', 'Jordan', 'Sam', 'Casey', 'Taylor', 'Morgan', 'Riley',
-            'Priya', 'Chen', 'Fatima', 'Kofi', 'Elena', 'Hiroshi', 'Amara', 'Luca',
-            'Zara', 'Kai', 'Noor', 'Diego', 'Anya', 'Tomas', 'Leila', 'Jin',
-            'Sofia', 'Arjun', 'Mia', 'Omar', 'Chloe', 'Ravi', 'Zoe', 'Malik',
-            'Luna', 'Hassan', 'Isla', 'Yuki', 'Emilia', 'Kwame', 'Sienna', 'Liam'
-        ]
+    # Initialize the conversation orchestrator
+    orchestrator = ConversationOrchestrator()
+    
+    # Generate diverse agents with ideological backgrounds
+    base_agents = generate_agents()
+    
+    # Enhance agents with conversation orchestrator capabilities
+    enhanced_agents = orchestrator.assign_agent_stances(base_agents)
+    
+    # Store enhanced agents in session for Socket.IO events
+    session['agents'] = enhanced_agents
+    session['orchestrator_state'] = orchestrator.conversation_state
+    
+    # Extract agent names and create policy choices for backward compatibility
+    agent_names = [agent['name'] for agent in enhanced_agents]
+    session['agent_names'] = agent_names
+    
+    # Generate policy preferences based on agent ideologies for display
+    policy_areas = [
+        'Access to Education',
+        'Language Instruction', 
+        'Teacher Training',
+        'Curriculum Adaptation',
+        'Psychosocial Support',
+        'Financial Support',
+        'Certification & Accreditation'
+    ]
+    
+    agent_policies = {}
+    for agent in enhanced_agents:
+        agent_policy = {}
+        stance_prefs = agent.get('stance_preferences', {})
+        ideology = agent.get('ideology', 'moderate')
         
-        # Randomly select 4 names for this session
-        agent_names = random.sample(available_names, 4)
-        session['agent_names'] = agent_names
+        # Generate policy preferences based on ideological stances
+        for policy_area in policy_areas:
+            if ideology == 'conservative':
+                base_pref = 1 + random.choice([0, 1])  # Prefer lower cost options
+            elif ideology == 'liberal':
+                base_pref = 2 + random.choice([0, 1])  # Prefer higher investment
+            elif ideology == 'humanitarian': 
+                base_pref = 2 + random.choice([0, 1])  # Focus on student wellbeing
+            elif ideology == 'socialist':
+                base_pref = 3  # Always prefer comprehensive approaches
+            else:  # moderate, neoliberal
+                base_pref = 2  # Balanced approach
+                
+            agent_policy[policy_area] = base_pref
         
-        # Generate strategic agent policy choices with guaranteed diversity
-        policy_areas = [
-            'Access to Education',
-            'Language Instruction', 
-            'Teacher Training',
-            'Curriculum Adaptation',
-            'Psychosocial Support',
-            'Financial Support',
-            'Certification & Accreditation'
-        ]
-        
-        # Define distinct agent archetypes with strategic preferences
-        agent_archetypes = [
-            {
-                'name': 'progressive',
-                'description': 'Progressive - believes in comprehensive support and integration',
-                'preferences': [3, 3, 2, 3, 3, 2, 2],  # High investment in most areas
-                'variations': [-1, 0, 1]  # Allow some variation
-            },
-            {
-                'name': 'pragmatic', 
-                'description': 'Pragmatic - focuses on practical implementation and measurable outcomes',
-                'preferences': [2, 2, 3, 2, 2, 1, 2],  # Balanced with emphasis on teacher training
-                'variations': [-1, 0, 1]
-            },
-            {
-                'name': 'collaborative',
-                'description': 'Collaborative - emphasizes community engagement and shared responsibility', 
-                'preferences': [2, 1, 2, 1, 3, 2, 3],  # Focus on support and recognition
-                'variations': [0, 1]
-            },
-            {
-                'name': 'humanitarian',
-                'description': 'Humanitarian - prioritizes individual student needs and wellbeing',
-                'preferences': [3, 2, 1, 2, 3, 3, 1],  # High on care, mixed on systems
-                'variations': [-1, 0, 1]
-            }
-        ]
-        
-        agent_policies = {}
-        for i, agent_name in enumerate(agent_names):
-            archetype = agent_archetypes[i % len(agent_archetypes)]
-            agent_policy = {}
-            
-            for j, policy_area in enumerate(policy_areas):
-                base_choice = archetype['preferences'][j]
-                # Add variation to prevent identical choices
-                variation = random.choice(archetype['variations'])
-                final_choice = max(1, min(3, base_choice + variation))
-                agent_policy[policy_area] = final_choice
-            
-            agent_policies[agent_name] = agent_policy
-        session['agent_policies'] = agent_policies
+        agent_policies[agent['name']] = agent_policy
+    
+    session['agent_policies'] = agent_policies
     
     # Return the new structured deliberation template
     return render_template('phase2_multi_agent_new.html',

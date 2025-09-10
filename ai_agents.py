@@ -111,7 +111,7 @@ def generate_agents():
 
 def agent_justify(policy_domain, option_chosen, agent, user_message='', recent_messages=None, responding_to_agent=None):
     """
-    Generate a justification for a policy choice based on agent characteristics and conversation context
+    Generate an interactive, engaging response based on agent characteristics and conversation context
     
     Args:
         policy_domain (str): The policy area being justified
@@ -122,7 +122,7 @@ def agent_justify(policy_domain, option_chosen, agent, user_message='', recent_m
         responding_to_agent (dict, optional): Agent being responded to for agent-to-agent interaction
     
     Returns:
-        str: A contextual response to the user's perspective
+        str: An interactive response with agreement/disagreement and follow-up questions
     """
     if recent_messages is None:
         recent_messages = []
@@ -188,30 +188,36 @@ def agent_justify(policy_domain, option_chosen, agent, user_message='', recent_m
     agent_personality = personality_traits.get(agent['ideology'], 'thoughtful and professional')
     agent_style = speaking_styles.get(agent['ideology'], 'speak clearly and professionally')
     
-    # Construct a prompt for the LLM with more detail and context
+    # Enhanced prompt for interactive engagement
     prompt = f"""
     You are {agent['name']}, a {agent['age']}-year-old {agent['occupation']} with a {agent['education_level']} education.
     You identify as {agent['socioeconomic_status']} and have {agent['ideology']} political views.
     
     Your personality is {agent_personality}. When you speak, you {agent_style}.
     
-    You're discussing refugee education policy in the Republic of Bean, specifically about {policy_domain}, which involves {policy_description}.
+    You're in a policy deliberation about refugee education in the Republic of Bean, discussing {policy_domain}.
     
-    You've chosen option {option_chosen} for this policy area, which is a {option_description}.
-    
+    CONVERSATION CONTEXT:
     {conversation_context}
     {interaction_context}
     
-    Their message: "{user_message}"
+    Recent message: "{user_message}"
     
-    Explain why you chose option {option_chosen} for {policy_domain}. Draw on your professional experience as a {agent['occupation']}, 
-    your {agent['ideology']} worldview, and your {agent['socioeconomic_status']} perspective.
+    RESPONSE REQUIREMENTS:
+    1. Start by explicitly stating if you AGREE or DISAGREE with the previous point
+    2. If responding to another participant, mention their name directly
+    3. Give your reasoning based on your {agent['ideology']} worldview and {agent['occupation']} experience  
+    4. Reference specific aspects of option {option_chosen} for {policy_domain}
+    5. End with a follow-up question that advances the discussion
+    6. Keep response 2-3 sentences, be direct and engaging
     
-    Make your response unique and personal. Avoid generic phrases like "strikes a good balance" or "comprehensive support."
-    Instead, use specific language that reflects your background and ideology.
+    EXAMPLES OF STRONG OPENINGS:
+    - "I agree with Sarah's point, but I'd add that..."
+    - "I have to respectfully disagree with Marcus because..."  
+    - "That's exactly right, and from my experience as a {agent['occupation']}..."
+    - "I see it differently - the data shows..."
     
-    Keep your response concise (2-3 sentences) and authentic to your character.
-    Focus on your occupation, education, economic status, and political views - not demographics.
+    Make this feel like a real policy debate where people challenge each other's ideas!
     """
     
     try:

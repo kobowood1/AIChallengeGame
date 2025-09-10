@@ -6,6 +6,7 @@ from flask_socketio import emit, join_room, leave_room
 from app import socketio
 from game import game_manager
 from multi_agent_system import MultiAgentSimulation
+from conversation_orchestrator import ConversationOrchestrator
 import uuid
 import logging
 import random
@@ -319,7 +320,7 @@ def handle_join_policy_room(data):
 @socketio.on('send_message')
 def handle_send_message(data):
     """
-    Send a message in the policy discussion
+    Send a message in the policy discussion with orchestrated agent responses
     
     Args:
         data: Dictionary containing:
@@ -360,11 +361,9 @@ def handle_send_message(data):
     
     # Update session
     session['conversation_history'] = conversation_history
-    
-    # Store the latest user message separately for AI context
     session['latest_user_message'] = message
     
-    # Broadcast the message to the room
+    # Broadcast the user message to the room
     emit('chat_message', {
         'sender': sender,
         'message': message,
@@ -372,6 +371,130 @@ def handle_send_message(data):
         'is_player': True,
         'policy': policy_name
     }, to=room_id)
+    
+    # ORCHESTRATED AGENT RESPONSE SYSTEM
+    try:
+        # Get enhanced agents and orchestrator from session
+        agents = session.get('agents', [])
+        if not agents:
+            return  # No agents available
+            
+        # Initialize orchestrator and restore state from session
+        orchestrator = ConversationOrchestrator()
+        orchestrator.conversation_state = session.get('orchestrator_state', orchestrator.conversation_state)
+        
+        # Analyze player input for substance and intent
+        player_input_analysis = orchestrator.classify_input_substance(message)
+        
+        # Track recent speakers to avoid repetition
+        recent_speakers = [msg['sender'] for msg in conversation_history[-4:] if not msg.get('is_player', False)]
+        
+        # Select responding agents based on input analysis and ideological positions
+        selected_agents = orchestrator.select_responding_agents(
+            agents, player_input_analysis, policy_name or 'general', recent_speakers
+        )
+        
+        if selected_agents:
+            # Generate orchestrated responses with staggered timing
+            responses = orchestrator.generate_orchestrated_responses(
+                selected_agents, policy_name or 'general', 
+                session.get('policy_selections', {}).get(policy_name, 2),
+                message, conversation_history[-5:]
+            )
+            
+            # Emit responses with realistic delays
+            delay_base = 2.0  # 2 second base delay
+            for i, response_data in enumerate(responses):
+                agent = response_data['agent']
+                agent_message = response_data['message']
+                response_type = response_data['response_type']
+                
+                # Calculate staggered delay
+                delay = delay_base + (i * 3.0)  # 3 seconds between agents
+                
+                # Emit typing indicator first
+                socketio.start_background_task(
+                    _emit_agent_typing_then_respond,
+                    room_id, agent, agent_message, response_type, delay
+                )
+                
+                # Store agent response in conversation history
+                conversation_history.append({
+                    'sender': agent['name'],
+                    'message': agent_message,
+                    'timestamp': time.time() + delay,
+                    'is_player': False,
+                    'policy': policy_name,
+                    'response_type': response_type
+                })
+            
+            # Update session with new conversation history and orchestrator state
+            session['conversation_history'] = conversation_history
+            session['orchestrator_state'] = orchestrator.conversation_state
+            
+        # Check if facilitator summary is needed
+        if orchestrator.should_facilitate_summary(len(conversation_history)):
+            summary = orchestrator.generate_facilitator_summary(conversation_history, policy_name or 'policy discussion')
+            
+            # Emit facilitator summary after agent responses
+            summary_delay = 8.0  # After all agents have responded
+            socketio.start_background_task(
+                _emit_facilitator_summary,
+                room_id, summary, summary_delay
+            )
+            
+    except Exception as e:
+        logging.error(f"Error in orchestrated response system: {e}")
+        # Continue without orchestrated responses if there's an error
+
+def _emit_agent_typing_then_respond(room_id, agent, message, response_type, delay):
+    """Helper function to emit typing indicator then agent response"""
+    try:
+        # Show typing indicator
+        socketio.emit('agent_typing', {
+            'agent_name': agent['name'],
+            'typing': True
+        }, to=room_id)
+        
+        # Wait for realistic typing delay
+        socketio.sleep(min(delay, 6.0))  # Cap delay at 6 seconds
+        
+        # Stop typing indicator
+        socketio.emit('agent_typing', {
+            'agent_name': agent['name'], 
+            'typing': False
+        }, to=room_id)
+        
+        # Emit the agent response
+        socketio.emit('chat_message', {
+            'sender': agent['name'],
+            'message': message,
+            'timestamp': time.time(),
+            'is_player': False,
+            'response_type': response_type,
+            'agent_data': {
+                'ideology': agent.get('ideology', 'moderate'),
+                'occupation': agent.get('occupation', 'Community Member')
+            }
+        }, to=room_id)
+        
+    except Exception as e:
+        logging.error(f"Error in agent response emission: {e}")
+
+def _emit_facilitator_summary(room_id, summary, delay):
+    """Helper function to emit facilitator summary after delay"""
+    try:
+        socketio.sleep(delay)
+        
+        socketio.emit('facilitator_message', {
+            'sender': 'Moderator',
+            'message': summary,
+            'timestamp': time.time(),
+            'is_facilitator': True
+        }, to=room_id)
+        
+    except Exception as e:
+        logging.error(f"Error in facilitator summary emission: {e}")
 
 @socketio.on('update_conversation_history')
 def handle_update_conversation_history(data):
