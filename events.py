@@ -377,6 +377,7 @@ def handle_send_message(data):
         # Get enhanced agents and orchestrator from session
         agents = session.get('agents', [])
         if not agents:
+            logging.warning("No agents found in session for orchestrated response")
             return  # No agents available
             
         # Initialize orchestrator and restore state from session
@@ -402,12 +403,16 @@ def handle_send_message(data):
                 message, conversation_history[-5:]
             )
             
+            logging.info(f"Generated {len(responses)} orchestrated responses for room {room_id}")
+            
             # Emit responses with realistic delays
             delay_base = 2.0  # 2 second base delay
             for i, response_data in enumerate(responses):
                 agent = response_data['agent']
                 agent_message = response_data['message']
                 response_type = response_data['response_type']
+                
+                logging.info(f"Scheduling response from {agent['name']}: {agent_message[:50]}...")
                 
                 # Calculate staggered delay
                 delay = delay_base + (i * 3.0)  # 3 seconds between agents
@@ -465,13 +470,14 @@ def _emit_agent_typing_then_respond(room_id, agent, message, response_type, dela
             'typing': False
         }, to=room_id)
         
-        # Emit the agent response
-        socketio.emit('chat_message', {
+        # Emit the agent response - using 'agent_message' to match frontend listener
+        socketio.emit('agent_message', {
             'sender': agent['name'],
             'message': message,
             'timestamp': time.time(),
             'is_player': False,
             'response_type': response_type,
+            'agentType': 'orchestrated',
             'agent_data': {
                 'ideology': agent.get('ideology', 'moderate'),
                 'occupation': agent.get('occupation', 'Community Member')

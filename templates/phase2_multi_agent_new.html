@@ -386,6 +386,15 @@
     let discussionComplete = false;
     let timeRemaining = 30 * 60; // 30 minutes in seconds
     let timerInterval;
+    
+    // Join policy room for orchestrated agent responses
+    socket.on('connect', function() {
+        console.log('Connected to server, joining policy room...');
+        socket.emit('join_policy_room', {
+            room_name: 'policy_discussion',
+            policy_area: 'Access to Education'
+        });
+    });
     let currentPolicyIndex = 0;
     let finalPackage = {};
     let votingActive = false;
