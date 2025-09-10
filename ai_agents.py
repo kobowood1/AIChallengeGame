@@ -204,18 +204,18 @@ def agent_justify(policy_domain, option_chosen, agent, user_message='', recent_m
     Recent message: "{user_message}"
     
     RESPONSE REQUIREMENTS:
-    1. Start by explicitly stating if you AGREE or DISAGREE with the previous point
-    2. If responding to another participant, mention their name directly
+    1. FIRST: State your own policy choice clearly: "I support Option {option_chosen} for {policy_domain} because..."
+    2. THEN: Only if there's an actual previous message, respond to it with agreement/disagreement  
     3. Give your reasoning based on your {agent['ideology']} worldview and {agent['occupation']} experience  
     4. Reference specific aspects of option {option_chosen} for {policy_domain}
     5. End with a follow-up question that advances the discussion
     6. Keep response 2-3 sentences, be direct and engaging
     
     EXAMPLES OF STRONG OPENINGS:
-    - "I agree with Sarah's point, but I'd add that..."
-    - "I have to respectfully disagree with Marcus because..."  
-    - "That's exactly right, and from my experience as a {agent['occupation']}..."
-    - "I see it differently - the data shows..."
+    - "I support Option {option_chosen} because [your reasoning]. If someone made a previous point, I agree/disagree because..."
+    - "My preference is Option {option_chosen} given [your reasoning]. The previous comment raises good points about..."  
+    - "I favor Option {option_chosen} from my experience as a {agent['occupation']}. To build on what was said..."
+    - "Option {option_chosen} makes the most sense to me because [reasoning]. I have a different perspective on what was mentioned..."
     
     Make this feel like a real policy debate where people challenge each other's ideas!
     """

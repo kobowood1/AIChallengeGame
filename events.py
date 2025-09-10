@@ -317,8 +317,8 @@ def handle_join_policy_room(data):
                 'policy': policy_name
             }, to=room_id)
 
-@socketio.on('send_message')
-def handle_send_message(data):
+@socketio.on('user_message')
+def handle_user_message(data):
     """
     Send a message in the policy discussion with orchestrated agent responses
     
@@ -332,9 +332,13 @@ def handle_send_message(data):
     import time
     
     room_id = session.get('policy_room')
+    
+    # Ensure we have a policy room - create one if needed
     if not room_id:
-        emit('error', {'message': 'Not in a discussion room'})
-        return
+        room_id = f"policy_discussion_{session.get('user_id', 'user')}"
+        join_room(room_id)
+        session['policy_room'] = room_id
+        logging.info(f"Created policy room: {room_id}")
     
     message = data.get('message')
     sender = data.get('sender', 'You')
