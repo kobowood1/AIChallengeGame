@@ -380,7 +380,21 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
 <script>
-    const socket = io();
+    // Configure Socket.IO with proper timeout settings for stability
+    const socket = io({
+        pingTimeout: 180000,     // 3 minutes 
+        pingInterval: 30000,     // 30 seconds
+        maxHttpBufferSize: 1e8,  // 100 MB
+        transports: ['websocket', 'polling'],
+        upgrade: true,
+        forceNew: false,
+        reconnection: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        timeout: 20000
+    });
+    
     let currentStep = 0;
     let waitingForInput = false;
     let discussionComplete = false;
@@ -712,12 +726,27 @@
         document.getElementById('sendButton').disabled = true;
     });
     
+    // Add connection status monitoring
+    let connectionStatusShown = false;
+    
+    // Monitor connection status during long operations
+    socket.on('agent_typing', function() {
+        connectionStatusShown = false;
+    });
+    
+    socket.on('agent_stop_typing', function() {
+        connectionStatusShown = false;
+    });
+    
     // Add ping to maintain connection with shorter interval
     setInterval(() => {
         if (socket.connected) {
             socket.emit('ping');
+        } else if (!connectionStatusShown) {
+            connectionStatusShown = true;
+            console.log('Connection check: socket disconnected');
         }
-    }, 20000); // Ping every 20 seconds
+    }, 15000); // Ping every 15 seconds (reduced from 20)
     
     // Add heartbeat check with exponential backoff reconnection
     let heartbeatInterval;
